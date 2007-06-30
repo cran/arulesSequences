@@ -1,0 +1,64 @@
+useDynLib(arulesSequences)
+
+importFrom("Matrix", "summary")
+import("arules")
+
+export(
+    "cspade",
+    "read_baskets"
+)
+
+exportClasses(
+    "sgCMatrix",
+    "sequences", "summary.sequences",
+    "sequencerules", "summary.sequencerules",
+    "SPparameter", "SPcontrol"
+)
+
+exportMethods(
+    "[",
+    "%in%",
+    "%ain%",
+    "%pin%",
+    "%ein%",
+    "c",
+    "coerce",			## for setAs
+    "coverage",
+    "dim",
+    "dimnames",
+    "duplicated",
+    "firstOrder",
+    "format",
+    "info",
+    "info<-",
+    "initialize",
+    "inspect",
+    "is.maximal",
+    "itemFrequency",
+    "itemInfo",
+    "itemInfo<-",
+    "itemLabels",
+    "itemLabels<-",
+    "itemTable",
+    "itemsets",
+    "LIST",
+    "labels",
+    "length",
+    "lhs",
+    "nitems", 
+    "match",
+    "ritems",
+    "rhs",
+    "ruleInduction",
+    "summary",
+    "size",
+    "show",
+    "subset",
+    "times",
+    "timeFrequency",
+    "timeInfo",
+    "timeInfo<-",
+    "timeTable",
+    "timesets",
+    "unique"
+)

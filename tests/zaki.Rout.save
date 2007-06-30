@@ -1,0 +1,437 @@
+
+R version 2.5.0 (2007-04-23)
+Copyright (C) 2007 The R Foundation for Statistical Computing
+ISBN 3-900051-07-0
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> 
+> library("arulesSequences")
+Loading required package: arules
+Loading required package: Matrix
+Loading required package: lattice
+** fixing ngCMatrix validation
+> 
+> ## basic tests using the small running 
+> ## example from the paper. 
+> ##
+> ## ceeboo 2007
+> 
+> ## data set
+> 
+> data(zaki)
+> 
+> zaki.txt <- 
++     read_baskets(con  = system.file("misc", "zaki.txt", 
++                                     package = "arulesSequences"),
++                  info = c("sequenceID","eventID","SIZE"))
+> 
+> all.equal(zaki, zaki.txt)
+[1] TRUE
+> 
+> ## methods of class sequences
+> 
+> s1 <- cspade(zaki, parameter = list(support = 0.4), 
++                    control   = list(verbose =TRUE))
+
+parameter specification:
+support : 0.4
+maxsize :  10
+maxlen  :  10
+
+algorithmic control:
+bfstype : FALSE
+verbose :  TRUE
+summary : FALSE
+
+preprocessing ... 1 partition(s) [0.085s]
+mining transactions ... [0.033s]
+reading sequences ... [0.035s]
+
+total elapsed time: 0.153s
+> s1
+set of 18 sequences 
+> s2 <- cspade(zaki, parameter = list(support = 0.4, maxsize = 2, maxlen = 2))
+> s2
+set of 14 sequences 
+> 
+> nitems(s1)
+[1] 4
+> nitems(s1, itemsets = TRUE)
+[1] 8
+> nitems(s2)
+[1] 4
+> nitems(s2, itemsets = TRUE)
+[1] 7
+> labels(s1, setSep = "->", seqStart = "", seqEnd = "")
+ [1] "{A}"             "{B}"             "{D}"             "{F}"            
+ [5] "{A,F}"           "{B,F}"           "{D}->{F}"        "{D}->{B,F}"     
+ [9] "{A,B,F}"         "{A,B}"           "{D}->{B}"        "{B}->{A}"       
+[13] "{D}->{A}"        "{F}->{A}"        "{D}->{F}->{A}"   "{B,F}->{A}"     
+[17] "{D}->{B,F}->{A}" "{D}->{B}->{A}"  
+> summary(s1)
+set of 18 sequences with
+
+most frequent items:
+      A       B       F       D (Other) 
+     11      10      10       8      28 
+
+most frequent elements:
+    {A}     {D}     {B}     {F}   {B,F} (Other) 
+      8       8       4       4       4       3 
+
+element (sequence) size distribution:
+sizes
+1 2 3 
+8 7 3 
+
+sequence length distribution:
+lengths
+1 2 3 4 
+4 8 5 1 
+
+summary of quality measures:
+    support      
+ Min.   :0.5000  
+ 1st Qu.:0.5000  
+ Median :0.5000  
+ Mean   :0.6528  
+ 3rd Qu.:0.7500  
+ Max.   :1.0000  
+> inspect(s1)
+    items support 
+  1 <{A}>    1.00 
+  2 <{B}>    1.00 
+  3 <{D}>    0.50 
+  4 <{F}>    1.00 
+  5 <{A,   
+      F}>    0.75 
+  6 <{B,   
+      F}>    1.00 
+  7 <{D},  
+     {F}>    0.50 
+  8 <{D},  
+     {B,   
+      F}>    0.50 
+  9 <{A,   
+      B,   
+      F}>    0.75 
+ 10 <{A,   
+      B}>    0.75 
+ 11 <{D},  
+     {B}>    0.50 
+ 12 <{B},  
+     {A}>    0.50 
+ 13 <{D},  
+     {A}>    0.50 
+ 14 <{F},  
+     {A}>    0.50 
+ 15 <{D},  
+     {F},  
+     {A}>    0.50 
+ 16 <{B,   
+      F},  
+     {A}>    0.50 
+ 17 <{D},  
+     {B,   
+      F},  
+     {A}>    0.50 
+ 18 <{D},  
+     {B},  
+     {A}>    0.50 
+ 
+> 
+> data.frame(items  = itemLabels(s1), 
++            counts = itemFrequency(s1))
+  items counts
+1     A     11
+2     B     10
+3     D      8
+4     F     10
+> data.frame(items  = itemLabels(s2),
++            counts = itemFrequency(s2)) 
+  items counts
+1     A      7
+2     B      7
+3     D      5
+4     F      7
+> data.frame(itemsets = itemLabels(s2, itemsets = TRUE),
++            counts   = itemFrequency(s2, itemsets = TRUE))
+  itemsets counts
+1      {A}      5
+2      {B}      3
+3      {D}      5
+4      {F}      3
+5    {A,F}      1
+6    {B,F}      3
+7    {A,B}      1
+> 
+> as(s2, "data.frame")
+      sequence support
+1        <{A}>    1.00
+2        <{B}>    1.00
+3        <{D}>    0.50
+4        <{F}>    1.00
+5      <{A,F}>    0.75
+6      <{B,F}>    1.00
+7    <{D},{F}>    0.50
+8  <{D},{B,F}>    0.50
+9      <{A,B}>    0.75
+10   <{D},{B}>    0.50
+11   <{B},{A}>    0.50
+12   <{D},{A}>    0.50
+13   <{F},{A}>    0.50
+14 <{B,F},{A}>    0.50
+> 
+> info(s2) <- info(s2)
+> info(s2)
+NULL data frame with 0 rows
+> 
+> itemInfo(s2) <- itemInfo(s2)
+> itemInfo(s2)
+  labels
+1      A
+2      B
+3      D
+4      F
+> 
+> ## fixme?
+> t <- itemTable(s2)
+> rownames(t) <- 
++ itemLabels(s2)[as.integer(rownames(t))]
+> t
+     counts
+items 1
+    A 7
+    B 7
+    D 5
+    F 7
+> t <- itemTable(s2, itemsets = TRUE)
+> rownames(t) <- 
++ itemLabels(s2, itemsets = TRUE)[as.integer(rownames(t))]
+> t
+        counts
+itemsets 1
+   {A}   5
+   {B}   3
+   {D}   5
+   {F}   3
+   {A,F} 1
+   {B,F} 3
+   {A,B} 1
+> 
+> 
+> d1 <- as(s1, "data.frame")
+> d1$size    <- size(s1)
+> d1$length  <- size(s1, type = "length")
+> d1$ritems  <- ritems(s1, "max")
+> d1$maximal <- is.maximal(s1)
+> d1
+          sequence support size length ritems maximal
+1            <{A}>    1.00    1      1      1   FALSE
+2            <{B}>    1.00    1      1      1   FALSE
+3            <{D}>    0.50    1      1      1   FALSE
+4            <{F}>    1.00    1      1      1   FALSE
+5          <{A,F}>    0.75    1      2      1   FALSE
+6          <{B,F}>    1.00    1      2      1   FALSE
+7        <{D},{F}>    0.50    2      2      1   FALSE
+8      <{D},{B,F}>    0.50    2      3      1   FALSE
+9        <{A,B,F}>    0.75    1      3      1    TRUE
+10         <{A,B}>    0.75    1      2      1   FALSE
+11       <{D},{B}>    0.50    2      2      1   FALSE
+12       <{B},{A}>    0.50    2      2      1   FALSE
+13       <{D},{A}>    0.50    2      2      1   FALSE
+14       <{F},{A}>    0.50    2      2      1   FALSE
+15   <{D},{F},{A}>    0.50    3      3      1   FALSE
+16     <{B,F},{A}>    0.50    2      3      1   FALSE
+17 <{D},{B,F},{A}>    0.50    3      4      1    TRUE
+18   <{D},{B},{A}>    0.50    3      3      1   FALSE
+> 
+> as(s1@elements, "data.frame")
+     items support
+1      {A}    1.00
+2      {B}    1.00
+3      {D}    0.50
+4      {F}    1.00
+5    {A,F}    0.75
+6    {B,F}    1.00
+9  {A,B,F}    0.75
+10   {A,B}    0.75
+> 
+> d1[s1 %in%  c("D", "F"), 1:2]
+          sequence support
+3            <{D}>    0.50
+4            <{F}>    1.00
+5          <{A,F}>    0.75
+6          <{B,F}>    1.00
+7        <{D},{F}>    0.50
+8      <{D},{B,F}>    0.50
+9        <{A,B,F}>    0.75
+11       <{D},{B}>    0.50
+13       <{D},{A}>    0.50
+14       <{F},{A}>    0.50
+15   <{D},{F},{A}>    0.50
+16     <{B,F},{A}>    0.50
+17 <{D},{B,F},{A}>    0.50
+18   <{D},{B},{A}>    0.50
+> d1[s1 %ain% c("D", "F"), 1:2]
+          sequence support
+7        <{D},{F}>     0.5
+8      <{D},{B,F}>     0.5
+15   <{D},{F},{A}>     0.5
+17 <{D},{B,F},{A}>     0.5
+> d1[s1 %pin% "D", 1:2]
+          sequence support
+3            <{D}>     0.5
+7        <{D},{F}>     0.5
+8      <{D},{B,F}>     0.5
+11       <{D},{B}>     0.5
+13       <{D},{A}>     0.5
+15   <{D},{F},{A}>     0.5
+17 <{D},{B,F},{A}>     0.5
+18   <{D},{B},{A}>     0.5
+> 
+> as(subset(s1, x %ain% c("D", "F")), "data.frame")
+          sequence support
+7        <{D},{F}>     0.5
+8      <{D},{B,F}>     0.5
+15   <{D},{F},{A}>     0.5
+17 <{D},{B,F},{A}>     0.5
+> as(subset(s1, support == 1), "data.frame")
+  sequence support
+1    <{A}>       1
+2    <{B}>       1
+4    <{F}>       1
+6  <{B,F}>       1
+> 
+> match(s2,s1)
+ [1]  1  2  3  4  5  6  7  8 10 11 12 13 14 16
+> match(s1,s2)
+ [1]  1  2  3  4  5  6  7  8 NA  9 10 11 12 13 NA 14 NA NA
+> 
+> # problem with new-style S4
+> # and rbind of data.frame()
+> s <- unique(c(s1,s2))           # uses duplicated
+> match(s1, s)
+ [1]  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18
+> all.equal(s1, s)
+[1] "Attributes: < Component 2: Modes: S4, list >"
+[2] "Attributes: < Component 2: Lengths: 1, 0 >"  
+> 
+> ## rules
+> 
+> r1 <- ruleInduction(s1, confidence = 0.5)
+> r1
+set of 10 sequencerules 
+> r2 <- ruleInduction(s2, confidence = 0.5)
+> r2
+set of 7 sequencerules 
+> 
+> labels(r1, itemSep = "->", setStart = "", setEnd = "")
+ [1] "<D> => <F>"      "<D> => <B->F>"   "<D> => <B>"      "<B> => <A>"     
+ [5] "<D> => <A>"      "<F> => <A>"      "<D,F> => <A>"    "<B->F> => <A>"  
+ [9] "<D,B->F> => <A>" "<D,B> => <A>"   
+> summary(r1)
+set of 10 sequencerules with
+
+rule size distribution (lhs + rhs)
+sizes
+2 3 
+7 3 
+
+rule length distribution (lhs + rhs)
+lengths
+2 3 4 
+5 4 1 
+
+summary of quality measures:
+    support      confidence         lift      
+ Min.   :0.5   Min.   :0.500   Min.   :0.500  
+ 1st Qu.:0.5   1st Qu.:0.625   1st Qu.:0.625  
+ Median :0.5   Median :1.000   Median :1.000  
+ Mean   :0.5   Mean   :0.850   Mean   :0.850  
+ 3rd Qu.:0.5   3rd Qu.:1.000   3rd Qu.:1.000  
+ Max.   :0.5   Max.   :1.000   Max.   :1.000  
+> inspect(r1)
+    lhs      rhs   support confidence lift 
+  1 <{D}> => <{F}>     0.5        1.0  1.0 
+  2 <{D}> => <{B,      0.5        1.0  1.0 
+               F}>    
+  3 <{D}> => <{B}>     0.5        1.0  1.0 
+  4 <{B}> => <{A}>     0.5        0.5  0.5 
+  5 <{D}> => <{A}>     0.5        1.0  1.0 
+  6 <{F}> => <{A}>     0.5        0.5  0.5 
+  7 <{D},             
+     {F}> => <{A}>     0.5        1.0  1.0 
+  8 <{B,              
+      F}> => <{A}>     0.5        0.5  0.5 
+  9 <{D},             
+     {B,              
+      F}> => <{A}>     0.5        1.0  1.0 
+ 10 <{D},             
+     {B}> => <{A}>     0.5        1.0  1.0 
+ 
+> 
+> as(r2, "data.frame")
+              rule support confidence lift
+1   <{D}> => <{F}>     0.5        1.0  1.0
+2 <{D}> => <{B,F}>     0.5        1.0  1.0
+3   <{D}> => <{B}>     0.5        1.0  1.0
+4   <{B}> => <{A}>     0.5        0.5  0.5
+5   <{D}> => <{A}>     0.5        1.0  1.0
+6   <{F}> => <{A}>     0.5        0.5  0.5
+7 <{B,F}> => <{A}>     0.5        0.5  0.5
+> 
+> as(subset(r2, lhs(x) %in%  c("B", "F")), "data.frame")
+              rule support confidence lift
+4   <{B}> => <{A}>     0.5        0.5  0.5
+6   <{F}> => <{A}>     0.5        0.5  0.5
+7 <{B,F}> => <{A}>     0.5        0.5  0.5
+> as(subset(r2, lhs(x) %ain% c("B", "F")), "data.frame")
+              rule support confidence lift
+7 <{B,F}> => <{A}>     0.5        0.5  0.5
+> as(subset(r2, confidence == 1), "data.frame")
+              rule support confidence lift
+1   <{D}> => <{F}>     0.5          1    1
+2 <{D}> => <{B,F}>     0.5          1    1
+3   <{D}> => <{B}>     0.5          1    1
+5   <{D}> => <{A}>     0.5          1    1
+> 
+> match(r2, r1)
+[1] 1 2 3 4 5 6 8
+> match(r1, r2)
+ [1]  1  2  3  4  5  6 NA  7 NA NA
+> 
+> r <- unique(c(r1, r2))
+> match(r1, r)
+ [1]  1  2  3  4  5  6  7  8  9 10
+> all.equal(r1, r)
+[1] TRUE
+> 
+> s <- as(r2, "sequences")
+> match(s, s2)
+[1]  7  8 10 11 12 13 14
+> 
+> ## timed
+> 
+> z <- as(zaki, "timedsequences")
+> all.equal(z, c(z[1], z[-1]))
+[1] "Attributes: < Component 2: Modes: S4, list >"
+[2] "Attributes: < Component 2: Lengths: 1, 0 >"  
+[3] "Attributes: < Component 6: Modes: S4, list >"
+> 
+> ## fixme: different orders of item labels
+> #all.equal(z, c(z[1,reduce=TRUE], z[-1,reduce=TRUE]))
+> 
+> ###
+> 

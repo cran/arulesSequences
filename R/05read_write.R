@@ -1,0 +1,240 @@
+
+##
+## data interfaces to cSPADE
+##
+## ceeboo 2007
+
+## fixme: truncates doubles
+
+.as_integer <- function(x) {
+    if (typeof(x) == "integer")
+        return(x)
+    x <- factor(x)
+    l <- suppressWarnings(as.integer(levels(x)))
+    if (!any(is.na(l)))
+        x <- l[c(x)]
+    x
+}
+
+read_baskets <- function(con, sep = "[ \t]+", info = NULL, iteminfo = NULL) {
+    x <- readLines(con)
+    x <- sub("^[ \t]+", "", x)
+    x <- strsplit(x, split = sep)
+    if (!is.null(info)) {
+        i <- info
+        info <- lapply(seq(length(info)), function(k) sapply(x, "[", k))
+        names(info) <- i
+        x <- lapply(x, "[", -seq(length(info)))
+    }
+    x <- as(x, "transactions")
+    if (!is.null(info)) {
+        if (!is.null(info$sequenceID))
+            info$sequenceID <- .as_integer(info$sequenceID)
+        if (!is.null(info$eventID))
+            info$eventID <- .as_integer(info$eventID)
+        if (is.factor(info$eventID))
+            warning("'eventID' is a factor")
+        transactionInfo(x) <- data.frame(info)
+    }
+    if (!is.null(iteminfo)) {
+        if (!is.data.frame(iteminfo))
+            stop("'iteminfo' not a data frame")
+        labels <- itemLabels(x)
+        if (!all(labels %in% rownames(iteminfo)))
+            stop("the row names of 'iteminfo' do not match the item labels")
+        iteminfo <- iteminfo[labels,, drop = FALSE]
+        if ("labels" %in% names(iteminfo))
+            iteminfo$labels <- as.character(iteminfo$labels)
+        else
+            iteminfo <- cbind(x@itemInfo, iteminfo)
+        itemInfo(x) <- iteminfo
+    }
+    x
+}
+
+## currently internal only
+
+read_spade <- function(con = "", decode = FALSE, labels = NULL) {
+    if (con == "")
+        con <- stdin()
+    else 
+    if (is.character(con)) {
+        con <- file(con, "r")
+        on.exit(close(con))
+    }
+    if (!inherits(con, "connection")) 
+        stop("'con' must be a character string or connection.")
+
+    n <- as.integer(strsplit(readLines(con, 1), " ")[[1]][5])
+        
+    x <- readLines(con)
+    if (!length(x))
+        return(new("sequences"))
+    x <- strsplit(x, split = " -- ")
+   
+    # fixme: there are 2 counts
+
+    c <- sapply(x, "[", 2)
+    c <- as.integer(sapply(strsplit(c, split = " "), "[", 1))
+   
+    # split into a list of lists (sequences) each 
+    # containing a vector of character (itemsets)
+   
+    x <- lapply(strsplit(sapply(x, "[", 1), split = " -> "), strsplit, " ")
+    if (decode)
+        x <- lapply(x, lapply, as.integer)
+
+    # fixme: can this be?
+    if (!length(x))
+        return(new("sequences"))
+
+    x <- as(x, "sequences")
+    x@quality <- data.frame(support = c / n)
+    
+    k <- which(size(x) == 1)
+    if (length(k) == length(x@elements)) {
+        i <- x@data[,k]@i + ..1L
+        k[i] <- k
+        quality(x@elements) <- x@quality[k,, drop = FALSE]
+    } else
+        stop("incomplete data")
+
+    if (!is.null(labels)) {
+        k <- as.integer(as.character(x@elements@items@itemInfo$labels))
+        itemLabels(x@elements@items) <- as.character(labels[k])
+    }
+    validObject(x)
+    x
+}
+
+## fixme: inefficient
+
+write_cspade <- function(x, con) {
+    if (!inherits(x, "transactions"))
+        stop("'x' not of class transactions")
+
+    r <- .Call("R_asList_ngCMatrix", x@data, NULL)
+    r <- sapply(r, paste, collapse = " ")
+    
+    i <- x@transactionInfo
+    i$sequenceID <- .as_integer(i$sequenceID)
+    i$eventID <- .as_integer(i$eventID)
+    if (is.factor(i$eventID))
+        warning("'eventID' is a factor")
+    attr(i$sequenceID, "levels") <-
+    attr(i$eventID, "levels") <- NULL
+
+    r <- rbind(as.character(i$sequenceID), 
+               as.character(i$eventID), as.character(size(x)), r)
+    r <- apply(r, 2, paste, collapse = " ")
+    
+    writeLines(r, con)
+}
+
+## cSPADE wrapper
+##
+## note that we assume 1MB = 2^10 x 2^10 = 4^10 for the 
+## computation of the number of database partitions.
+##
+
+cspade <- 
+function(data, parameter = NULL, control = NULL) {
+
+    if (!inherits(data, "transactions"))
+        stop("'data' not of class transactions")
+    if (!all(c("sequenceID", "eventID") %in% names(transactionInfo(data))))
+        stop("slot transactionInfo: missing 'sequenceID' or 'eventID'")
+
+    parameter <- as(parameter, "SPparameter")
+    control   <- as(control ,  "SPcontrol")
+
+    if (control@verbose) {
+        t1 <- proc.time()
+        cat("\nparameter specification:\n")
+        cat(format(parameter), sep = "\n")
+        cat("\nalgorithmic control:\n")
+        cat(format(control), sep = "\n")
+        cat("\npreprocessing ...")
+    }
+
+    exe <- system.file("exec", package = "arulesSequences")
+
+    file <- tempfile()
+    on.exit(unlink(paste(file, "*", sep = ".")))
+
+    out <- paste(file, "asc", sep = ".")
+    write_cspade(data, con = out)
+
+    ## preprocess
+    opt <- ""
+    nop <- ceiling(length(data@data@i) / 4^10 * .Machine$sizeof.long)
+    if (length(control@memsize)) {
+        opt <- paste("-m", control@memsize)
+        nop <- ceiling(nop * 32 / control@memsize)
+    }
+    if (length(control@numpart)) {
+        if (control@numpart < nop)
+            warning("'numpart' less than recommended")
+        nop <- control@numpart
+    }
+    if (control@summary)
+        log <- "summary.out"
+    else
+        log <- paste(file, "log", sep = ".")
+    system(paste(paste(exe, "makebin", sep = "/"), 
+        out, paste(file, "data", sep = ".")))
+    system(paste(paste(exe, "getconf", sep = "/"), 
+        "-i", file, "-o", file, ">>", log))
+    system(paste(paste(exe, "exttpose",sep = "/"),
+        "-i", file, "-o", file, "-p", nop, opt, "-l -x -s",
+        parameter@support, ">>", log))
+
+    ## options
+    if (length(parameter@maxsize))
+        opt <- paste(opt, "-Z", parameter@maxsize, collapse = "")
+    if (length(parameter@maxlen))
+        opt <- paste(opt, "-z", parameter@maxlen,  collapse = "")
+    if (length(parameter@mingap))
+        opt <- paste(opt, "-l", parameter@mingap,  collapse = "")
+    if (length(parameter@maxgap))
+        opt <- paste(opt, "-u", parameter@maxgap,  collapse = "")
+    if (length(parameter@maxwin))
+        opt <- paste(opt, "-w", parameter@maxwin,  collapse = "")
+
+    if (!length(control@bfstype) || !control@bfstype)
+        opt <- paste(opt, "-r", collapse = "")
+
+    if (control@verbose) {
+        t2 <- proc.time()
+        cat(paste("", nop, "partition(s)"))
+        cat(paste(" [",format((t2-t1)[3], digits =2, format = "f"),
+                  "s]", sep = ""))
+        cat("\nmining transactions ...")
+    }
+
+    out <- paste(file, "out", sep = ".")
+    system(paste(paste(exe, "spade", sep = "/"),
+        "-i", file, "-s", parameter@support, opt, "-e", nop, "-o >", out))
+
+    if (control@verbose) {
+        t3 <- proc.time()
+        cat(paste(" [",format((t3-t2)[3], digits =2, format = "f"),
+                  "s]", sep = ""))
+        cat("\nreading sequences ...")
+    }
+
+    out <- read_spade(con = out, labels = itemLabels(data))
+
+    if (control@verbose) {
+        t4 <- proc.time()
+        cat(paste(" [",format((t4-t3)[3], digits =2, format = "f"),
+                  "s]", sep = ""))
+        cat("\n\ntotal elapsed time: ", (t4-t1)[3], "s\n", sep ="")
+    }
+    if (!control@summary)
+        unlink("summary.out")
+
+    out
+}
+
+###

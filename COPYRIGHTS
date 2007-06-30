@@ -1,0 +1,12 @@
+COPYRIGHT STATUS
+----------------
+
+The R + C code in this package is
+
+  Copyright (C) 2007 Christian Buchta and Michael Hahsler
+
+The cSPADE C++ code is
+
+  Copyright (C) 2001 Mohammed Javeed Zaki
+  
+All code is subject to the GNU General Public License, Version 2.

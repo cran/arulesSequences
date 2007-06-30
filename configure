@@ -1,0 +1,21 @@
+#!/bin/sh
+#
+# ceeboo 2007
+
+echo "** binaries"	# missing in R
+
+cwd=`pwd`
+
+mkdir $cwd/exec
+
+( cd $cwd/src_exec/TPOSE/; 
+  make; 
+  mv -f makebin getconf exttpose  $cwd/exec/
+)
+
+( cd $cwd/src_exec/cSPADE/; 
+  make; 
+  mv -f spade $cwd/exec/
+)
+
+###
