@@ -27,22 +27,22 @@
     collection of timed sequences.
 }
 \usage{
-\S4method{info}{sequences}(object, ...)
+\S4method{info}{sequences}(object)
 
 ## S4 method for signature 'sequences':
 info(object) <- value
 
-\S4method{info}{sequencerules}(object, ...)
+\S4method{info}{sequencerules}(object)
 
 ## S4 method for signature 'sequencerules':
 info(object) <- value
 
-\S4method{itemInfo}{sequences}(object, ...)
+\S4method{itemInfo}{sequences}(object)
 
 ## S4 method for signature 'sequences':
 itemInfo(object) <- value
 
-\S4method{timeInfo}{timedsequences}(object, ...)
+\S4method{timeInfo}{timedsequences}(object)
 
 ## S4 method for signature 'timedsequences':
 timeInfo(object) <- value
@@ -51,7 +51,7 @@ timeInfo(object) <- value
   \item{object}{an object.}
   \item{value}{a data frame corresponding with the \emph{elements} or 
     \emph{times} of \code{object}.}
-  \item{\dots}{not used.}
+%  \item{\dots}{not used.}
 }
 %\details{}
 \value{

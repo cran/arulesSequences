@@ -221,6 +221,9 @@ setClass("summary.sequencerules",
 
 setMethod("summary", signature(object = "sequencerules"),
     function(object) {
+        if (!length(object))
+            return(new("summary.sequencerules", length = 0L))
+
         s <- size(lhs(object)) + size(rhs(object))
         l <- size(lhs(object), "items") + 
              size(rhs(object), "items")
@@ -240,7 +243,7 @@ setMethod("summary", signature(object = "sequencerules"),
 setMethod("show", signature(object = "summary.sequencerules"),
     function(object) {
         cat("set of", object@length, "sequencerules with\n")
-        if (object@length > 0) {
+        if (object@length) {
             cat("\nrule size distribution (lhs + rhs)\n")
             print(object@sizes)
 
@@ -326,7 +329,7 @@ setMethod("unique", signature(x = "sequencerules"),
     function(x, incomparables = FALSE) x[!duplicated(x)])
 
 setMethod("match", signature(x = "sequencerules", table = "sequencerules"),
-    function(x, table, nomatch = NA, incomparables = FALSE) {
+    function(x, table, nomatch = NA_integer_, incomparables = NULL) {
         k <- match(x@elements, table@elements)
         n <- which(is.na(k))
         if (length(n)) {

@@ -1,11 +1,13 @@
 
-R version 2.5.0 (2007-04-23)
-Copyright (C) 2007 The R Foundation for Statistical Computing
+R version 2.6.2 Patched (2008-03-24 r44912)
+Copyright (C) 2008 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
 Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
 
 R is a collaborative project with many contributors.
 Type 'contributors()' for more information and
@@ -20,7 +22,23 @@ Type 'q()' to quit R.
 Loading required package: arules
 Loading required package: Matrix
 Loading required package: lattice
+
+Attaching package: 'Matrix'
+
+
+	The following object(s) are masked from package:stats :
+
+	 xtabs 
+
 ** fixing ngCMatrix validation
+
+Attaching package: 'arules'
+
+
+	The following object(s) are masked from package:base :
+
+	 %in% 
+
 > 
 > ## basic tests using the small running 
 > ## example from the paper. 
@@ -54,11 +72,11 @@ bfstype : FALSE
 verbose :  TRUE
 summary : FALSE
 
-preprocessing ... 1 partition(s) [0.085s]
-mining transactions ... [0.033s]
-reading sequences ... [0.035s]
+preprocessing ... 1 partition(s) [0.19s]
+mining transactions ... [0.015s]
+reading sequences ... [0.31s]
 
-total elapsed time: 0.153s
+total elapsed time: 0.512s
 > s1
 set of 18 sequences 
 > s2 <- cspade(zaki, parameter = list(support = 0.4, maxsize = 2, maxlen = 2))

@@ -44,9 +44,9 @@ x[i, j, k, ..., reduce = FALSE, drop = FALSE]
 ## S4 method for signature 'sequencerules, ANY, missing, ANY':
 x[i, j, ..., drop = FALSE]
 
-\S4method{unique}{sequences}(x, incomparables = FALSE, ...)
+\S4method{unique}{sequences}(x, incomparables = FALSE)
 
-\S4method{unique}{sequencerules}(x, incomparables = FALSE, ...)
+\S4method{unique}{sequencerules}(x, incomparables = FALSE)
 
 \S4method{lhs}{sequencerules}(x)
 

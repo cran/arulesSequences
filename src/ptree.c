@@ -175,7 +175,7 @@ SEXP R_pnscount(SEXP R_x, SEXP R_t, SEXP R_e, SEXP R_v) {
 	error("e not of class ngCMatrix");
     if (TYPEOF(R_v) != LGLSXP)
 	error("'v' not of type logical");
-    int i, f, l, k, n, nr;
+    int i, f, l, k, n, nr, e;
     int *x;
     SEXP px, ix, pt, it;
     SEXP r; 
@@ -280,12 +280,13 @@ SEXP R_pnscount(SEXP R_x, SEXP R_t, SEXP R_e, SEXP R_v) {
 
     cpn = npn = 0;
     
+    e = LENGTH(pt) - 1;
     f = 0;
     for (i = 1; i < LENGTH(px); i++) {
 	l = INTEGER(px)[i];
 	n = l-f;
 	if (n == 0) {
-	    INTEGER(r)[i-1] = 0;
+	    INTEGER(r)[i-1] = e;
 	    continue;
 	}
 	x = INTEGER(ix)+f;

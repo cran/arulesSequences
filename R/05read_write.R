@@ -25,6 +25,8 @@ read_baskets <- function(con, sep = "[ \t]+", info = NULL, iteminfo = NULL) {
         info <- lapply(seq(length(info)), function(k) sapply(x, "[", k))
         names(info) <- i
         x <- lapply(x, "[", -seq(length(info)))
+        # fixme: warning
+        x <- lapply(x, unique)
     }
     x <- as(x, "transactions")
     if (!is.null(info)) {
@@ -93,7 +95,7 @@ read_spade <- function(con = "", decode = FALSE, labels = NULL) {
     
     k <- which(size(x) == 1)
     if (length(k) == length(x@elements)) {
-        i <- x@data[,k]@i + ..1L
+        i <- x@data[,k]@i + 1L
         k[i] <- k
         quality(x@elements) <- x@quality[k,, drop = FALSE]
     } else

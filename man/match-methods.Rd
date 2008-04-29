@@ -46,15 +46,15 @@ x \%ain\% table
 x \%pin\% table
 x \%ein\% table
 
-\S4method{duplicated}{sequences}(x, incomparables = FALSE, ...)
+\S4method{duplicated}{sequences}(x, incomparables = FALSE)
 
-\S4method{duplicated}{sequencerules}(x, incomparables = FALSE, ...)
+\S4method{duplicated}{sequencerules}(x, incomparables = FALSE)
 }
 \arguments{
   \item{x}{an object.}
   \item{table}{an object (of the same class as \code{x}).}
   \item{nomatch}{the value to be returned in the case of no match. }
-  \item{incomparables, \dots}{not used.}
+  \item{incomparables}{not used.}
 }
 %\details{}
 \value{

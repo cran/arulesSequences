@@ -79,8 +79,8 @@ setAs("transactions", "timedsequences",
         p <- cumsum(sapply(s, length))
         s <- unlist(s)
 
-        s <- new("sgCMatrix", p   = c(..0L, p),
-                              i   = s - ..1L,
+        s <- new("sgCMatrix", p   = c(0L, p),
+                              i   = s - 1L,
                               Dim = c(length(e), length(p)))
 
         s <- new("sequences", data     = s,
@@ -88,7 +88,7 @@ setAs("transactions", "timedsequences",
                               info     = n)
 
         t <- new("ngCMatrix", p   = s@data@p,
-                              i   = c(t) - ..1L,
+                              i   = c(t) - 1L,
                               Dim = c(length(levels(t)), length(s)))
 
         new("timedsequences", s,
@@ -344,17 +344,21 @@ setClass("summary.timedsequences",
 
 setMethod("summary", signature(object = "timedsequences"),
     function(object, maxsum = 6) {
+        if (!length(object))
+            return(new("summary.timedsequences", length = 0L))
+
         m <- max(0, maxsum-1)
 
         t <- timeFrequency(object, type = "times")
         t <- sort(t, decreasing = TRUE)
         t <- c(head(t, m), "(Other)" = sum(tail(t, -m)))
-        
+ 
         new("summary.timedsequences", times    = t,
                                       info     = head(info(object), 3),
                                       itemInfo = head(itemInfo(object), 3),
                                       timeInfo = head(timeInfo(object), 3),
-                                      summary(as(object, "sequences"), maxsum))
+        ## FIXME R-2.7.0 bug
+           selectMethod("summary","sequences")(as(object, "sequences"), maxsum))
     }
 )
 
@@ -412,7 +416,7 @@ setMethod("[", signature(x = "timedsequences", i = "ANY", j = "ANY", drop = "ANY
             x@time <- .Call("R_rowSubset_ngCMatrix", x@time, k)
             x@timeInfo <- x@timeInfo[k,, drop = FALSE]
 
-            k <- y@time@i %in% (which(k) - ..1L)
+            k <- y@time@i %in% (which(k) - 1L)
 
             x@data@i <- x@data@i[k]
             x@data@p <- x@time@p
@@ -504,10 +508,10 @@ setMethod("timesets", signature(object = "timedsequences"),
 
 setAs("timedsequences", "transactions",
     function(from) {
-        i <- from@data@i + ..1L
+        i <- from@data@i + 1L
         i <- from@elements@items[i]
 
-        t <- from@time@i + ..1L
+        t <- from@time@i + 1L
         t <- data.frame(sequenceID = rep(from@info$sequenceID, size(from)),
                         eventID    = from@timeInfo$labels[t])
 

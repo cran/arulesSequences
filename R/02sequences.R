@@ -188,8 +188,8 @@ setAs("list", "sequences",
         i <- unclass(factor(unlist(i)))
         l <- attr(i, "levels")
         attr(i, "levels") <- NULL
-        i <- new("ngCMatrix", p   = c(..0L, p),
-                              i   = i - ..1L, 
+        i <- new("ngCMatrix", p   = c(0L, p),
+                              i   = i - 1L, 
                               Dim = c(length(l), length(p)))
 
         s <- .Call("R_pnindex", i, NULL, FALSE)
@@ -207,8 +207,8 @@ setAs("list", "sequences",
         names(p) <- NULL
         p <- cumsum(p)
 
-        s <- new("sgCMatrix", p   = c(..0L, p),
-                              i   = i - ..1L,
+        s <- new("sgCMatrix", p   = c(0L, p),
+                              i   = i - 1L,
                               Dim = c(s@Dim[2], length(p)))
 
         new("sequences", elements = e,
@@ -397,7 +397,7 @@ setClass("summary.sequences",
 setMethod("summary", signature(object = "sequences"),
     function(object, maxsum = 6) {
         if (!length(object))
-            return(new("summary.sequences"))
+            return(new("summary.sequences", length = 0L))
 
         maxsum <- max(0, maxsum-1)
 
@@ -481,7 +481,7 @@ setMethod("unique", signature(x = "sequences"),
 ## right hand operand is not of the same class
 
 setMethod("match", signature(x = "sequences", table = "sequences"),
-    function(x, table, nomatch = NA, incomparables = FALSE) {
+    function(x, table, nomatch = NA_integer_, incomparables = NULL) {
         k <- match(x@elements, table@elements)
         n <- which(is.na(k))
         if (length(n)) {

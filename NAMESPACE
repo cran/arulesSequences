@@ -1,6 +1,6 @@
 useDynLib(arulesSequences)
 
-importFrom("Matrix", "summary")
+#importFrom("Matrix", "summary")
 import("arules")
 
 export(
@@ -12,6 +12,7 @@ exportClasses(
     "sgCMatrix",
     "sequences", "summary.sequences",
     "sequencerules", "summary.sequencerules",
+    "timedsequences", "summary.timedsequences",
     "SPparameter", "SPcontrol"
 )
 

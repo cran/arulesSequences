@@ -65,9 +65,6 @@ setMethod("[", signature(x = "sgCMatrix", i = "ANY", j = "ANY", drop = "ANY"),
 
 #
 
-..0L <- 0:0
-..1L <- 1:1
-
 setAs("list", "sgCMatrix",
     function(from) {
         if (!length(from))
@@ -78,8 +75,8 @@ setAs("list", "sgCMatrix",
         names(p) <- NULL
         p <- cumsum(p)
         i <- factor(unlist(from, use.names = FALSE))
-        new("sgCMatrix", p        = c(..0L, p),
-                         i        = c(i) - ..1L,
+        new("sgCMatrix", p        = c(0L, p),
+                         i        = c(i) - 1L,
                          Dim      = c(length(levels(i)), length(p)),
                          Dimnames = list(levels(i), names(from)))
     }
