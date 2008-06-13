@@ -5,9 +5,9 @@
 // some low-level utilities that speed up 
 // operations with sgCMatrix.
 //
-// status: experimental
+// version: 0.1-2
 //
-// ceeboo 2007
+// ceeboo 2007, 2008
 
 SEXP R_rowSums_sgCMatrix(SEXP x) {
     if (!inherits(x, "sgCMatrix"))
@@ -47,7 +47,6 @@ SEXP R_rowSums_sgCMatrix(SEXP x) {
     UNPROTECT(2);
 
     return r;
-
 }
 
 // strict subsets that preserve the
@@ -98,7 +97,7 @@ SEXP R_rowSubset_sgCMatrix(SEXP x, SEXP s) {
 
     px = getAttrib(x, install("p"));
 
-    PROTECT(r = allocVector(VECSXP, 0));
+    PROTECT(r = NEW_OBJECT(MAKE_CLASS("sgCMatrix")));
     setAttrib(r, install("p"), (pr = allocVector(INTSXP, LENGTH(px))));
     setAttrib(r, install("i"), (ir = allocVector(INTSXP, n)));
 
@@ -133,10 +132,6 @@ SEXP R_rowSubset_sgCMatrix(SEXP x, SEXP s) {
 	    SET_VECTOR_ELT(ir, 0, R_NilValue);
     }
 
-    setAttrib(r, install("factors"), allocVector(VECSXP, 0));
-    setAttrib(r, R_ClassSymbol, getAttrib(x, R_ClassSymbol));
-
-    SET_S4_OBJECT(r);
     UNPROTECT(3);
 
     return r;
@@ -176,7 +171,7 @@ SEXP R_colAppend_sgCMatrix(SEXP x, SEXP y, SEXP R_s) {
 
     n = (LOGICAL(R_s)[0] == FALSE) ? 0 : LENGTH(px)-1;	    // seperators
 
-    PROTECT(r = allocVector(VECSXP, 0));
+    PROTECT(r = NEW_OBJECT(MAKE_CLASS("sgCMatrix")));
     setAttrib(r, install("p"), (pr = allocVector(INTSXP, LENGTH(px))));
     setAttrib(r, install("i"), (ir = allocVector(INTSXP, LENGTH(ix)+LENGTH(iy)+n)));
 
@@ -212,8 +207,8 @@ SEXP R_colAppend_sgCMatrix(SEXP x, SEXP y, SEXP R_s) {
 
 	SET_VECTOR_ELT(ir, 0, (s = allocVector(STRSXP, nr+1)));
 	for (k = 0; k < nr; k++)
-	    SET_VECTOR_ELT(s, k, VECTOR_ELT(px, k));
-	SET_VECTOR_ELT(s, k, R_BlankString);
+	    SET_STRING_ELT(s, k, VECTOR_ELT(px, k));
+	SET_STRING_ELT(s, k, R_BlankString);
     }
 
     if (isNull((px = VECTOR_ELT(ix, 1))))
@@ -226,10 +221,6 @@ SEXP R_colAppend_sgCMatrix(SEXP x, SEXP y, SEXP R_s) {
     else
 	setAttrib(ir, R_NamesSymbol, ix);
 
-    setAttrib(r, install("factors"), allocVector(VECSXP, 0));
-    setAttrib(r, R_ClassSymbol, getAttrib(x, R_ClassSymbol));
-
-    SET_S4_OBJECT(r);
     UNPROTECT(1);
 
     return r;
@@ -308,58 +299,7 @@ SEXP R_valid_sgCMatrix(SEXP x) {
     return ScalarLogical(TRUE);
 }
 
-//
-
-SEXP R_recode_sgCMatrix(SEXP x, SEXP s) {
-    if (!inherits(x, "sgCMatrix"))
-	error("'x' not of class sgCMatrix");
-    if (TYPEOF(s) != INTSXP)
-	error("'s' not of storage type integer");
-    int i, j, nr;
-    SEXP r, px, ix, ir;
-
-    nr = INTEGER(getAttrib(x, install("Dim")))[0];
-    if (nr != LENGTH(s))
-	error("the number of rows of 'x' and the lenght of 's' do not conform");
-    nr = 0;
-    for (i = 0; i < LENGTH(s); i++) {
-	j = INTEGER(s)[i];
-	if (j < 1)
-	    error("invalid index");
-	if (j > nr)
-	    nr = j;
-    }
-
-    px = getAttrib(x, install("p"));
-    ix = getAttrib(x, install("i"));
-
-    PROTECT(r = allocVector(VECSXP, 0));
-    setAttrib(r, install("p"), px);
-    setAttrib(r, install("i"), (ir = allocVector(INTSXP, LENGTH(ix))));
-
-    for (i = 0; i < LENGTH(ix); i++)
-	INTEGER(ir)[i] = INTEGER(s)[INTEGER(ix)[i]]-1;
-
-    setAttrib(r, install("Dim"), (ir = allocVector(INTSXP, 2)));
-    INTEGER(ir)[0] = nr;
-    INTEGER(ir)[1] = LENGTH(px)-1;
-
-    setAttrib(r, install("Dimnames"), (ir = allocVector(VECSXP, 2)));
-    ix = getAttrib(x, install("Dimnames"));
-    // fixme
-    SET_VECTOR_ELT(ir, 0, R_NilValue);
-    SET_VECTOR_ELT(ir, 1, VECTOR_ELT(ix, 1));
-
-    setAttrib(r, install("factors"), getAttrib(x, install("factors")));
-    setAttrib(r, R_ClassSymbol, getAttrib(x, R_ClassSymbol));
-
-    SET_S4_OBJECT(r);
-    UNPROTECT(1);
-
-    return r;
-}
-
-// first-order model
+// first-order model (cross-tabulation)
 
 SEXP R_firstOrder_sgCMatrix(SEXP x) {
     if (!inherits(x, "sgCMatrix") && 
@@ -397,7 +337,13 @@ SEXP R_firstOrder_sgCMatrix(SEXP x) {
 	setAttrib(r, R_DimNamesSymbol, (px = allocVector(VECSXP, 2)));
 	SET_VECTOR_ELT(px, 0, ix);
 	SET_VECTOR_ELT(px, 1, ix);
-	// fixme names
+	if (!isNull(ix = getAttrib(ix, R_NamesSymbol))) {
+	    SEXP t;
+	    setAttrib(px, R_NamesSymbol, (t = allocVector(STRSXP, 2)));
+	    // FIXME
+	    SET_STRING_ELT(t, 0, STRING_ELT(ix, 0));
+	    SET_STRING_ELT(t, 1, STRING_ELT(ix, 0));
+	}
     }
 
     UNPROTECT(1);

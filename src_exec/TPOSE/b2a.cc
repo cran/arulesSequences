@@ -17,7 +17,7 @@ int main(int argc, char **argv)
    }
    long flen = lseek(fd, 0, SEEK_END);
    int *ary;
-#ifdef SGI
+#ifndef DEC
    ary = (int *) mmap((char *)NULL, flen,
                           (PROT_WRITE|PROT_READ),
                           MAP_PRIVATE, fd, 0);

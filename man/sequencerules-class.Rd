@@ -9,8 +9,8 @@
 %\alias{c,sequencerules-method}
 \alias{coverage,sequencerules-method}
 %\alias{duplicated,sequencerules-method}
-%\alias{info,sequencerules-method}
-%\alias{info<-,sequencerules-method}
+%\alias{ruleInfo,sequencerules-method}
+%\alias{ruleInfo<-,sequencerules-method}
 %\alias{inspect,sequencerules-method}
 %\alias{labels,sequencerules-method}
 %\alias{length,sequencerules-method}
@@ -51,7 +51,7 @@
     \item{\code{rhs}:}{an object of class \code{\linkS4class{sgCMatrix}}
 	containing a sparse representation of the right-hand sides of the
 	rules (consequent sequences).}
-    \item{\code{info}:}{a data.frame which may contain additional
+    \item{\code{ruleInfo}:}{a data.frame which may contain additional
 	information on a sequence rule.}
     \item{\code{quality}:}{a data.frame containing the quality measures
 	of a sequence rule.}
@@ -76,8 +76,8 @@ Class \code{"\link[arules:associations-class]{associations}"}, directly.
 	sequences.}
     \item{\code{duplicated}}{\code{signature(x = "sequencerules")}}
     \item{\code{labels}}{\code{signature(x = "sequencerules")}}
-    \item{\code{info}}{\code{signature(object = "sequencerules")}}
-    \item{\code{info<-}}{\code{signature(object = "sequencerules")}}
+    \item{\code{ruleInfo}}{\code{signature(object = "sequencerules")}}
+    \item{\code{ruleInfo<-}}{\code{signature(object = "sequencerules")}}
     \item{\code{inspect}}{\code{signature(x = "sequencerules")}}
     \item{\code{labels}}{\code{signature(object = "sequencerules")}}
     \item{\code{length}}{\code{signature(x = "sequencerules")}}

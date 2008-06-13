@@ -2,7 +2,7 @@
 ## sgCMatrix is designed to work with ptree but 
 ## otherwise does not deserve the qualifier Matrix.
 ##
-## ceeboo 2007
+## ceeboo 2007, 2008
 
 # fixme: special cases
 
@@ -102,7 +102,7 @@ setMethod("show", signature(object = "sgCMatrix"),
         cat(object@Dim[1], "x", object@Dim[2],
             "sparse pseudo Matrix of class", class(object), "\n")
         ## fixme
-        invisible(object)
+        invisible(NULL)
     }
 )
 

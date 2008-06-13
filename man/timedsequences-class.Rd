@@ -43,7 +43,7 @@
 	identifiers (column \code{eventID}) and possibly distinct labels.}
     \item{\code{elements}:}{inherited from class \code{\linkS4class{sequences}}.}
     \item{\code{data}:}{inherited from class \code{\linkS4class{sequences}}.}
-    \item{\code{info}:}{inherited from class \code{\linkS4class{sequences}}.}
+    \item{\code{sequenceInfo}:}{inherited from class \code{\linkS4class{sequences}}.}
     \item{\code{quality}:}{inherited from class \code{\linkS4class{sequences}},
 	usually empty.}
   }
@@ -89,8 +89,8 @@
     Coercion from an object of class \code{\linkS4class{sequences}} is
     not provided as this class does not contain timing information.
 
-    FIXME currently objects of this class cannot be used in sequence
-    mining, i.e. are for analysis only.
+    FIXME currently objects of this class cannot be used directly in
+    sequence mining with \code{\link{cspade}}.
 }
 \seealso{
     Class

@@ -6,17 +6,17 @@
 ## class "transactions". hence the class name serves as
 ## a blocker.
 ##
-## ceeboo 2007
+## ceeboo 2007, 2008
 
 setClass("sequences",
     representation(
-        elements = "itemsets",
-        data     = "sgCMatrix",
-        info     = "data.frame"
+        elements     = "itemsets",
+        data         = "sgCMatrix",
+        sequenceInfo = "data.frame"
     ),
     contains = "associations",
 
-    prototype(quality = data.frame(), info = data.frame()),
+    prototype(quality = data.frame(), sequenceInfo = data.frame()),
 
     validity = function(object) {
         if (dim(object@elements@items)[1] != dim(object@data)[1])
@@ -24,9 +24,9 @@ setClass("sequences",
         if (length(object@quality) &&
             dim(object@quality)[1] != dim(object@data)[2])
             return("slots 'data' and 'quality' do not conform")
-        if (length(object@info) &&
-            dim(object@info)[1] != dim(object@data)[2])
-            return("slots 'data' and 'info' do not conform")
+        if (length(object@sequenceInfo) &&
+            dim(object@sequenceInfo)[1] != dim(object@data)[2])
+            return("slots 'data' and 'sequenceInfo' do not conform")
 
         TRUE
     }
@@ -79,9 +79,8 @@ setMethod("size", signature(x = "sequences"),
     }
 ) 
 
-if (!isGeneric("ritems")) {
-    setGeneric("ritems", function(x, ...) standardGeneric("ritems"))
-}
+setGeneric("ritems",
+    function(x, ...) standardGeneric("ritems"))
 
 setMethod("ritems", signature(x = "sequences"),
     function(x, type = c("min","max"), itemsets = FALSE) {
@@ -123,9 +122,8 @@ setMethod("itemFrequency", signature(x = "sequences"),
     }
 )
 
-if (!isGeneric("itemTable")) {
-    setGeneric("itemTable", function(x, ...) standardGeneric("itemTable"))
-}
+setGeneric("itemTable",
+    function(x, ...) standardGeneric("itemTable"))
 
 setMethod("itemTable", signature(x = "sequences"),
     function(x, itemsets = FALSE) {
@@ -157,8 +155,8 @@ setMethod("[", signature(x = "sequences", i = "ANY", j = "ANY", drop = "ANY"),
         if (!missing(i)) {
             if (length(x@quality))
                 x@quality <- x@quality[i,, drop = FALSE]
-            if (length(x@info))
-                x@info <- x@info[i,, drop = FALSE]
+            if (length(x@sequenceInfo))
+                x@sequenceInfo <- x@sequenceInfo[i,, drop = FALSE]
             x@data <- x@data[,i]
         }
         if (reduce) {
@@ -211,9 +209,9 @@ setAs("list", "sequences",
                               i   = i - 1L,
                               Dim = c(s@Dim[2], length(p)))
 
-        new("sequences", elements = e,
-                         data     = s,
-                         info     = data.frame(sequenceID = names(from)))
+        new("sequences", elements     = e,
+                         data         = s,
+                         sequenceInfo = data.frame(sequenceID = names(from)))
     }
 )
 
@@ -230,7 +228,7 @@ setMethod("LIST", signature(from = "sequences"),
         i <- .Call("R_asList_ngCMatrix", from@elements@items@data, d)
         i <- .Call("R_asList_ngCMatrix", from@data, i)
         if (decode)
-            names(i) <- from@info$sequenceID
+            names(i) <- from@sequenceInfo$sequenceID
         i
     }
 )
@@ -276,8 +274,8 @@ setAs("sequences", "data.frame",
         d <- data.frame(sequence = labels(from))
         if (length(from@quality))
             d <- cbind(d, from@quality)
-        if (length(from@info))
-            d <- cbind(d, from@info)
+        if (length(from@sequenceInfo))
+            d <- cbind(d, from@sequenceInfo)
         d
     }
 )
@@ -346,20 +344,18 @@ setMethod("inspect", signature(x = "sequences"),
 
 ##
 
-if (!isGeneric("info")) {
-    setGeneric("info", function(object, ...) standardGeneric("info"))
-}
+setGeneric("sequenceInfo",
+    function(object, ...) standardGeneric("sequenceInfo"))
 
-setMethod("info", signature(object = "sequences"),
-    function(object) object@info)
+setMethod("sequenceInfo", signature(object = "sequences"),
+    function(object) object@sequenceInfo)
 
-if (!isGeneric("info<-")) {
-    setGeneric("info<-", function(object, value) standardGeneric("info<-"))
-}
+setGeneric("sequenceInfo<-",
+    function(object, value) standardGeneric("sequenceInfo<-"))
 
-setReplaceMethod("info", signature(object = "sequences"),
+setReplaceMethod("sequenceInfo", signature(object = "sequences"),
     function(object, value) {
-        object@info <- value
+        object@sequenceInfo <- value
         validObject(object)
         object
     }
@@ -375,9 +371,8 @@ setReplaceMethod("itemInfo", signature(object = "sequences"),
     }
 )
 
-if (!isGeneric("itemsets")) {
-    setGeneric("itemsets", function(x, ...) standardGeneric("itemsets"))
-}
+setGeneric("itemsets",
+    function(x, ...) standardGeneric("itemsets"))
 
 setMethod("itemsets", signature(x = "sequences"),
     function(x) x@elements)
@@ -423,7 +418,8 @@ setMethod("summary", signature(object = "sequences"),
                                  elements = s,
                                  sizes    = table(sizes = size(object, "size")),
                                  lengths  = table(lengths = size(object, "length")),
-                                 quality  = q)
+                                 quality  = q,
+                                 info     = object@info)
     }
 )
 
@@ -445,8 +441,16 @@ setMethod("show", signature(object = "summary.sequences"),
 
             cat("\nsummary of quality measures:\n")
             print(object@quality)
+            
+            if (length(object@info)) {
+                info <- object@info
+                if (is.language(info$data))
+                    info$data <- deparse(info$data)
+                cat("\nmining info:\n")
+                print(data.frame(info, row.names = ""))
+            }
         }
-        invisible(object)
+        invisible(NULL)
     }
 )
 
@@ -456,12 +460,18 @@ setMethod("show", signature(object = "summary.sequences"),
 
 setMethod("is.maximal", signature(x = "sequences"),
     function(x) {
-        k <- order(.Call("R_colSums_ngCMatrix", x@elements@items@data),
-                   .Call("R_pnindex", x@elements@items@data, NULL, FALSE))
-        x@elements <- x@elements[k]
-        k[k] <- seq(length(k))
-        x@data <- .Call("R_recode_sgCMatrix", x@data, k)
-        .Call("R_pnscount", x@data, x@data, x@elements@items@data, FALSE) == 1
+        u <- unique(x)
+        k <- order(.Call("R_colSums_ngCMatrix", u@elements@items@data),
+                   .Call("R_pnindex", u@elements@items@data, NULL, FALSE))
+        if (any(k != seq_len(length(k)))) {
+            u@elements <- u@elements[k]
+            k[k] <- seq_len(length(k))
+            u@data <- .Call("R_recode_ngCMatrix", u@data, k)
+        }
+        m <- .Call("R_pnscount",
+                   u@data, u@data, u@elements@items@data, FALSE) == 1
+        i <- match(x, u)
+        m[i]
     }
 )
 
@@ -489,7 +499,7 @@ setMethod("match", signature(x = "sequences", table = "sequences"),
             table@data@Dim[1] <- table@data@Dim[1] + length(n)
         }
         if (any(k != seq_len(length(k))))
-            x@data <- .Call("R_recode_sgCMatrix", x@data, k)
+            x@data <- .Call("R_recode_ngCMatrix", x@data, k)
         if (x@data@Dim[1] <  table@data@Dim[1])
             x@data@Dim[1] <- table@data@Dim[1]
         i <- .Call("R_pnindex", table@data, x@data, FALSE)
@@ -529,9 +539,8 @@ setMethod("%ain%", signature(x = "sequences", table = "character"),
     }
 )
 
-if (!isGeneric("%ein%")) {
-    setGeneric("%ein%", function(x, table) standardGeneric("%ein%"))
-}
+setGeneric("%ein%",
+    function(x, table) standardGeneric("%ein%"))
 
 setMethod("%ein%", signature(x = "sequences", table = "character"),
     function(x, table) {
@@ -569,8 +578,15 @@ setMethod("c", signature(x = "sequences"),
         for (y in args) {
             if (!is(y, "sequences"))
                 stop("can only combine sequences")
+            info <- y@info
+            if (length(info)) {
+                k <- match(names(info), names(x@info))
+                k <- mapply(identical, info, x@info[k])
+                info <- info[k]
+            }
+            x@info <- info
             x <- .combineMeta(x, y, "quality")
-            x <- .combineMeta(x, y, "info")
+            x <- .combineMeta(x, y, "sequenceInfo")
             k <- match(y@elements, x@elements)
             n <- which(is.na(k))
             if (length(n)) {
@@ -579,7 +595,7 @@ setMethod("c", signature(x = "sequences"),
                 x@elements <- c(x@elements, y@elements[n])
             }
             if (any(k != seq_len(length(k))))
-                y@data <- .Call("R_recode_sgCMatrix", y@data, k)
+                y@data <- .Call("R_recode_ngCMatrix", y@data, k)
             if (y@data@Dim[1] <  x@data@Dim[1])
                 y@data@Dim[1] <- x@data@Dim[1]
             x@data <- .Call("R_cbind_ngCMatrix", x@data, y@data)
@@ -596,7 +612,7 @@ setMethod("subset", signature(x = "sequences"),
         if (missing(subset))
             return(x)
         i <- eval(substitute(subset),
-                  envir = c(x@quality, x@info))
+                  envir = c(x@quality, x@sequenceInfo))
         x[i]
     }
 )

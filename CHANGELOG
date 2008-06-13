@@ -1,0 +1,30 @@
+
+NEWS/ChangeLog for arulesSequences
+
+0.1-4	2008-06-13
+
+    o Adapted to arules-0.6-6.
+
+    o Due to a change in arules the info generic had to be
+      replaced by more specific generics.
+
+    o cspade now has a tmpdir argument and provides disk
+      usage information.
+
+    o Added support counting for sequences.
+
+    o Added a similarity generic and an implementation
+      for sequences.
+
+    o We now restrict the OS-type explicitly to Unix as the
+      C functions read, write, and lseek do not work
+      properly under Windoze.
+
+0.1-3	2008-04-29
+
+    o Adapted to R-2.7.0.
+
+0.1-1	2007-06-27
+
+    o Initial release on R-2.5.1.
+

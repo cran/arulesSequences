@@ -1,6 +1,5 @@
 useDynLib(arulesSequences)
 
-#importFrom("Matrix", "summary")
 import("arules")
 
 export(
@@ -30,11 +29,11 @@ exportMethods(
     "duplicated",
     "firstOrder",
     "format",
-    "info",
-    "info<-",
     "initialize",
     "inspect",
     "is.maximal",
+    "is.subset",
+    "is.superset",
     "itemFrequency",
     "itemInfo",
     "itemInfo<-",
@@ -51,10 +50,16 @@ exportMethods(
     "ritems",
     "rhs",
     "ruleInduction",
-    "summary",
+    "ruleInfo",
+    "ruleInfo<-",
+    "sequenceInfo",
+    "sequenceInfo<-",
+    "similarity",
     "size",
     "show",
     "subset",
+    "summary",
+    "support",
     "times",
     "timeFrequency",
     "timeInfo",

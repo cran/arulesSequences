@@ -42,8 +42,8 @@ data.frame(itemsets = itemLabels(s2, itemsets = TRUE),
 
 as(s2, "data.frame")
 
-info(s2) <- info(s2)
-info(s2)
+sequenceInfo(s2) <- sequenceInfo(s2)
+sequenceInfo(s2)
 
 itemInfo(s2) <- itemInfo(s2)
 itemInfo(s2)
@@ -84,6 +84,10 @@ s <- unique(c(s1,s2))           # uses duplicated
 match(s1, s)
 all.equal(s1, s)
 
+all.equal(s1, c(s[1], s1[-1]))  # test info
+
+all.equal(quality(s1)$support, support(s1, zaki))
+
 ## rules
 
 r1 <- ruleInduction(s1, confidence = 0.5)
@@ -110,6 +114,8 @@ all.equal(r1, r)
 
 s <- as(r2, "sequences")
 match(s, s2)
+
+all.equal(r1, c(r1[1], r1[-1])) # test info
 
 ## timed
 

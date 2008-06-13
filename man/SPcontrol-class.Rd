@@ -67,7 +67,7 @@
 
     The value of \code{memsize} implicitly determines the number of
     database partitions used unless overridden by \code{numpart}.
-    Usually,the more partitions the less the runtime in the mining stage.
+    Usually, the more partitions the less the runtime in the mining stage.
     However, there may be a trade-off with preprocessing time.
 
     If \code{summary = TRUE} output on the console from the system

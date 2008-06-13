@@ -62,14 +62,14 @@
 
     For \code{dim} and class \code{sequences} a vector of length three
     containing the number of sequences and the dimension of the reference
-    set of distinct itemsets. For class \code{sequences} the fourth
+    set of distinct itemsets. For class \code{timedsequences} the fourth
     element contains the number of distinct event times.
 
     For \code{length} a scalar value.
 }
 \author{Christian Buchta}
 \note{
-    For efficiency reasons, the the reference set of distinct itemsets can
+    For efficiency reasons, the reference set of distinct itemsets can
     be larger than the set actually referenced by a collection of sequences.
     Thus, the counts of some items or itemsets may be zero.
 

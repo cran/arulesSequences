@@ -10,12 +10,12 @@ mkdir $cwd/exec
 
 ( cd $cwd/src_exec/TPOSE/; 
   make; 
-  mv -f makebin getconf exttpose  $cwd/exec/
+  mv makebin getconf exttpose  $cwd/exec/
 )
 
 ( cd $cwd/src_exec/cSPADE/; 
   make; 
-  mv -f spade $cwd/exec/
+  mv spade $cwd/exec/
 )
 
 ###

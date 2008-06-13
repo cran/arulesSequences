@@ -26,7 +26,7 @@
 int pruning_type = NOPRUNING;
 
 long MEMUSED = 0;
-long AVAILMEM = 128*MBYTE;
+long AVAILMEM = 32*MBYTE;
 char dataf[300];
 char idxf[300];
 char conf[300];
@@ -68,7 +68,7 @@ int postpruning =0;
 
 int max_seq_len = 100;
 int max_iset_len = 100;
-char *lenopts[]={
+const char *lenopts[]={
 #define SEQ 0
    "s",
 #define ISET 1
@@ -125,8 +125,10 @@ void parse_args(int argc, char **argv)
    extern int optind;
    int c;
    
-   if (argc < 2)
-      cout << "usage: seq -i<infile> -o<outfile> -s<support>\n";
+   if (argc < 2) {
+      cout << "usage: spade [OPTION]... -i<infile> -o<outfile> -s<support>\n";
+      exit(EXIT_FAILURE);
+   }
    else{
       while ((c=getopt(argc,argv,"a:bce:fhi:l:m:Mors:t:u:v:w:x:yz:Z:"))!=-1){
          switch(c){

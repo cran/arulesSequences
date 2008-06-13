@@ -1,7 +1,7 @@
-CC  = g++
-#CC = CC -DSGI -no_auto_include
-#CFLAGS  = -g -O3 -Wno-deprecated
-CFLAGS  = -O3 -Wno-deprecated
+#CXX = g++
+#CXXFLAGS = -DSGI -no_auto_include
+#CXXFLAGS = -g -O3 -Wno-deprecated
+CXXFLAGS = -O3 -Wno-deprecated
 HEADER  = Array.h Itemset.h Lists.h Eqclass.h extl2.h partition.h\
 	maxgap.h spade.h
 OBJS	= Itemset.o Array.o Eqclass.o Lists.o extl2.o partition.o\
@@ -17,11 +17,11 @@ clean:
 	rm -rf *~ *.o $(TARGET)
 
 spade: sequence.cc $(OBJS) $(HEADER) 
-	$(CC) $(CFLAGS) -o spade sequence.cc $(OBJS) $(LIBS)
+	$(CXX) $(CXXFLAGS) -o spade sequence.cc $(OBJS) $(LIBS)
 
 
 .cc.o:
-	$(CC) $(CFLAGS) -c $<
+	$(CXX) $(CXXFLAGS) -c $<
 
 # dependencies
 # $(OBJS): $(HFILES)

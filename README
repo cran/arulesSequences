@@ -25,7 +25,7 @@ ISSUES
 * we need somthing like all.equal that checks all
   slots but accounts for permutations of labels.
 
-* add a small data set with repeations of events
+* add a small data set with repetitions of events
   for testing.
 
 * provide read_sequences for symbolic sequences and

@@ -12,10 +12,12 @@
 %\alias{c,sequences-method}
 %\alias{dim,sequences-method}
 %\alias{duplicated,sequences-method}
-%\alias{info,sequences-method}
-%\alias{info<-,sequences-method}
+%\alias{sequenceInfo,sequences-method}
+%\alias{sequenceInfo<-,sequences-method}
 %\alias{inspect,sequences-method}
 \alias{is.maximal,sequences-method}
+%\alias{is.subset,sequences-method}
+%\alias{is.superset,sequences-method}
 %\alias{itemFrequency,sequences-method}
 %\alias{itemInfo,sequences-method}
 %\alias{itemInfo<-,sequences-method}
@@ -37,6 +39,7 @@
 %\alias{size,sequences-method}
 \alias{summary.sequences-class}
 \alias{summary,sequences-method}
+%\alias{support,sequences-method}
 %\alias{unique,sequences-method}
 %\alias{subset,sequences-method}
 \title{Class "sequences" --- Collections of Sequences}
@@ -59,7 +62,7 @@
     \item{\code{data}:}{an object of class \code{\linkS4class{sgCMatrix}}
 	containing a sparse representation of ordered \emph{lists} 
 	(collections of) indexes into the unique elements.}
-    \item{\code{info}:}{a data frame which may contain additional
+    \item{\code{sequenceInfo}:}{a data frame which may contain additional
 	information on a sequence.}
     \item{\code{quality}:}{a data.frame containing the quality measures
 	of a sequence.}
@@ -85,12 +88,14 @@
 	\item{\code{LIST}}{\code{signature(x = "sequences")}}
 	\item{\code{match}}{\code{signature(x = "sequences")}}
 	\item{\code{nitems}}{\code{signature(x = "sequences")}}
-	\item{\code{info}}{\code{signature(object = "sequences")}}
-	\item{\code{info<-}}{\code{signature(object = "sequences")}}
+	\item{\code{sequenceInfo}}{\code{signature(object = "sequences")}}
+	\item{\code{sequenceInfo<-}}{\code{signature(object = "sequences")}}
 	\item{\code{inspect}}{\code{signature(x = "sequences")}}
 	\item{\code{is.maximal}}{\code{signature(x = "sequences")};
 	    returns a logical vector indicating if a sequence is not a
 	    subsequence of any other sequence in \code{x}.}
+	\item{\code{is.subset}}{\code{signature(x = "sequences")}}
+	\item{\code{is.superset}}{\code{signature(x = "sequences")}}
 	\item{\code{itemFrequency}}{\code{signature(x = "sequences")}}
 	\item{\code{itemInfo}}{\code{signature(object = "sequences")}}
 	\item{\code{itemInfo<-}}{\code{signature(object = "sequences")}}
@@ -105,6 +110,7 @@
 	\item{\code{size}}{\code{signature(x = "sequences")}}
 	\item{\code{subset}}{\code{signature(x = "sequences")}}
 	\item{\code{summary}}{\code{signature(object = "sequences")}}
+	\item{\code{support}}{\code{signature(x = "sequences")}}
 	\item{\code{unique}}{\code{signature(x = "sequences")}}
     }
 }

@@ -1,0 +1,60 @@
+
+R version 2.7.0 Patched (2008-05-18 r45719)
+Copyright (C) 2008 The R Foundation for Statistical Computing
+ISBN 3-900051-07-0
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> 
+> ### ceeboo 2008
+> 
+> library(arulesSequences)
+Loading required package: arules
+Loading required package: Matrix
+Loading required package: lattice
+
+Attaching package: 'Matrix'
+
+
+	The following object(s) are masked from package:stats :
+
+	 xtabs 
+
+
+Attaching package: 'arules'
+
+
+	The following object(s) are masked from package:base :
+
+	 %in% 
+
+> 
+> data(zaki)
+> 
+> arulesSequences:::makebin(zaki, "zaki")
+[1] TRUE
+> arulesSequences:::write_cspade(zaki, "zaki.asc")
+> 
+> exe <- system.file("exec", "makebin", package = "arulesSequences")
+> system(paste(exe, "zaki.asc makebin.data"))
+> 
+> system("cmp zaki.data makebin.data")
+> 
+> exe <- system.file("exec", "getconf", package = "arulesSequences")
+> system(paste(exe, "-i makebin -o makebin"))
+CONF 4 9 2.500000 2.700000 10 1 4 0.781025 4
+> 
+> system("cmp zaki.conf makebin.conf")
+> 
+> ###
+> 

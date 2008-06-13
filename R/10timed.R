@@ -5,7 +5,7 @@
 ## class transactions but the latter can contain
 ## additional event information.
 ##
-## ceeboo 2007
+## ceeboo 2007, 2008
 
 setClass("timedsequences",
     representation(
@@ -83,9 +83,9 @@ setAs("transactions", "timedsequences",
                               i   = s - 1L,
                               Dim = c(length(e), length(p)))
 
-        s <- new("sequences", data     = s,
-                              elements = e,
-                              info     = n)
+        s <- new("sequences", data         = s,
+                              elements     = e,
+                              sequenceInfo = n)
 
         t <- new("ngCMatrix", p   = s@data@p,
                               i   = c(t) - 1L,
@@ -100,17 +100,14 @@ setAs("transactions", "timedsequences",
 setMethod("dim", signature(x = "timedsequences"),
     function(x) c(x@data@Dim[2], x@elements@items@data@Dim, x@time@Dim[1])) 
 
-if (!isGeneric("timeInfo")) {
-    setGeneric("timeInfo", function(object, ...) standardGeneric("timeInfo"))
-}
+setGeneric("timeInfo",
+    function(object, ...) standardGeneric("timeInfo"))
 
 setMethod("timeInfo", signature(object = "timedsequences"),
     function(object) object@timeInfo)
 
-if (!isGeneric("timeInfo<-")) {
-    setGeneric("timeInfo<-", 
-        function(object, value) standardGeneric("timeInfo<-"))
-}
+setGeneric("timeInfo<-", 
+    function(object, value) standardGeneric("timeInfo<-"))
 
 setReplaceMethod("timeInfo", signature(object = "timedsequences"),
     function(object, value) {
@@ -120,9 +117,8 @@ setReplaceMethod("timeInfo", signature(object = "timedsequences"),
     }
 )
 
-if (!isGeneric("times")) {
-    setGeneric("times", function(x, ...) standardGeneric("times"))
-}
+setGeneric("times",
+    function(x, ...) standardGeneric("times"))
 
 .timefun <- function(type)
     switch(type,
@@ -152,10 +148,8 @@ setMethod("times", signature(x = "timedsequences"),
     }
 )
 
-if (!isGeneric("timeFrequency")) {
-    setGeneric("timeFrequency", 
-        function(x, ...) standardGeneric("timeFrequency"))
-}
+setGeneric("timeFrequency", 
+    function(x, ...) standardGeneric("timeFrequency"))
 
 # note: (1) for span, mingap, and maxgap the total number is 
 #       the number of sequences minus the number of sequences
@@ -180,9 +174,8 @@ setMethod("timeFrequency", signature(x = "timedsequences"),
     }
 )
 
-if (!isGeneric("timeTable")) {
-    setGeneric("timeTable", function(x, ...) standardGeneric("timeTable"))
-}
+setGeneric("timeTable",
+    function(x, ...) standardGeneric("timeTable"))
 
 setMethod("timeTable", signature(x = "timedsequences"),
     function(x, type = c("times","gaps", "mingap", "maxgap", "span"), itemsets = FALSE) {
@@ -233,7 +226,7 @@ setMethod("LIST", signature(from = "timedsequences"),
             i
         }, t, i, SIMPLIFY = FALSE)
         if (decode)
-            names(i) <- from@info$sequenceID
+            names(i) <- from@sequenceInfo$sequenceID
         i
     }
 )
@@ -263,7 +256,7 @@ setMethod("inspect", signature(x = "timedsequences"),
         t <- .Call("R_asList_ngCMatrix", x@time, x@timeInfo$labels)
         t <- unlist(t)
 
-        p <- info(x)
+        p <- sequenceInfo(x)
 
         q <- quality(x)
         x <- LIST(x, decode)
@@ -334,10 +327,10 @@ setMethod("inspect", signature(x = "timedsequences"),
 
 setClass("summary.timedsequences", 
     representation(
-        times    = "integer",
-        info     = "data.frame",
-        itemInfo = "data.frame",
-        timeInfo = "data.frame"
+        times        = "integer",
+        sequenceInfo = "data.frame",
+        itemInfo     = "data.frame",
+        timeInfo     = "data.frame"
     ),
     contains = "summary.sequences"
 )
@@ -353,10 +346,10 @@ setMethod("summary", signature(object = "timedsequences"),
         t <- sort(t, decreasing = TRUE)
         t <- c(head(t, m), "(Other)" = sum(tail(t, -m)))
  
-        new("summary.timedsequences", times    = t,
-                                      info     = head(info(object), 3),
-                                      itemInfo = head(itemInfo(object), 3),
-                                      timeInfo = head(timeInfo(object), 3),
+        new("summary.timedsequences", times        = t,
+                                      sequenceInfo = head(sequenceInfo(object), 3),
+                                      itemInfo     = head(itemInfo(object), 3),
+                                      timeInfo     = head(timeInfo(object), 3),
         ## FIXME R-2.7.0 bug
            selectMethod("summary","sequences")(as(object, "sequences"), maxsum))
     }
@@ -394,12 +387,12 @@ function(object) {
                 print(object@itemInfo)
             }
 
-            if (length(info)) {
+            if (length(sequenceInfo)) {
                 cat("\nincludes extended sequence information - examples:\n")
-                print(object@info)
+                print(object@sequenceInfo)
             }
         }
-        invisible(object)
+        invisible(NULL)
     }
 )
 
@@ -495,15 +488,14 @@ setMethod("c", signature(x = "timedsequences"),
 
 ##
 
-if (!isGeneric("timesets")) {
-    setGeneric("timesets", function(object, ...) standardGeneric("timesets"))
-}
+setGeneric("timesets",
+    function(object, ...) standardGeneric("timesets"))
 
 setMethod("timesets", signature(object = "timedsequences"),
     function(object)
         new("itemMatrix", data        = object@time,
                           itemInfo    = object@timeInfo,
-                          itemsetInfo = object@info)
+                          itemsetInfo = object@sequenceInfo)
 )
 
 setAs("timedsequences", "transactions",
@@ -512,7 +504,8 @@ setAs("timedsequences", "transactions",
         i <- from@elements@items[i]
 
         t <- from@time@i + 1L
-        t <- data.frame(sequenceID = rep(from@info$sequenceID, size(from)),
+        t <- data.frame(sequenceID = rep(from@sequenceInfo$sequenceID,
+                                         size(from)),
                         eventID    = from@timeInfo$labels[t])
 
         new("transactions", as(i, "itemMatrix"),
@@ -522,10 +515,8 @@ setAs("timedsequences", "transactions",
 
 ##
 
-if (!isGeneric("firstOrder")) {
-    setGeneric("firstOrder", 
-        function(x, ...) standardGeneric("firstOrder"))
-}
+setGeneric("firstOrder",
+    function(x, ...) standardGeneric("firstOrder"))
 
 ## fixme
 setMethod("firstOrder", signature(x = "timedsequences"),

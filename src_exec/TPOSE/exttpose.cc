@@ -26,6 +26,8 @@ char idxfn[300];
 char inconfn[300];
 char it2fn[300];
 char seqfn[300];
+			// ceeboo 2008
+char tmpfn[300];	// template for temporary files
 double MINSUP_PER = 0.0;
 int MINSUPPORT = 0;
 int do_invert = 1;
@@ -55,8 +57,10 @@ void parse_args(int argc, char **argv)
    extern char * optarg;
    int c;
    
-   if (argc < 2)
-      cout << "usage: assocFB -i<infile> -o<outfile>\n";
+   if (argc < 2) {
+      cout << "usage: exttpose [OPTION]... -i<infile> -o<outfile>\n";
+      exit(EXIT_FAILURE);
+   }
    else{
       while ((c=getopt(argc,argv,"i:o:p:s:a:dvlfm:x"))!=-1){
          switch(c){
@@ -69,6 +73,7 @@ void parse_args(int argc, char **argv)
             sprintf(idxfn, "%s.idx", optarg);
             sprintf(it2fn, "%s.2it", optarg);
             sprintf(seqfn, "%s.2seq", optarg);
+	    sprintf(tmpfn, "%s.tmp", optarg);
             break;
          case 'p': //number of partitions for inverted dbase
             num_partitions = atoi(optarg);
@@ -723,13 +728,16 @@ void tpose()
    if (do_l2){
       seconds(t1);
       int seqfd, isetfd;
+      char tmpseq[300];
+      char tmpiset[300];
       if (use_seq){
-         if ((seqfd = open("tmpseq", (O_RDWR|O_CREAT|O_TRUNC), 0666)) < 0){
+	 sprintf(tmpseq, "%sseq", tmpfn);
+         if ((seqfd = open(tmpseq, (O_RDWR|O_CREAT|O_TRUNC), 0666)) < 0){
             perror("Can't open out file");
             exit (errno);      
          }
       }
-      
+      sprintf(tmpiset, "%siset", tmpfn);
       if ((isetfd = open("tmpiset", (O_RDWR|O_CREAT|O_TRUNC), 0666)) < 0){
          perror("Can't open out file");
          exit (errno);      
@@ -859,8 +867,8 @@ void tpose()
 
       fprintf(fout, " F2stats = [ %d %d %f ]", l2cnt, seqs, l2time);
       
-      if (use_seq) unlink("tmpseq");
-      unlink("tmpiset");
+      if (use_seq) unlink(tmpseq);
+      unlink(tmpiset);
       delete [] offsets;
       delete [] itcnt2;
       if (use_seq) delete [] seq2;

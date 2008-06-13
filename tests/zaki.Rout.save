@@ -1,13 +1,11 @@
 
-R version 2.6.2 Patched (2008-03-24 r44912)
+R version 2.7.0 Patched (2008-05-09 r45655)
 Copyright (C) 2008 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
 Type 'license()' or 'licence()' for distribution details.
-
-  Natural language support but running in an English locale
 
 R is a collaborative project with many contributors.
 Type 'contributors()' for more information and
@@ -30,7 +28,6 @@ Attaching package: 'Matrix'
 
 	 xtabs 
 
-** fixing ngCMatrix validation
 
 Attaching package: 'arules'
 
@@ -72,11 +69,11 @@ bfstype : FALSE
 verbose :  TRUE
 summary : FALSE
 
-preprocessing ... 1 partition(s) [0.19s]
-mining transactions ... [0.015s]
-reading sequences ... [0.31s]
+preprocessing ... 1 partition(s), 0 MB [0.4s]
+mining transactions ... 0 MB [0.013s]
+reading sequences ... [0.045s]
 
-total elapsed time: 0.512s
+total elapsed time: 0.46s
 > s1
 set of 18 sequences 
 > s2 <- cspade(zaki, parameter = list(support = 0.4, maxsize = 2, maxlen = 2))
@@ -126,6 +123,10 @@ summary of quality measures:
  Mean   :0.6528  
  3rd Qu.:0.7500  
  Max.   :1.0000  
+
+ mining info:
+  data ntransactions nsequences support
+  zaki            10          4     0.4
 > inspect(s1)
     items support 
   1 <{A}>    1.00 
@@ -211,8 +212,8 @@ summary of quality measures:
 13   <{F},{A}>    0.50
 14 <{B,F},{A}>    0.50
 > 
-> info(s2) <- info(s2)
-> info(s2)
+> sequenceInfo(s2) <- sequenceInfo(s2)
+> sequenceInfo(s2)
 NULL data frame with 0 rows
 > 
 > itemInfo(s2) <- itemInfo(s2)
@@ -343,9 +344,14 @@ itemsets 1
 > match(s1, s)
  [1]  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18
 > all.equal(s1, s)
-[1] "Attributes: < Component 2: Modes: S4, list >"
-[2] "Attributes: < Component 2: Lengths: 1, 0 >"  
-> 
+[1] TRUE
+>
+> all.equal(s1, c(s[1], s1[-1]))  # test info
+[1] TRUE
+>
+> all.equal(quality(s1)$support, support(s1, zaki))
+[1] TRUE
+>
 > ## rules
 > 
 > r1 <- ruleInduction(s1, confidence = 0.5)
@@ -380,6 +386,10 @@ summary of quality measures:
  Mean   :0.5   Mean   :0.850   Mean   :0.850  
  3rd Qu.:0.5   3rd Qu.:1.000   3rd Qu.:1.000  
  Max.   :0.5   Max.   :1.000   Max.   :1.000  
+
+mining info:
+ data ntransactions nsequences support confidence
+ zaki            10          4     0.4        0.5
 > inspect(r1)
     lhs      rhs   support confidence lift 
   1 <{D}> => <{F}>     0.5        1.0  1.0 
@@ -439,14 +449,15 @@ summary of quality measures:
 > s <- as(r2, "sequences")
 > match(s, s2)
 [1]  7  8 10 11 12 13 14
+>
+> all.equal(r1, c(r1[1], r1[-1])) # test info
+[1] TRUE
 > 
 > ## timed
 > 
 > z <- as(zaki, "timedsequences")
 > all.equal(z, c(z[1], z[-1]))
-[1] "Attributes: < Component 2: Modes: S4, list >"
-[2] "Attributes: < Component 2: Lengths: 1, 0 >"  
-[3] "Attributes: < Component 6: Modes: S4, list >"
+[1] TRUE
 > 
 > ## fixme: different orders of item labels
 > #all.equal(z, c(z[1,reduce=TRUE], z[-1,reduce=TRUE]))

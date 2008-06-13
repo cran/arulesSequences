@@ -1,11 +1,13 @@
 \name{info-methods}
 \docType{methods}
-\alias{info}
-\alias{info,sequences-method}
-\alias{info<-}
-\alias{info<-,sequences-method}
-\alias{info,sequencerules-method}
-\alias{info<-,sequencerules-method}
+\alias{sequenceInfo}
+\alias{sequenceInfo,sequences-method}
+\alias{sequenceInfo<-}
+\alias{sequenceInfo<-,sequences-method}
+\alias{ruleInfo}
+\alias{ruleInfo,sequencerules-method}
+\alias{ruleInfo<-}
+\alias{ruleInfo<-,sequencerules-method}
 \alias{itemInfo}
 \alias{itemInfo,sequences-method}
 \alias{itemInfo<-}
@@ -17,8 +19,11 @@
 
 \title{Get/Set Object Information}
 \description{
-    \code{info} gets or sets information on the elements of a collection
-    of sequences or sequence rules.
+    \code{sequenceInfo} gets or sets information on the elements of a
+    collection of sequences
+    
+    \code{ruleInfo} gets or sets information on the elements of a
+    collection of sequence rules.
 
     \code{itemInfo} gets or sets information on the set of distinct items
     associated with a collection of sequences.
@@ -27,15 +32,15 @@
     collection of timed sequences.
 }
 \usage{
-\S4method{info}{sequences}(object)
+\S4method{sequenceInfo}{sequences}(object)
 
 ## S4 method for signature 'sequences':
-info(object) <- value
+sequenceInfo(object) <- value
 
-\S4method{info}{sequencerules}(object)
+\S4method{ruleInfo}{sequencerules}(object)
 
 ## S4 method for signature 'sequencerules':
-info(object) <- value
+ruleInfo(object) <- value
 
 \S4method{itemInfo}{sequences}(object)
 
@@ -55,7 +60,8 @@ timeInfo(object) <- value
 }
 %\details{}
 \value{
-    For method \code{info} a data frame of information on and
+    For method \code{sequenceInfo}
+    and method \code{ruleInfo} a data frame of information on and
     corresponding with the elements of \code{object}.
 
     For method \code{itemInfo} a data frame of information on and
@@ -87,8 +93,8 @@ timeInfo(object) <- value
 example(ruleInduction, package = "arulesSequences")
 
 ## empty
-info(s2) <- info(s2)
-info(r2) <- info(r2)
+sequenceInfo(s2) <- sequenceInfo(s2)
+ruleInfo(r2) <- ruleInfo(r2)
 
 ## item info
 itemInfo(s2)

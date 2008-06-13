@@ -23,7 +23,7 @@
     Class
     \code{\link[arules:transactions-class]{transactions}},
     \code{\linkS4class{sequences}},
-    function \
+    function  
     \code{\link{cspade}}.
 }
 \examples{

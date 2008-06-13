@@ -2,17 +2,18 @@
 ##
 ## data interfaces to cSPADE
 ##
-## ceeboo 2007
-
-## fixme: truncates doubles
+## ceeboo 2007, 2008
 
 .as_integer <- function(x) {
-    if (typeof(x) == "integer")
-        return(x)
-    x <- factor(x)
-    l <- suppressWarnings(as.integer(levels(x)))
-    if (!any(is.na(l)))
-        x <- l[c(x)]
+    ## preserve factor
+    if (typeof(x) != "integer") {
+        ## must be atomic
+        x <- factor(x)
+        l <- suppressWarnings(as.integer(levels(x)))
+        ## implicit coercion
+        if (!any(is.na(l)) && all(l == levels(x)))
+            x <- l[c(x)]
+    }
     x
 }
 
@@ -67,14 +68,18 @@ read_spade <- function(con = "", decode = FALSE, labels = NULL) {
     if (!inherits(con, "connection")) 
         stop("'con' must be a character string or connection.")
 
-    n <- as.integer(strsplit(readLines(con, 1), " ")[[1]][5])
+    n <- readLines(con, 1)
+    if (!length(n))
+        stop("the number of lines is zero")
+    n <- as.integer(strsplit(n, " ")[[1]][5])
         
     x <- readLines(con)
     if (!length(x))
-        return(new("sequences"))
+        return(new("sequences", info = list(nsequences = n)))
+
     x <- strsplit(x, split = " -- ")
    
-    # fixme: there are 2 counts
+    # FIXME there are 2 counts
 
     c <- sapply(x, "[", 2)
     c <- as.integer(sapply(strsplit(c, split = " "), "[", 1))
@@ -86,20 +91,20 @@ read_spade <- function(con = "", decode = FALSE, labels = NULL) {
     if (decode)
         x <- lapply(x, lapply, as.integer)
 
-    # fixme: can this be?
     if (!length(x))
-        return(new("sequences"))
+        stop("the number of sequences parsed is zero")
 
     x <- as(x, "sequences")
     x@quality <- data.frame(support = c / n)
-    
+    x@info <- list(nsequences = n)
+
     k <- which(size(x) == 1)
     if (length(k) == length(x@elements)) {
         i <- x@data[,k]@i + 1L
         k[i] <- k
         quality(x@elements) <- x@quality[k,, drop = FALSE]
     } else
-        stop("incomplete data")
+        stop("the data is incomplete")
 
     if (!is.null(labels)) {
         k <- as.integer(as.character(x@elements@items@itemInfo$labels))
@@ -109,7 +114,8 @@ read_spade <- function(con = "", decode = FALSE, labels = NULL) {
     x
 }
 
-## fixme: inefficient
+## write data in text format for later
+## processing by exec/makebin
 
 write_cspade <- function(x, con) {
     if (!inherits(x, "transactions"))
@@ -118,19 +124,40 @@ write_cspade <- function(x, con) {
     r <- .Call("R_asList_ngCMatrix", x@data, NULL)
     r <- sapply(r, paste, collapse = " ")
     
-    i <- x@transactionInfo
-    i$sequenceID <- .as_integer(i$sequenceID)
-    i$eventID <- .as_integer(i$eventID)
-    if (is.factor(i$eventID))
+    sid <- .as_integer(x@transactionInfo$sequenceID)
+    if (any(sort(sid) != sid))
+        stop("sequenceID not in ascending order")
+    eid <- .as_integer(x@transactionInfo$eventID)
+    if (is.factor(eid))
         warning("'eventID' is a factor")
-    attr(i$sequenceID, "levels") <-
-    attr(i$eventID, "levels") <- NULL
+    if (any(tapply(eid, sid, function(x) any(sort(x) != x))))
+        stop("eventID not in blockwise ascending order")
 
-    r <- rbind(as.character(i$sequenceID), 
-               as.character(i$eventID), as.character(size(x)), r)
+    r <- rbind(as.character(as.integer(sid)),
+               as.character(as.integer(eid)),
+               as.character(size(x)), r)
     r <- apply(r, 2, paste, collapse = " ")
     
     writeLines(r, con)
+}
+
+## write data directly in binary format for
+## later processing by exec/exttpose
+
+makebin <- function(x, file) {
+    if (!inherits(x, "transactions"))
+        stop("'x' not of class transactions")
+
+    sid <- .as_integer(x@transactionInfo$sequenceID)
+    eid <- .as_integer(x@transactionInfo$eventID)
+    if (is.factor(eid))
+        warning("'eventID' is a factor")
+
+    x <- as(x, "ngCMatrix")
+    attr(x, "sid") <- sid
+    attr(x, "eid") <- eid
+
+    .Call("R_makebin", x, file)
 }
 
 ## cSPADE wrapper
@@ -138,15 +165,18 @@ write_cspade <- function(x, con) {
 ## note that we assume 1MB = 2^10 x 2^10 = 4^10 for the 
 ## computation of the number of database partitions.
 ##
+## FIXME the output redirection in system does not work
+##       under Windoze.
 
 cspade <- 
-function(data, parameter = NULL, control = NULL) {
+function(data, parameter = NULL, control = NULL, tmpdir = tempdir()) {
 
     if (!inherits(data, "transactions"))
         stop("'data' not of class transactions")
     if (!all(c("sequenceID", "eventID") %in% names(transactionInfo(data))))
         stop("slot transactionInfo: missing 'sequenceID' or 'eventID'")
-
+    if (!all(dim(data))) 
+        return(new("sequences"))
     parameter <- as(parameter, "SPparameter")
     control   <- as(control ,  "SPcontrol")
 
@@ -161,15 +191,16 @@ function(data, parameter = NULL, control = NULL) {
 
     exe <- system.file("exec", package = "arulesSequences")
 
-    file <- tempfile()
+    file <- tempfile(pattern = "cspade", tmpdir)
     on.exit(unlink(paste(file, "*", sep = ".")))
 
-    out <- paste(file, "asc", sep = ".")
-    write_cspade(data, con = out)
+    #out <- paste(file, "asc", sep = ".")
+    #write_cspade(data, con = out)
 
     ## preprocess
     opt <- ""
-    nop <- ceiling(length(data@data@i) / 4^10 * .Machine$sizeof.long)
+    nop <- ceiling((dim(data)[1] + 2 * length(data@data@i))
+	 * .Machine$sizeof.long / 4^10 / 5)
     if (length(control@memsize)) {
         opt <- paste("-m", control@memsize)
         nop <- ceiling(nop * 32 / control@memsize)
@@ -179,17 +210,16 @@ function(data, parameter = NULL, control = NULL) {
             warning("'numpart' less than recommended")
         nop <- control@numpart
     }
-    if (control@summary)
-        log <- "summary.out"
-    else
-        log <- paste(file, "log", sep = ".")
-    system(paste(paste(exe, "makebin", sep = "/"), 
-        out, paste(file, "data", sep = ".")))
-    system(paste(paste(exe, "getconf", sep = "/"), 
-        "-i", file, "-o", file, ">>", log))
-    system(paste(paste(exe, "exttpose",sep = "/"),
-        "-i", file, "-o", file, "-p", nop, opt, "-l -x -s",
-        parameter@support, ">>", log))
+    log <- "summary.out"
+    if (#system(paste(file.path(exe, "makebin"), 
+        #    out, paste(file, "data", sep = "."))) ||
+        #system(paste(file.path(exe, "getconf"), 
+        #    "-i", file, "-o", file, ">>", log))   ||
+        !makebin(data, file) ||
+        system(paste(file.path(exe, "exttpose"),
+            "-i", file, "-o", file, "-p", nop, opt, "-l -x -s",
+            parameter@support, ">>", log))
+       ) stop("system invocation failed")
 
     ## options
     if (length(parameter@maxsize))
@@ -208,24 +238,37 @@ function(data, parameter = NULL, control = NULL) {
 
     if (control@verbose) {
         t2 <- proc.time()
-        cat(paste("", nop, "partition(s)"))
+        du <- sum(file.info(list.files(path = dirname(file),
+            pattern = basename(file), full.names = TRUE))$size)
+        cat(paste("", nop, "partition(s),",
+            round(du / 4^10, digits = 2), "MB"))
         cat(paste(" [",format((t2-t1)[3], digits =2, format = "f"),
                   "s]", sep = ""))
         cat("\nmining transactions ...")
     }
 
     out <- paste(file, "out", sep = ".")
-    system(paste(paste(exe, "spade", sep = "/"),
-        "-i", file, "-s", parameter@support, opt, "-e", nop, "-o >", out))
+    if (system(paste(file.path(exe, "spade"),
+            "-i", file, "-s", parameter@support, opt, "-e", nop, "-o >", out))
+       ) stop("system invocation failed")
 
     if (control@verbose) {
         t3 <- proc.time()
+        du <- file.info(out)$size
+        cat(paste("", round(du / 4^10, digits = 2), "MB"))
         cat(paste(" [",format((t3-t2)[3], digits =2, format = "f"),
                   "s]", sep = ""))
         cat("\nreading sequences ...")
     }
 
     out <- read_spade(con = out, labels = itemLabels(data))
+
+    out@info <- c(
+        data = match.call()$data,
+        ntransactions = length(data),
+        out@info,
+        support = parameter@support
+    )
 
     if (control@verbose) {
         t4 <- proc.time()

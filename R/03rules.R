@@ -1,18 +1,18 @@
 
 ## sequencerules 
 ##
-## ceeboo 2007
+## ceeboo 2007, 2008
 
 setClass("sequencerules",
     representation(
         elements = "itemsets",
         lhs      = "sgCMatrix",
         rhs      = "sgCMatrix",
-        info     = "data.frame"
+        ruleInfo = "data.frame"
     ),
     contains = "associations",
 
-    prototype(quality = data.frame(), info = data.frame()),
+    prototype(quality = data.frame(), ruleInfo = data.frame()),
 
     validity = function(object) {
         if (dim(object@lhs)[2] != dim(object@rhs)[2])
@@ -26,9 +26,9 @@ setClass("sequencerules",
         if (length(object@quality) &&
             dim(object@quality)[1] != dim(object@lhs)[2])
             stop("slot 'quality' and number of rules do not conform")
-        if (length(object@info) &&
-            dim(object@info)[1] != dim(object@lhs)[2])
-            stop("slot 'info' and number of rules do not conform")
+        if (length(object@ruleInfo) &&
+            dim(object@ruleInfo)[1] != dim(object@lhs)[2])
+            stop("slot 'ruleInfo' and number of rules do not conform")
 
         TRUE
     } 
@@ -49,8 +49,8 @@ setMethod("[", signature(x = "sequencerules", i = "ANY", j = "missing", drop = "
         x@rhs <- x@rhs[,i]
         if (length(quality))
             x@quality <- x@quality[i,, drop = FALSE]
-        if (length(x@info))
-            x@info <- x@info[i,, drop = FALSE]
+        if (length(x@ruleInfo))
+            x@ruleInfo <- x@ruleInfo[i,, drop = FALSE]
         validObject(x, complete = TRUE) 
         x
     }
@@ -198,12 +198,18 @@ setMethod("inspect", signature(x = "sequencerules"),
 
 #
 
-setMethod("info", signature(object = "sequencerules"),
-    function(object) object@info)
+setGeneric("ruleInfo",
+    function(object, ...) standardGeneric("ruleInfo"))
 
-setReplaceMethod("info", signature(object = "sequencerules"),
+setMethod("ruleInfo", signature(object = "sequencerules"),
+    function(object) object@ruleInfo)
+
+setGeneric("ruleInfo<-",
+    function(object, value) standardGeneric("ruleInfo<-"))
+
+setReplaceMethod("ruleInfo", signature(object = "sequencerules"),
     function(object, value) {
-        object@info <- value
+        object@ruleInfo <- value
         validObject(value)
         object
     }
@@ -236,7 +242,8 @@ setMethod("summary", signature(object = "sequencerules"),
         new("summary.sequencerules", length  = length(object),
                                      sizes   = table(sizes = s),
                                      lengths = table(lengths = l),
-                                     quality = q)
+                                     quality = q,
+                                     info    = object@info)
     }
 )
 
@@ -252,7 +259,16 @@ setMethod("show", signature(object = "summary.sequencerules"),
 
             cat("\nsummary of quality measures:\n")
             print(object@quality)
+
+            if (length(object@info)) {
+                info <- object@info
+                if (is.language(info$data))
+                    info$data <- deparse(info$data)
+                cat("\nmining info:\n")
+                print(data.frame(info, row.names = ""))
+            }
         }
+        invisible(NULL)
     }
 )
 
@@ -300,10 +316,15 @@ setMethod("ruleInduction", signature(x = "sequences"),
             return(new("sequencerules"))
         r$lift       <- r$confidence / x@quality$support[r$ri]
 
+        info <- c(x@info, confidence = confidence)
+        if (is.null(info$data))
+            info <- c(x = match.call()$x, info)
+
         new("sequencerules", elements   = x@elements,
                              lhs        = x@data[,r$li],
                              rhs        = x@data[,r$ri],
-                             quality    = r[4:6])
+                             quality    = r[4:6],
+                             info       = info)
     }
 )
 
@@ -338,8 +359,8 @@ setMethod("match", signature(x = "sequencerules", table = "sequencerules"),
             table@rhs@Dim[1] <- table@lhs@Dim[1] + length(n)
         }
         if (any(k != seq_len(length(k)))) {
-            x@lhs <- .Call("R_recode_sgCMatrix", x@lhs, k)
-            x@rhs <- .Call("R_recode_sgCMatrix", x@rhs, k)
+            x@lhs <- .Call("R_recode_ngCMatrix", x@lhs, k)
+            x@rhs <- .Call("R_recode_ngCMatrix", x@rhs, k)
         }
         if (x@lhs@Dim[1] <  table@lhs@Dim[1])
             x@lhs@Dim[1] <- 
@@ -359,8 +380,15 @@ setMethod("c", signature(x = "sequencerules"),
         for (y in args) {
             if (!is(y, "sequencerules"))
                 stop("can only combine sequencerules")
+            info <- y@info
+            if (length(info)) {
+                k <- match(names(info), names(x@info))
+                k <- mapply(identical, info, x@info[k])
+                info <- info[k]
+            }
+            x@info <- info
             x <- .combineMeta(x, y, "quality")
-            x <- .combineMeta(x, y, "info")
+            x <- .combineMeta(x, y, "ruleInfo")
             k <- match(y@elements, x@elements)
             n <- which(is.na(k))
             if (length(n)) {
@@ -370,8 +398,8 @@ setMethod("c", signature(x = "sequencerules"),
                 x@elements <- c(x@elements, y@elements[n])
             }
             if (any(k != seq_len(length(k)))) {
-                y@lhs <- .Call("R_recode_sgCMatrix", y@lhs, k)
-                y@rhs <- .Call("R_recode_sgCMatrix", y@rhs, k)
+                y@lhs <- .Call("R_recode_ngCMatrix", y@lhs, k)
+                y@rhs <- .Call("R_recode_ngCMatrix", y@rhs, k)
             }
             if (y@lhs@Dim[1] <  x@lhs@Dim[1])
                 y@lhs@Dim[1] <- y@rhs@Dim[1] <- x@lhs@Dim[1]
@@ -387,7 +415,7 @@ setMethod("c", signature(x = "sequencerules"),
 # why not define for associations in arules?
 
 setMethod("coverage", signature(x = "sequencerules"),
-    function(x) {
+    function(x, transactions = NULL) {
         q <- quality(x)
         if (!all(c("support", "confidence") %in% names(q)))
             stop("support and/or confidence missing in slot 'quality'")
@@ -402,7 +430,7 @@ setMethod("subset", signature(x = "sequencerules"),
         if (missing(subset))
             return(x)
         i <- eval(substitute(subset), 
-                  envir = c(x@quality, x@info))
+                  envir = c(x@quality, x@ruleInfo))
         x[i]
     }
 )

@@ -23,9 +23,10 @@ void parse_args(int argc, char **argv)
    extern char * optarg;
    int c;
    
-   if (argc < 2)
-      cout << "usage: assocFB -i<infile> -o<outfile>\n";
-   else{
+   if (argc < 2) {
+      cout << "usage: getconf [-a] -i<infile> -o<outfile>\n";
+      exit(EXIT_FAILURE);
+   }else{
       while ((c=getopt(argc,argv,"ai:o:"))!=-1){
          switch(c){
          case 'a': //work on assoc

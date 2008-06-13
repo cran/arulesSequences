@@ -1,7 +1,7 @@
 
 ## this is definitely insane
 ##
-## ceeboo 2007
+## ceeboo 2007, 2008
 
 .list2S4 <- function(from, to) {
     if (!length(from))
@@ -31,8 +31,8 @@ setClass("SPparameter",
     ),
 
     prototype(support = 0.1, 
-              maxsize = as.integer(10), 
-              maxlen  = as.integer(10)),
+              maxsize = 10L, 
+              maxlen  = 10L),
 
     validity = function(object) {
         if (object@support < 0 || object@support > 1)
@@ -98,7 +98,7 @@ setMethod("show", signature(object = "SPparameter"),
         if (length(out)) 
             cat(out, sep = "\n")
 
-        invisible(object)
+        invisible(NULL)
     }
 )
 
@@ -170,7 +170,7 @@ setMethod("show", signature(object = "SPcontrol"),
         if (length(out))
             cat(out, sep = "\n")
 
-        invisible(object)
+        invisible(NULL)
     }
 )
 
