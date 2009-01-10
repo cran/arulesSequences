@@ -1,7 +1,7 @@
 #include <errno.h>
-#include <iostream.h>
+#include <iostream>
 #include <stdio.h>
-#include <fstream.h>
+#include <fstream>
 
 #include <strstream>
 

@@ -1,6 +1,6 @@
 #include <errno.h>
-#include <iostream.h>
-#include <fstream.h>
+#include <iostream>
+#include <fstream>
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -14,6 +14,8 @@
 
 #include "calcdb.h"
 #include "Array.h"
+
+using namespace std;
 
 #define MEG (1024*1204)
 struct timeval tp;
@@ -58,7 +60,7 @@ void parse_args(int argc, char **argv)
    int c;
    
    if (argc < 2) {
-      cout << "usage: exttpose [OPTION]... -i<infile> -o<outfile>\n";
+       cout << "usage: exttpose [OPTION]... -i<infile> -o<outfile>\n";
       exit(EXIT_FAILURE);
    }
    else{

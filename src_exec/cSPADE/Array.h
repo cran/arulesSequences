@@ -1,9 +1,11 @@
 #ifndef __ARRAY_H
 #define __ARRAY_H
 #include <stdlib.h>
-#include <iostream.h>
+#include <iostream>
 #include <sys/types.h>
 #include <malloc.h>
+
+using namespace std;
 
 extern long MEMUSED;
 

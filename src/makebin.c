@@ -96,7 +96,7 @@ SEXP R_makebin(SEXP x, SEXP R_file) {
     if (!LENGTH(R_file) || R_file == NA_STRING)
 	error("'file' invalid");
 
-    file = (char *) CHAR(PROTECT(allocVector(CHARSXP, LENGTH(R_file)+6)));
+    file = (char *) RAW(PROTECT(allocVector(RAWSXP, LENGTH(R_file)+6)));
 
     // NOTE
     //

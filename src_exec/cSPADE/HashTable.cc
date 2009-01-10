@@ -1,7 +1,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <stddef.h>
-#include <iostream.h>
+#include <iostream>
 #include "HashTable.h"
 
 

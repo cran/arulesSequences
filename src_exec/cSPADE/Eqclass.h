@@ -1,7 +1,7 @@
 #ifndef _EQCLASS_H
 #define _EQCLASS_H
 
-#include <iostream.h>
+#include <iostream>
 #include <errno.h>
 #include "Lists.h"
 #include "Itemset.h"

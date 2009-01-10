@@ -1,7 +1,7 @@
 
 #ifndef __ITEMSET_H
 #define __ITEMSET_H
-#include <iostream.h>
+#include <iostream>
 #include <stdio.h>
 #include <errno.h>
 #include "Array.h"

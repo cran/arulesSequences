@@ -1,6 +1,6 @@
 #include <math.h>
 #include <errno.h>
-#include <iostream.h>
+#include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
 #include <strings.h>

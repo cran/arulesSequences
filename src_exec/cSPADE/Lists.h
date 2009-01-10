@@ -1,6 +1,6 @@
 #ifndef __LISTS_H
 #define __LISTS_H
-#include <iostream.h>
+#include <iostream>
 
 typedef int (*CMP_FUNC) (void *, void *);
 extern long MEMUSED;

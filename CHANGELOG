@@ -1,6 +1,12 @@
 
 NEWS/ChangeLog for arulesSequences
 
+0.1-5	2009-01-10
+
+    o Adapted the C++ code to gcc-4.3 [KH].
+
+    o Adapted makebin.c to R-2.9.x.
+
 0.1-4	2008-06-13
 
     o Adapted to arules-0.6-6.

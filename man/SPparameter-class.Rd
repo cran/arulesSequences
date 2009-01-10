@@ -52,15 +52,15 @@
     \item{\code{coerce}}{
 	\code{signature(from = "list", to = "SPparameter")}}
     \item{\code{coerce}}{
-	\code{signature(from = "SPparameter, to = "character")}}
+	\code{signature(from = "SPparameter", to = "character")}}
     \item{\code{coerce}}{
-	\code{signature(from = "SPparameter, to = "data.frame")}}
+	\code{signature(from = "SPparameter", to = "data.frame")}}
     \item{\code{coerce}}{
-	\code{signature(from = "SPparameter, to = "list")}}
+	\code{signature(from = "SPparameter", to = "list")}}
     \item{\code{coerce}}{
-	\code{signature(from = "SPparameter, to = "vector")}}
+	\code{signature(from = "SPparameter", to = "vector")}}
     \item{\code{format}}{
-	\code{signature(x = "SPparameter)}}
+	\code{signature(x = "SPparameter")}}
   }
 }
 \author{Christian Buchta}

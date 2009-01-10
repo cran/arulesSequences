@@ -36,9 +36,9 @@
     or sequence rules.
 }
 \usage{
-\S4method{match}{sequences,sequences}(x, table, nomatch = NA_integer_, incomparables = FALSE)
+\S4method{match}{sequences,sequences}(x, table, nomatch = NA_integer_, incomparables = NULL)
 
-\S4method{match}{sequencerules,sequencerules}(x, table, nomatch = NA_integer_, incomparables = FALSE)
+\S4method{match}{sequencerules,sequencerules}(x, table, nomatch = NA_integer_, incomparables = NULL)
 
 ## S4 methods for signature 'sequences, character':
 x \%in\%  table
