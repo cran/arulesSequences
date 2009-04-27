@@ -13,7 +13,7 @@
 #include <sys/types.h>
 #include <strings.h>
 #include <sys/mman.h>
-#include <malloc.h>
+//#include <malloc.h>
 #include <strings.h>
 #include "Eqclass.h"
 #include "Itemset.h"

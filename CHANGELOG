@@ -1,6 +1,17 @@
 
 NEWS/ChangeLog for arulesSequences
 
+0.1-7	2009-04-27
+
+    o Fixed non-portable includes in the C++ code that caused
+      problems on Mac OS. Thanks to Simon Urbanek for helping
+      us with this.
+
+0.1-6	2009-01-16
+
+    o Fixed potential problems with unsorted row indexes
+      in package Matrix.
+
 0.1-5	2009-01-10
 
     o Adapted the C++ code to gcc-4.3 [KH].

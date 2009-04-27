@@ -9,7 +9,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <sys/mman.h>
-#include <malloc.h>
+//#include <malloc.h>
 #include <limits.h>
 
 #include "partition.h"

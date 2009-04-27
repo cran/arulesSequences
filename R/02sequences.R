@@ -181,6 +181,8 @@ setAs("list", "sequences",
             stop("item(s) not atomic")
 
         i <- unlist(from, recursive = FALSE, use.names = FALSE)
+        ## FIX Matrix mess
+        i <- lapply(i, sort)
         p <- sapply(i, length)
         p <- cumsum(p)
         i <- unclass(factor(unlist(i)))

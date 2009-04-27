@@ -8,7 +8,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <sys/mman.h>
-#include <malloc.h>
+//#include <malloc.h>
 #include <strings.h>
  
 #include "extl2.h"
