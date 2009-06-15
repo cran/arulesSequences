@@ -1,6 +1,6 @@
 Package: arulesSequences
-Version: 0.1-6
-Date: 2009-04-27
+Version: 0.1-8
+Date: 2009-06-15
 Title: Mining frequent sequences
 Author: Christian Buchta and Michael Hahsler
 Maintainer: Christian Buchta <christian.buchta@wu-wien.ac.at>
@@ -12,6 +12,6 @@ License: GPL-2
 Imports: arules
 LazyLoad: yes
 OS_type: unix
-Packaged: 2009-04-27 18:32:45 UTC; hornik
+Packaged: 2009-06-14 19:47:11 UTC; hornik
 Repository: CRAN
-Date/Publication: 2009-04-27 19:18:25
+Date/Publication: 2009-06-15 06:36:37

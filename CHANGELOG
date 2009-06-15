@@ -1,6 +1,11 @@
 
 NEWS/ChangeLog for arulesSequences
 
+0.1-8	2009-06-15
+
+    o Fixed return value of for loop in c-method for timedsequences
+      class, for compatibility with R >= 2.10.x
+
 0.1-7	2009-04-27
 
     o Fixed non-portable includes in the C++ code that caused

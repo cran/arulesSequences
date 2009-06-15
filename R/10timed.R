@@ -483,6 +483,7 @@ setMethod("c", signature(x = "timedsequences"),
                      time     = x@time,
                      timeInfo = x@timeInfo)
         }
+	x
     }
 )
 
