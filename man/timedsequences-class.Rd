@@ -21,7 +21,7 @@
 \alias{timesets}
 \alias{timesets,timedsequences-method}
 
-\title{Class "timedsequences" --- Collections of Sequences with Timining Information}
+\title{Class "timedsequences" --- Collections of Sequences with Timing Information}
 \description{
     Represents a collection of (observed) sequences and the associated timing
     information.
@@ -71,7 +71,7 @@
     \item{\code{times}}{\code{signature(x = "timedsequences")}}
     \item{\code{timesets}}{\code{signature(x = "timedsequences")};
 	returns a collection of sequences of event times as an object of
-	class \code{\link[arules:itemMatrix]{itemMatrix}}.}
+	class \code{\link[arules:itemMatrix-class]{itemMatrix}}.}
     \item{\code{timeTable}}{\code{signature(x = "timedsequences")}}
     }
 }
@@ -94,8 +94,8 @@
 }
 \seealso{
     Class
-    \code{\link[arules:itemMatrix]{itemMatrix}},
-    \code{\link[arules:transactions]{transactions}},
+    \code{\link[arules:itemMatrix-class]{itemMatrix}},
+    \code{\link[arules:transactions-class]{transactions}},
     \code{\linkS4class{sequences}}.
 }
 \examples{

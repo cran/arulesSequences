@@ -81,7 +81,7 @@ x \%ein\% table
 
     with the caveat of being too general.
 
-    FIXME curently matching of timed sequences does not take event
+    FIXME currently matching of timed sequences does not take event
     times into consideration.
 }
 \seealso{

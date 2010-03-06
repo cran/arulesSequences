@@ -33,7 +33,7 @@
 
     For timed sequences event times are currently conformed as follows:
     if the union of all labels can be cast to integer the labels are
-    sorted. Otherwise, labels not occuring in \code{x} are appended.
+    sorted. Otherwise, labels not occurring in \code{x} are appended.
 
     The default setting does not allow any object to be of a class
     other than \code{x}, i.e. the objects are not combined into a 

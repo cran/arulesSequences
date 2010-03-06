@@ -79,7 +79,7 @@ timeInfo(object) <- value
     Unique item identifiers must be provided in column \code{labels}.
 
     Unique event time identifiers must be provided in columns \code{labels}
-    and \code{eventID}. Note that the latter is used for compuatation
+    and \code{eventID}. Note that the latter is used for computation
     of gaps, etc.
 }
 \seealso{

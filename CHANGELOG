@@ -1,6 +1,10 @@
 
 NEWS/ChangeLog for arulesSequences
 
+0.1-9	2010-03-06
+
+    o Fixed cross-references in timedsequences-class.Rd.
+
 0.1-8	2009-06-15
 
     o Fixed return value of for loop in c-method for timedsequences
