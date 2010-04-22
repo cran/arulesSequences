@@ -1,6 +1,14 @@
 
 NEWS/ChangeLog for arulesSequences
 
+0.1-10	2010-04-22
+
+    o Fixed setting of a default C++ compiler as suggested by BR.
+
+    o Added an alias for coverage in sequencerules-class.Rd.
+
+    o Updated reference output in tests.
+
 0.1-9	2010-03-06
 
     o Fixed cross-references in timedsequences-class.Rd.

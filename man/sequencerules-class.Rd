@@ -8,6 +8,7 @@
 %\alias{[,sequencerules,ANY,missing,ANY-method}
 %\alias{c,sequencerules-method}
 \alias{coverage,sequencerules-method}
+\alias{coverage,sequencerules,ANY,missing-method}
 %\alias{duplicated,sequencerules-method}
 %\alias{ruleInfo,sequencerules-method}
 %\alias{ruleInfo<-,sequencerules-method}

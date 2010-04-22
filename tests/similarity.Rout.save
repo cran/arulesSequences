@@ -1,6 +1,6 @@
 
-R version 2.7.0 Patched (2008-05-23 r45768)
-Copyright (C) 2008 The R Foundation for Statistical Computing
+R version 2.10.1 Patched (2010-04-07 r51751)
+Copyright (C) 2010 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -24,9 +24,9 @@ Loading required package: lattice
 Attaching package: 'Matrix'
 
 
-	The following object(s) are masked from package:stats :
+	The following object(s) are masked from package:base :
 
-	 xtabs 
+	 det 
 
 
 Attaching package: 'arules'
