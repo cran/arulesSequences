@@ -1,5 +1,5 @@
 
-R version 2.10.1 Patched (2010-04-07 r51751)
+R version 2.11.1 Patched (2010-09-30 r53135)
 Copyright (C) 2010 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
 
@@ -23,18 +23,16 @@ Loading required package: lattice
 
 Attaching package: 'Matrix'
 
+The following object(s) are masked from 'package:base':
 
-	The following object(s) are masked from package:base :
-
-	 det 
+    det
 
 
 Attaching package: 'arules'
 
+The following object(s) are masked from 'package:base':
 
-	The following object(s) are masked from package:base :
-
-	 %in% 
+    %in%, sample
 
 > 
 > ## basic tests using the small running 
@@ -72,11 +70,11 @@ bfstype : FALSE
 verbose :  TRUE
 summary : FALSE
 
-preprocessing ... 1 partition(s), 0 MB [0.077s]
-mining transactions ... 0 MB [0.018s]
-reading sequences ... [0.069s]
+preprocessing ... 1 partition(s), 0 MB [0.076s]
+mining transactions ... 0 MB [0.013s]
+reading sequences ... [0.081s]
 
-total elapsed time: 0.164s
+total elapsed time: 0.17s
 > s1
 set of 18 sequences 
 > s2 <- cspade(zaki, parameter = list(support = 0.4, maxsize = 2, maxlen = 2))

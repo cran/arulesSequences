@@ -84,16 +84,19 @@ setAs("SPparameter", "data.frame",
     }
 )
 
-setMethod("format", "SPparameter",
-    function(x, ...) {
-        x <- as(x, "character")
-        paste(format(names(x)), format(x, justify = "right"), sep = " : ")
-    }
+.formatSP <- 
+function(x, ...) {
+    x <- as(x, "character")
+    paste(format(names(x)), format(x, justify = "right"), sep = " : ")
+}
+
+setMethod("format", "SPparameter", 
+    .formatSP
 )
 
 setMethod("show", signature(object = "SPparameter"),
     function(object) {
-        out <- format(object)
+        out <- .formatSP(object)
         cat("set of", length(out), "spade parameters\n\n")
         if (length(out)) 
             cat(out, sep = "\n")
@@ -157,15 +160,12 @@ setAs("SPcontrol", "data.frame",
 )
 
 setMethod("format", "SPcontrol",
-    function(x, ...) {
-        x <- as(x, "character")
-        paste(format(names(x)), format(x, justify = "right"), sep = " : ")
-    }
+    .formatSP
 )
 
 setMethod("show", signature(object = "SPcontrol"),
     function(object) {
-        out <- format(object)
+        out <- .formatSP(object)
         cat("set of", length(out), "spade control parameters\n\n")
         if (length(out))
             cat(out, sep = "\n")

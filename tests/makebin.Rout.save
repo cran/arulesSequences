@@ -1,5 +1,5 @@
 
-R version 2.10.1 Patched (2010-04-07 r51751)
+R version 2.11.1 Patched (2010-09-30 r53135)
 Copyright (C) 2010 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
 
@@ -25,18 +25,16 @@ Loading required package: lattice
 
 Attaching package: 'Matrix'
 
+The following object(s) are masked from 'package:base':
 
-	The following object(s) are masked from package:base :
-
-	 det 
+    det
 
 
 Attaching package: 'arules'
 
+The following object(s) are masked from 'package:base':
 
-	The following object(s) are masked from package:base :
-
-	 %in% 
+    %in%, sample
 
 > 
 > data(zaki)

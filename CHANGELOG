@@ -1,6 +1,10 @@
 
 NEWS/ChangeLog for arulesSequences
 
+0.1-11	2010-10-18
+
+    o Workaround format dispatch problems in SPx classes.
+
 0.1-10	2010-04-22
 
     o Fixed setting of a default C++ compiler as suggested by BR.

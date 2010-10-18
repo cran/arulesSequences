@@ -183,9 +183,9 @@ function(data, parameter = NULL, control = NULL, tmpdir = tempdir()) {
     if (control@verbose) {
         t1 <- proc.time()
         cat("\nparameter specification:\n")
-        cat(format(parameter), sep = "\n")
+        cat(.formatSP(parameter), sep = "\n")
         cat("\nalgorithmic control:\n")
-        cat(format(control), sep = "\n")
+        cat(.formatSP(control), sep = "\n")
         cat("\npreprocessing ...")
     }
 
