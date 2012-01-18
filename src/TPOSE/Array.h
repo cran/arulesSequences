@@ -13,8 +13,8 @@ protected:
    int *theArray;
    char theFlg;
    int lastPos;
-   unsigned int theSize;
-   unsigned int totSize;
+   int theSize;	    // DD
+   int totSize;	    // DD
    long *offset;
 public:
    
@@ -98,7 +98,7 @@ public:
 //       //        << theSize << endl << flush;
       int wblk = theSize;
       if (wblk > 0){
-         int res = ::write(fd, (char *)theArray, wblk*sizeof(int));
+         unsigned int res = ::write(fd, (char *)theArray, wblk*sizeof(int));
          if (res < wblk*sizeof(int)){
             perror("Error writing");
             exit(errno);

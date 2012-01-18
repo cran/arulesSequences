@@ -1,0 +1,10 @@
+
+NOTE that compiling an empty source file could result in a warning with 
+R's default C compiler flags and therefore mmap.o must be omitted from 
+the dependencies (see configure script).
+
+For backward compatibility O_BINARY and the replacement of strstream.h 
+are restricted to WINDOWS.
+
+ceeboo 2012
+

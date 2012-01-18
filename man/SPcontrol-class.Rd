@@ -25,7 +25,7 @@
     \code{new("SPcontrol", ...)}.
 }
 \section{Slots}{
-	 \describe{
+\describe{
     \item{\code{memsize}:}{an integer value specifying the maximum amount
 	of memory to use (default none [32 MB], range >= 16).}
     \item{\code{numpart}:}{an integer value specifying the number of
@@ -35,7 +35,7 @@
     \item{\code{verbose}:}{a logical value specifying if progress and
 	runtime information should be displayed (default \code{FALSE}).}
     \item{\code{summary}:}{a logical value specifying if summary 
-	information should be logged (default \code{FALSE}).}
+	information should be preserved (default \code{FALSE}).}
   }
 }
 \section{Methods}{
@@ -45,13 +45,13 @@
     \item{\code{coerce}}{
         \code{signature(from = "list", to = "SPcontrol")}}
     \item{\code{coerce}}{
-	\code{signature(from = "SPcontrol, to = "character")}}
+	\code{signature(from = "SPcontrol", to = "character")}}
     \item{\code{coerce}}{
-	\code{signature(from = "SPcontrol, to = "data.frame")}}
+	\code{signature(from = "SPcontrol", to = "data.frame")}}
     \item{\code{coerce}}{
-	\code{signature(from = "SPcontrol, to = "list")}}
+	\code{signature(from = "SPcontrol", to = "list")}}
     \item{\code{coerce}}{
-	\code{signature(from = "SPcontrol, to = "vector")}}
+	\code{signature(from = "SPcontrol", to = "vector")}}
     \item{\code{format}}{
 	\code{signature(x = "SPcontrol")}}
   }
@@ -70,9 +70,10 @@
     Usually, the more partitions the less the runtime in the mining stage.
     However, there may be a trade-off with preprocessing time.
 
-    If \code{summary = TRUE} output on the console from the system
-    calls in the preprocessing and mining steps are written to the
-    file \emph{summary.out} in the current working directory.
+    If \code{summary = TRUE} informational output from the system calls 
+    in the preprocessing and mining steps will be preserved in the file
+    \emph{summary.out} in the current working directory.
+    
 }
 \seealso{
     Class 

@@ -8,11 +8,17 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#include <sys/mman.h>
 //#include <malloc.h>
 #include <limits.h>
 
 #include "partition.h"
+
+#ifndef _WIN32
+#include <sys/mman.h>
+#define O_BINARY 0
+#else
+#include "mmap-win32.h"
+#endif
 struct timeval tp;
 
 int num_partitions = 1;
@@ -28,7 +34,7 @@ void partition_alloc(char *dataf, char *idxf)
    for (int i=0; i < num_partitions; i++){
       if (num_partitions > 1) sprintf(tmpnam, "%s.P%d", dataf, i);
       else sprintf(tmpnam, "%s", dataf);
-      DATAFD[i] = open(tmpnam, O_RDONLY);
+      DATAFD[i] = open(tmpnam, O_RDONLY|O_BINARY);
       if (DATAFD[i] < 0){
          perror("can't open data file");
          exit(errno);
@@ -36,7 +42,7 @@ void partition_alloc(char *dataf, char *idxf)
       
       if (num_partitions > 1) sprintf(tmpnam, "%s.P%d", idxf, i);
       else sprintf(tmpnam, "%s", idxf);
-      IDXFD[i] = open(tmpnam, O_RDONLY);
+      IDXFD[i] = open(tmpnam, O_RDONLY|O_BINARY);
       if (IDXFD[i] < 0){
          perror("can't open idx file");
          exit(errno);
@@ -190,10 +196,10 @@ extern int DBASE_NUM_TRANS;
 
 ClassInfo::ClassInfo(char use_class, char *classf)
 {
-   int i, numtrans, maxval;
+   int i, numtrans, maxval = 0;	    // DD
    if (use_class){
       //cout << "FILE " << classf << endl << flush;
-      fd = open (classf, O_RDONLY);
+      fd = open (classf, O_RDONLY|O_BINARY);
       if (fd < 0){
          printf("ERROR: InvalidClassFile\n");
          exit(-1);
@@ -212,7 +218,7 @@ ClassInfo::ClassInfo(char use_class, char *classf)
       maxval = clsaddr[numtrans*2-1]+1;
       classes = new int [maxval];
       for (i=0; i < maxval; i++) classes[i] = NOCLASS;
-      for (i=1; i < fdlen/sizeof(int); i+=2){
+      for (i=1; i < (int) (fdlen/sizeof(int)); i+=2){	    // DD
          classes[clsaddr[i]] = clsaddr[i+1];
       }
    }

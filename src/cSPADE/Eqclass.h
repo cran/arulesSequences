@@ -179,7 +179,7 @@ public:
    }
 
    int get_sup(int idx, int clas=-1){
-      if (clas = -1){
+      if (clas == -1){
          int sum=0;
          //return sup in all classes
          for (int i=0; i < NUMCLASS; i++)
@@ -189,7 +189,7 @@ public:
       else return (*_set_sup[clas])[idx]; //return sup in class only
    }
    int get_seqsup(int idx, int clas=-1){
-      if (clas = -1){
+      if (clas == -1){
          int sum=0;
          //return sup in all classes
          for (int i=0; i < NUMCLASS; i++)

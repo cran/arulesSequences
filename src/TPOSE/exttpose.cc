@@ -6,7 +6,6 @@
 #include <stdlib.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <sys/mman.h>
 #include <sys/time.h>
 #include <string.h>
 #include <strings.h>
@@ -14,6 +13,18 @@
 
 #include "calcdb.h"
 #include "Array.h"
+
+#ifndef _WIN32
+#include <sys/mman.h>
+#define O_BINARY 0
+#else
+#include "mmap-win32.h"
+
+void bzero(void *s, size_t n) {
+  memset(s, 0, n);
+}
+
+#endif
 
 using namespace std;
 
@@ -109,7 +120,7 @@ void parse_args(int argc, char **argv)
       }
    }
    
-   c= open(inconfn, O_RDONLY);
+   c= open(inconfn, O_RDONLY|O_BINARY);
    if (c < 0){
       perror("ERROR: invalid conf file\n");
       exit(errno);
@@ -299,7 +310,7 @@ void sort_get_l2(int &l2cnt, int fd, ofstream &ofd, int *backidx, int *freqidx,
    int i, j, k, fcnt;
    int lit;
    long sortflen;
-   int *sortary;
+   int *sortary = NULL;	    // DD
    int itbuf[3];
    
    sortflen = lseek(fd, 0, SEEK_CUR);
@@ -439,8 +450,8 @@ void do_invert_db(Dbase_Ctrl_Blk *DCB, int pblk, Array **extary, int numfreq,
 {
    double t1, t2;
    seconds(t1);
-   int numitem, tid, custid;
-   int *buf;
+   int numitem = 0, tid = 0, custid = 0;	// DD
+   int *buf = NULL;				// DD
    char tmpnam[300];
    int i,j,k;
    int fd;
@@ -452,7 +463,7 @@ void do_invert_db(Dbase_Ctrl_Blk *DCB, int pblk, Array **extary, int numfreq,
    for (int p=0; p < num_partitions; p++){
       if (num_partitions > 1) sprintf(tmpnam, "%s.P%d", output, p);
       else sprintf(tmpnam, "%s", output);
-      if ((fd = open(tmpnam, (O_WRONLY|O_CREAT|O_TRUNC), 0666)) < 0){
+      if ((fd = open(tmpnam, (O_WRONLY|O_CREAT|O_TRUNC|O_BINARY), 0666)) < 0){
          perror("Can't open out file");
          exit (errno);      
       }
@@ -551,7 +562,7 @@ void tpose()
 {
    int i,j,l;
    int idx;
-   int custid, tid, numitem, fcnt;
+   int custid = 0, tid = 0, numitem = 0, fcnt;	    // CB
    ofstream ofd;
    double t1, t2;
    int sumsup=0, sumdiff=0;
@@ -570,7 +581,7 @@ void tpose()
 
    seconds(t1);
    //count 1 items
-   int *buf;
+   int *buf = NULL;	// CB
    DCB->get_first_blk();
    DCB->get_next_trans(buf, numitem, tid, custid);
    int mincustid = custid;
@@ -678,7 +689,7 @@ void tpose()
          else sprintf(tmpnam, "%s", idxfn);
          //cout << "100 VAL " << itcnt[100] << endl;
          cout << "OPENED " << tmpnam << endl;
-         ofd.open(tmpnam);
+         ofd.open(tmpnam, ios::binary);		// DD
          if (!ofd){
             perror("Can't open out file");
             exit (errno);      
@@ -729,23 +740,23 @@ void tpose()
    int ocid = -1;
    if (do_l2){
       seconds(t1);
-      int seqfd, isetfd;
+      int seqfd = 0, isetfd;	    // DD
       char tmpseq[300];
       char tmpiset[300];
       if (use_seq){
 	 sprintf(tmpseq, "%sseq", tmpfn);
-         if ((seqfd = open(tmpseq, (O_RDWR|O_CREAT|O_TRUNC), 0666)) < 0){
+         if ((seqfd = open(tmpseq, (O_RDWR|O_CREAT|O_TRUNC|O_BINARY), 0666)) < 0){
             perror("Can't open out file");
             exit (errno);      
          }
       }
       sprintf(tmpiset, "%siset", tmpfn);
-      if ((isetfd = open("tmpiset", (O_RDWR|O_CREAT|O_TRUNC), 0666)) < 0){
+      if ((isetfd = open("tmpiset", (O_RDWR|O_CREAT|O_TRUNC|O_BINARY), 0666)) < 0){
          perror("Can't open out file");
          exit (errno);      
       }
       
-      CHAR *seq2;
+      CHAR *seq2 = NULL;	    // DD
       if (use_seq){
          seq2 = new CHAR [numfreq*numfreq];
          if (seq2 == NULL){
@@ -839,7 +850,7 @@ void tpose()
       //write 2-itemsets counts to file
       int l2cnt = 0;
       if (use_seq){
-         ofd.open(seqfn);
+         ofd.open(seqfn, ios::binary);		// DD
          if (ofd.fail()){
             perror("Can't open seq file"); 
             exit (errno);      
@@ -853,7 +864,7 @@ void tpose()
       }
       int seqs = l2cnt;
       
-      ofd.open(it2fn);
+      ofd.open(it2fn, ios::binary);		// DD
       //if ((fd = open(it2fn, (O_WRONLY|O_CREAT|O_TRUNC), 0666)) < 0){
       if (ofd.fail()){
          perror("Can't open it2 file");

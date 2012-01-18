@@ -1,12 +1,12 @@
-#CXX = g++
-#CXXFLAGS = -DSGI -no_auto_include
-#CXXFLAGS = -g -O3 -Wno-deprecated
-CXXFLAGS = -O3 -Wno-deprecated
+# see Makeconf for compiler settings
+ifdef WIN
+OBJS_WIN32 = ../TPOSE/mmap-win32.o
+endif
 HEADER  = Array.h Itemset.h Lists.h Eqclass.h extl2.h partition.h\
 	maxgap.h spade.h
 OBJS	= Itemset.o Array.o Eqclass.o Lists.o extl2.o partition.o\
-	maxgap.o
-LIBS = -lm -lc
+	maxgap.o $(OBJS_WIN32)
+LIBS 	= -lm
 TARGET  = spade
 
 default:	$(TARGET)
@@ -17,11 +17,12 @@ clean:
 	rm -rf *~ *.o $(TARGET)
 
 spade: sequence.cc $(OBJS) $(HEADER) 
-	$(CXX) $(CXXFLAGS) -o spade sequence.cc $(OBJS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o spade sequence.cc $(OBJS) $(LIBS)
 
 
 .cc.o:
 	$(CXX) $(CXXFLAGS) -c $<
+
 
 # dependencies
 # $(OBJS): $(HFILES)
@@ -32,3 +33,7 @@ Itemset.o: Itemset.h
 Eqclass.o: Eqclass.h
 partition.o: partition.h
 maxgap.o: maxgap.h
+
+install-bin: $(TARGET)
+	cp $(TARGET) ../../$(BINDIR)
+

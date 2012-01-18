@@ -1,7 +1,8 @@
 
-R version 2.11.1 Patched (2010-09-30 r53135)
-Copyright (C) 2010 The R Foundation for Statistical Computing
+R version 2.14.1 Patched (2011-12-26 r58001)
+Copyright (C) 2011 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
+Platform: i486-pc-linux-gnu (32-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -32,7 +33,7 @@ Attaching package: 'arules'
 
 The following object(s) are masked from 'package:base':
 
-    %in%, sample
+    %in%
 
 > 
 > ## basic tests using the small running 
@@ -58,9 +59,6 @@ The following object(s) are masked from 'package:base':
 +                    control   = list(verbose =TRUE))
 
 parameter specification:
-Note: Method with signature "numeric#character" chosen for function "coerce",
- target signature "integer#character".
- "ANY#character" would also be valid
 support : 0.4
 maxsize :  10
 maxlen  :  10
@@ -70,11 +68,11 @@ bfstype : FALSE
 verbose :  TRUE
 summary : FALSE
 
-preprocessing ... 1 partition(s), 0 MB [0.076s]
-mining transactions ... 0 MB [0.013s]
-reading sequences ... [0.081s]
+preprocessing ... 1 partition(s), 0 MB [0.064s]
+mining transactions ... 0 MB [0.02s]
+reading sequences ... [0.058s]
 
-total elapsed time: 0.17s
+total elapsed time: 0.142s
 > s1
 set of 18 sequences 
 > s2 <- cspade(zaki, parameter = list(support = 0.4, maxsize = 2, maxlen = 2))

@@ -3,6 +3,8 @@
 ##
 ## ceeboo 2007, 2008
 
+setGeneric("format")
+
 .list2S4 <- function(from, to) {
     if (!length(from))
         return (new(to))

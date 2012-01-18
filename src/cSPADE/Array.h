@@ -12,8 +12,8 @@ extern long MEMUSED;
 class Array {
 protected:   
    int *theArray;
-   unsigned int theSize;
-   unsigned int totSize;
+   int theSize;	    // DD
+   int totSize;	    // DD
    //unsigned int theIncr;
 public:
    
@@ -76,7 +76,7 @@ public:
       return theArray[index];
    }
    
-   unsigned int size() 
+   int size()	    // DD
    {
       return theSize; 
    }

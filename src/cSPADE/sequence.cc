@@ -12,7 +12,7 @@
 #include <time.h>
 #include <sys/types.h>
 #include <strings.h>
-#include <sys/mman.h>
+//#include <sys/mman.h>
 //#include <malloc.h>
 #include <strings.h>
 #include "Eqclass.h"
@@ -22,6 +22,15 @@
 #include "partition.h"
 #include "spade.h"
 #include "maxgap.h"
+
+
+#ifndef _WIN32
+#define O_BINARY 0
+#else
+
+void bzero(void *s, size_t n);
+
+#endif
 
 int pruning_type = NOPRUNING;
 
@@ -121,8 +130,8 @@ void print_freqary()
 void parse_args(int argc, char **argv)
 {
    extern char * optarg;
-   char *options, *value;
-   extern int optind;
+//   char *options, *value;
+//   extern int optind;
    int c;
    
    if (argc < 2) {
@@ -222,7 +231,7 @@ void parse_args(int argc, char **argv)
 
    if (use_maxgap) use_hash = 0;
 
-   c= open(conf, O_RDONLY);
+   c= open(conf, O_RDONLY|O_BINARY);
    if (c < 0){
       perror("ERROR: invalid conf file\n");
       exit(errno);
@@ -693,9 +702,8 @@ Eqclass* get_ext_eqclass(int it)
    Itemset *ljoin = NULL;
    Itemset *ejoin = NULL;
 
-   char *ibvec, *sbvec;
+   char *ibvec = NULL, *sbvec = NULL;	    // DD
    if (!use_maxgap){
-      ibvec = sbvec = NULL;
       if (eqgraph[it]->num_elements() > 0)
          ibvec = new char[eqgraph[it]->num_elements()];
       if (eqgraph[it]->seqnum_elements() > 0)
@@ -853,7 +861,7 @@ void fill_join(Itemset *join, Itemset *hdr1, Itemset *hdr2)
 Itemset *prune_decision(Itemset *it1, Itemset *it2, 
                         unsigned int ptempl, int jflg)
 {
-   FreqIt *res;
+//   FreqIt *res;
    int i,j,k;   
 
    //prune if seq pat exceeds the max seq len or iset len
@@ -1431,7 +1439,7 @@ int main(int argc, char **argv)
    else{
       fprintf(out, "0 ");
       if (use_maxgap) fprintf(out, "%d ", max_gap);
-      else fprintf(out, "-1 ", max_gap);
+      else fprintf(out, "-1 ");	    // DD
    }
    
    fprintf(out, "%d %d %d : ", min_gap, max_iset_len, max_seq_len);

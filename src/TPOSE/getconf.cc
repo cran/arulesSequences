@@ -5,12 +5,15 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <sys/mman.h>
 #include <sys/time.h>
 #include <string.h>
 #include <math.h>
 
 #include "calcdb.h"
+
+#ifndef _WIN32
+#define O_BINARY 0
+#endif
 
 using namespace std;
 
@@ -61,8 +64,8 @@ int main (int argc, char **argv)
    
    int i;
 
-   int custid, tid, nitem;
-   int *buf;
+   int custid = 0, tid, nitem = 0;	// DD
+   int *buf = NULL;			// DD
    int oldcustid=-1;
    int oldtcnt = 0;
    int tsizesum = 0;
@@ -106,7 +109,7 @@ int main (int argc, char **argv)
 
    //write config info to new file
    int conffd;
-   if ((conffd = open(confn, (O_WRONLY|O_CREAT), 0666)) < 0){
+   if ((conffd = open(confn, (O_WRONLY|O_CREAT|O_BINARY), 0666)) < 0){
       perror("Can't open out file");
       exit (errno);      
    }

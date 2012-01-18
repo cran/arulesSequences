@@ -3,7 +3,9 @@
 #include <stdio.h>
 #include <fstream>
 
+#ifndef _WIN32
 #include <strstream>
+#endif
 
 #include <stdlib.h>
 #include <fcntl.h>
@@ -22,11 +24,19 @@ ofstream fout;
 
 void convbin(char *inBuf, int inSize)
 {
+#ifndef _WIN32
    char inStr[wdSize];
    istrstream ist(inBuf, inSize);
    int it;
    while(ist >> inStr){
       it = atoi(inStr);
+#else			// DD
+   int it;
+   for(char *p;; inBuf = p) {
+      it = (int) strtol(inBuf, &p, 10);
+      if (p == inBuf)
+	 break;
+#endif
       //cout << it  << " ";
       fout.write((char*)&it, ITSZ);
    }
@@ -42,7 +52,7 @@ int main(int argc, char **argv)
       perror("cannot open in file");
       exit(errno);
    }
-   fout.open(argv[2]);
+   fout.open(argv[2], ios::binary);
    if (!fout){
       perror("cannot open out file");
       exit(errno);
@@ -53,4 +63,6 @@ int main(int argc, char **argv)
       //cout << "IN SIZE " << inSize << endl;
       convbin(inBuf, inSize);
    }
+   fin.close();		// DD
+   fout.close();	// DD
 }

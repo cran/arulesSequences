@@ -1,9 +1,13 @@
 #include "calcdb.h"
 #include <string.h>
 
+#ifndef _WIN32
+#define O_BINARY 0
+#endif
+
 Dbase_Ctrl_Blk::Dbase_Ctrl_Blk(char *infile, int buf_sz)
 {
-   fd = open (infile, O_RDONLY);
+   fd = open (infile, O_RDONLY|O_BINARY);
    if (fd < 0){
       printf("ERROR: InvalidFile -- Dbase_Ctrl_Blk()\n");
       exit(-1);

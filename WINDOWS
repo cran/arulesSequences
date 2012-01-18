@@ -1,0 +1,30 @@
+
+The C++ code was ported to Windows by 
+
+   Daniel Diaz <Daniel.Diaz@univ-paris1.fr> Jan 2012
+
+
+Steps to install from the package source code tarball:
+   - Install the Rtools (see http://www.murdoch-sutherland.com/Rtools/)
+     In the following I suppose Rtools are installed in c:\Rtools
+
+   - Launch a Windows command console
+
+   - Set the PATH to have access to Rtools (Unix tools, gcc x86, gcc x64)
+     PATH=c:\Rtools\bin;c:\Rtools\MinGW\bin;c:\Rtools\MinGW64\bin;%PATH%
+
+   - If necessary set the PATH to access R, e.g:
+     PATH=c:\R-2.14.1\bin;%PATH%
+
+   - If necessary install package 'arules'.
+
+   - Optionally, check the package as follows:
+     SET CYGWIN=nodosfilewarning
+     R CMD check --no-manual arulesSequences_0.2-x.tar.gz
+
+     There should be no errors and/or warnings.
+
+   - Install the package as follows:
+     SET CYGWIN=nodosfilewarning
+     R CMD INSTALL arulesSequences_0.2-x.tar.gz
+

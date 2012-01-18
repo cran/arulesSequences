@@ -49,7 +49,14 @@ cspade(data, parameter = NULL, control = NULL, tmpdir = tempdir())
     Temporary files may not be deleted until the end of the R session if
     the call is interrupted.
 
+    The current working directory (see \code{\link{getwd}}) must be writable.
+
     \code{sequenceID} and \code{eventID} are coerced to factor if necessary.
+
+#ifdef windows
+    If this interface does not work with \code{Rgui} use \code{Rterm} as
+    fallback.
+#endif
 }
 \seealso{
     Class 

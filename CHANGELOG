@@ -1,9 +1,31 @@
 
 NEWS/ChangeLog for arulesSequences
 
+0.2-0	2012-01-18
+
+    o Port of the C++ code to Windows by Daniel Diaz
+      <Daniel.Diaz@univ-paris1.fr>.
+
+      * implements mmap() replacement for Windows.
+      * fixes problems with Windows file mode (default is text mode 
+	while binary is needed for data files).
+      * fixes uninitialized and unused variables.
+
+    o Fixed installation of binaries to bin/R_ARCH.
+
+    o Replaced configure with Makevars.
+
+    o Replaced non-portable system with system2.
+
+    o Fixed SPControl-class.Rd.
+
+    o Updated reference output in tests.
+
+    o Added setGeneric("format").
+
 0.1-11	2010-10-18
 
-    o Workaround format dispatch problems in SPx classes.
+    o Work around format dispatch problems in SPx classes.
 
 0.1-10	2010-04-22
 
@@ -61,6 +83,14 @@ NEWS/ChangeLog for arulesSequences
 0.1-3	2008-04-29
 
     o Adapted to R-2.7.0.
+
+0.1-2	not released
+
+    * Fixed exttpose.cc to create temporary files in the directory 
+      where the output files are created.
+    * Inserted missing exit calls when usage information is shown.
+    * Added missing option Z to the template in sequence.cc.
+    * Fixed the description of options z and Z in README.
 
 0.1-1	2007-06-27
 

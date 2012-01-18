@@ -9,6 +9,12 @@
 #include <unistd.h>
 #include <fcntl.h>
 
+// support non-Unix flag
+
+#ifndef WIN32
+#define O_BINARY 0
+#endif
+
 // write the binary sequence data and configuration
 // file directly from R (see TPOSE/makebin.cc and
 // TPOSE/getconf.cc).
@@ -103,7 +109,7 @@ SEXP R_makebin(SEXP x, SEXP R_file) {
     // mmap might be more efficient but this is
     // not supported by MinGW.
     sprintf(file, "%s.data", CHAR(R_file));
-    fd = open(file, (O_WRONLY|O_CREAT|O_TRUNC|O_APPEND), 0666);
+    fd = open(file, (O_WRONLY|O_CREAT|O_TRUNC|O_BINARY), 0666);
     if (fd < 0)
 	error("EOPEN %s", file);
 
@@ -134,7 +140,7 @@ SEXP R_makebin(SEXP x, SEXP R_file) {
 
     // write the configuration file
     sprintf(file, "%s.conf", CHAR(R_file));
-    fd = open(file, (O_WRONLY|O_CREAT|O_TRUNC),0666);
+    fd = open(file, (O_WRONLY|O_CREAT|O_TRUNC|O_BINARY),0666);
     if (fd < 0)
 	error("EOPEN %s", file);
 

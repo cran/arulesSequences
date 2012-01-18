@@ -7,12 +7,23 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#include <sys/mman.h>
 //#include <malloc.h>
 #include <strings.h>
  
 #include "extl2.h"
 #include "spade.h"
+
+#ifndef _WIN32
+#include <sys/mman.h>
+#define O_BINARY 0
+#else
+#include "mmap-win32.h"
+
+void bzero(void *s, size_t n) {
+  memset(s, 0, n);
+}
+
+#endif
 
 #define seqitcntbufsz 4086
 
@@ -129,7 +140,8 @@ void print_idlist(int *ival, int supsz)
 int make_l1_pass()
 {
    int i,j;
-   int *sup,supsz;
+//   int *sup,supsz;
+   int supsz;
    int bsz = 100;
 
    F1::init();
@@ -147,7 +159,7 @@ int make_l1_pass()
       perror("IVAL NULL");
       exit(-1);
    }
-   int tt=0;
+//   int tt=0;
    for (i=0; i < DBASE_MAXITEM; i++){
       supsz = partition_get_idxsup(i);
       if (ivalsz < supsz){
@@ -487,7 +499,7 @@ int make_l2_pass()
    int mem_used=0;
 
    EXTBLKSZ = num_partitions+(DBASE_NUM_TRANS+num_partitions-1)/num_partitions;
-   int tsz = (int) (DBASE_AVG_CUST_SZ*DBASE_AVG_TRANS_SZ);
+//   int tsz = (int) (DBASE_AVG_CUST_SZ*DBASE_AVG_TRANS_SZ);
    invDB = new invdb(EXTBLKSZ);
    //mem_used += EXTBLKSZ*2*ITSZ;
    //mem_used += (int) (EXTBLKSZ*tsz*ITSZ);
@@ -576,7 +588,7 @@ int make_l2_pass()
 void get_l2file(char *fname, char use_seq, int &l2cnt)
 {
    int *cntary;
-   int fd = open(fname, O_RDONLY);
+   int fd = open(fname, O_RDONLY|O_BINARY);
    if (fd < 1){
       perror("can't open l2 file");
       exit(errno);

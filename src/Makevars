@@ -1,0 +1,26 @@
+## ceeboo 2012
+BINDIR	= inst/bin$(R_ARCH)
+
+.PHONY: all bin
+
+all: $(SHLIB) bin
+
+# Note that make -C does not work on Solaris.
+bin:
+	## binaries
+	( cd TPOSE;  \
+	  make	CXX="$(CXX)" CXXFLAGS="$(CXXFLAGS)"\
+		BINDIR="$(BINDIR)"\
+		install-bin \
+	)
+	( cd cSPADE; \
+	  make	CXX="$(CXX)" CXXFLAGS="$(CXXFLAGS)"\
+		BINDIR="$(BINDIR)"\
+		install-bin \
+	)
+
+clean:
+	( cd TPOSE;  make clean )
+	( cd cSPADE; make clean )
+	rm -rf ../$(BINDIR)
+

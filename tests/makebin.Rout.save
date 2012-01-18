@@ -1,7 +1,8 @@
 
-R version 2.11.1 Patched (2010-09-30 r53135)
-Copyright (C) 2010 The R Foundation for Statistical Computing
+R version 2.14.1 Patched (2011-12-26 r58001)
+Copyright (C) 2011 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
+Platform: i486-pc-linux-gnu (32-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -34,7 +35,7 @@ Attaching package: 'arules'
 
 The following object(s) are masked from 'package:base':
 
-    %in%, sample
+    %in%
 
 > 
 > data(zaki)
@@ -43,16 +44,18 @@ The following object(s) are masked from 'package:base':
 [1] TRUE
 > arulesSequences:::write_cspade(zaki, "zaki.asc")
 > 
-> exe <- system.file("exec", "makebin", package = "arulesSequences")
-> system(paste(exe, "zaki.asc makebin.data"))
+> exe <- "bin"
+> if (.Platform$r_arch != "")
++     exe <- file.path(exe, .Platform$r_arch)
+> exe <- system.file(exe, package = "arulesSequences")
+> system2(file.path(exe, "makebin"), args = c("zaki.asc makebin.data"))
 > 
-> system("cmp zaki.data makebin.data")
+> stopifnot(!system("cmp zaki.data makebin.data"))
 > 
-> exe <- system.file("exec", "getconf", package = "arulesSequences")
-> system(paste(exe, "-i makebin -o makebin"))
+> system2(file.path(exe, "getconf"), args = c("-i makebin -o makebin"))
 CONF 4 9 2.500000 2.700000 10 1 4 0.781025 4
 > 
-> system("cmp zaki.conf makebin.conf")
+> stopifnot(!system("cmp zaki.conf makebin.conf"))
 > 
 > ###
 > 

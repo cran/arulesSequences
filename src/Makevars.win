@@ -1,0 +1,28 @@
+## dd + ceeboo 2012
+BINDIR		= inst/bin$(R_ARCH)
+XTRA_LDFLAGS	= $(LDFLAGS) -static-libgcc -static-libstdc++
+.PHONY: all bin
+
+all: $(SHLIB) bin
+
+bin:
+	# binaries
+	make --no-print-directory -C TPOSE\
+	    CC="$(CC)" CFLAGS="$(CFLAGS)"\
+	    CXX="$(CXX)" CXXFLAGS="$(CXXFLAGS)"\
+	    LDFLAGS="$(XTRA_LDFLAGS)"\
+	    BINDIR="$(BINDIR)"\
+	    WIN="$(WIN)"\
+	    install-bin
+	make --no-print-directory -C cSPADE\
+	    CXX="$(CXX)" CXXFLAGS="$(CXXFLAGS)"\
+	    LDFLAGS="$(XTRA_LDFLAGS)"\
+	    BINDIR="$(BINDIR)"\
+	    WIN="$(WIN)"\
+	    install-bin
+ 
+clean:
+	( cd TPOSE;  make clean )
+	( cd cSPADE; make clean )
+	rm -rf ../$(BINDIR)
+

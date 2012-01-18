@@ -2,7 +2,7 @@
 ##
 ## data interfaces to cSPADE
 ##
-## ceeboo 2007, 2008
+## ceeboo 2007, 2008, 2012
 
 .as_integer <- function(x) {
     ## preserve factor
@@ -164,9 +164,6 @@ makebin <- function(x, file) {
 ##
 ## note that we assume 1MB = 2^10 x 2^10 = 4^10 for the 
 ## computation of the number of database partitions.
-##
-## FIXME the output redirection in system does not work
-##       under Windoze.
 
 cspade <- 
 function(data, parameter = NULL, control = NULL, tmpdir = tempdir()) {
@@ -189,13 +186,13 @@ function(data, parameter = NULL, control = NULL, tmpdir = tempdir()) {
         cat("\npreprocessing ...")
     }
 
-    exe <- system.file("exec", package = "arulesSequences")
+    exe <- "bin"
+    if (.Platform$r_arch != "")
+	exe <- file.path(exe, .Platform$r_arch)
+    exe <- system.file(exe, package = "arulesSequences")
 
     file <- tempfile(pattern = "cspade", tmpdir)
     on.exit(unlink(paste(file, "*", sep = ".")))
-
-    #out <- paste(file, "asc", sep = ".")
-    #write_cspade(data, con = out)
 
     ## preprocess
     opt <- ""
@@ -210,17 +207,26 @@ function(data, parameter = NULL, control = NULL, tmpdir = tempdir()) {
             warning("'numpart' less than recommended")
         nop <- control@numpart
     }
-    log <- "summary.out"
-    if (#system(paste(file.path(exe, "makebin"), 
-        #    out, paste(file, "data", sep = "."))) ||
-        #system(paste(file.path(exe, "getconf"), 
-        #    "-i", file, "-o", file, ">>", log))   ||
-        !makebin(data, file) ||
-        system(paste(file.path(exe, "exttpose"),
+    ## deprecated
+    if (FALSE) {
+	out <- paste(file, "asc", sep = ".")
+	write_cspade(data, con = out)
+	if (system2(file.path(exe, "makebin"), args = c(
+		out, paste(file, "data", sep = "."))) ||
+	    system2(file.path(exe, "getconf"), args = c(
+		"-i", file, "-o", file), stdout = "summary.out")
+	) stop("system invocation failed")
+    } else
+	makebin(data, file)
+    out <- paste(file, "log", sep = ".")
+    if (system2(file.path(exe, "exttpose"), args = c(
             "-i", file, "-o", file, "-p", nop, opt, "-l -x -s",
-            parameter@support, ">>", log))
+            parameter@support), stdout = out)
        ) stop("system invocation failed")
-
+    ## append
+    con <- file("summary.out", "a")
+    writeLines(readLines(con = out), con = con)
+    close(con)
     ## options
     if (length(parameter@maxsize))
         opt <- paste(opt, "-Z", parameter@maxsize, collapse = "")
@@ -248,8 +254,9 @@ function(data, parameter = NULL, control = NULL, tmpdir = tempdir()) {
     }
 
     out <- paste(file, "out", sep = ".")
-    if (system(paste(file.path(exe, "spade"),
-            "-i", file, "-s", parameter@support, opt, "-e", nop, "-o >", out))
+    if (system2(file.path(exe, "spade"), args = c(
+	    "-i", file, "-s", parameter@support, opt, "-e", nop, "-o"), 
+	    stdout = out)
        ) stop("system invocation failed")
 
     if (control@verbose) {

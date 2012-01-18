@@ -1,7 +1,8 @@
 
-R version 2.11.1 Patched (2010-09-30 r53135)
-Copyright (C) 2010 The R Foundation for Statistical Computing
+R version 2.14.1 Patched (2011-12-26 r58001)
+Copyright (C) 2011 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
+Platform: i486-pc-linux-gnu (32-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -32,7 +33,7 @@ Attaching package: 'arules'
 
 The following object(s) are masked from 'package:base':
 
-    %in%, sample
+    %in%
 
 > 
 > ### ceeboo 2008
