@@ -7,18 +7,16 @@ all: $(SHLIB) bin
 
 bin:
 	# binaries
-	make --no-print-directory -C TPOSE\
+	make --no-print-directory -C TPOSE  -f win.mk -f Makefile\
 	    CC="$(CC)" CFLAGS="$(CFLAGS)"\
 	    CXX="$(CXX)" CXXFLAGS="$(CXXFLAGS)"\
 	    LDFLAGS="$(XTRA_LDFLAGS)"\
 	    BINDIR="$(BINDIR)"\
-	    WIN="$(WIN)"\
 	    install-bin
-	make --no-print-directory -C cSPADE\
+	make --no-print-directory -C cSPADE -f win.mk -f Makefile\
 	    CXX="$(CXX)" CXXFLAGS="$(CXXFLAGS)"\
 	    LDFLAGS="$(XTRA_LDFLAGS)"\
 	    BINDIR="$(BINDIR)"\
-	    WIN="$(WIN)"\
 	    install-bin
  
 clean:

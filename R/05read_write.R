@@ -168,6 +168,22 @@ makebin <- function(x, file) {
 cspade <- 
 function(data, parameter = NULL, control = NULL, tmpdir = tempdir()) {
 
+    ## workaround
+    if (.Platform$OS  == "windows" && 
+        .Platform$GUI == "Rgui")
+	system2 <- function(command, args = character(), stdout = "", ...) {
+	    if (is.character(stdout) && nzchar(stdout)) {
+		args   <- c(args, ">", stdout)
+		stdout <- NULL
+	    }
+	    args <- c("/c", shQuote(command), args)
+	    command <- Sys.getenv("COMSPEC")
+	    ## bail out
+	    if (!nzchar(command))
+		stop("environment variable 'COMSPEC' not set")
+	    base::system2(command, args = args, stdout = stdout, ...)
+	}
+
     if (!inherits(data, "transactions"))
         stop("'data' not of class transactions")
     if (!all(c("sequenceID", "eventID") %in% names(transactionInfo(data))))

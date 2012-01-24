@@ -1,7 +1,4 @@
 # see Makeconf for compiler settings
-ifdef WIN
-OBJS_WIN32 = ../TPOSE/mmap-win32.o
-endif
 HEADER  = Array.h Itemset.h Lists.h Eqclass.h extl2.h partition.h\
 	maxgap.h spade.h
 OBJS	= Itemset.o Array.o Eqclass.o Lists.o extl2.o partition.o\

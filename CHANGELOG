@@ -1,6 +1,10 @@
 
 NEWS/ChangeLog for arulesSequences
 
+0.2-1	2012-01-24
+
+    o Fixed Makefiles for Solaris.
+
 0.2-0	2012-01-18
 
     o Port of the C++ code to Windows by Daniel Diaz

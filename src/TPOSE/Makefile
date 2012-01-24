@@ -1,10 +1,4 @@
 # see Makeconf for compiler settings
-ifdef WIN
-OBJS_WIN32 = mmap-win32.o
-
-mmap-win32.o: mmap-win32.c mmap-win32.h
-	$(CC) $(CFLAGS) -c -o mmap-win32.o mmap-win32.c
-endif
 HEADERS = calcdb.h Array.h
 OBJS 	= calcdb.o Array.o $(OBJS_WIN32)
 LIBS	= -lm
