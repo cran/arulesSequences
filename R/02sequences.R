@@ -36,10 +36,10 @@ setClass("sequences",
 
 setMethod("nitems", signature(x = "sequences"), 
     function(x, itemsets = FALSE) {
-        i <- .Call("R_rowSums_sgCMatrix", x@data) > 0
+        i <- .Call(R_rowSums_sgCMatrix, x@data) > 0
         if (!itemsets) {
-            i <- .Call("R_colSubset_ngCMatrix", x@elements@items@data, i)
-            i <- .Call("R_rowSums_ngCMatrix", i) > 0
+            i <- .Call(R_colSubset_ngCMatrix, x@elements@items@data, i)
+            i <- .Call(R_rowSums_ngCMatrix, i) > 0
         }
         sum(i)
     }
@@ -55,23 +55,23 @@ setMethod("size", signature(x = "sequences"),
     function(x, type = c("size","itemsets","length","items")) {
         type <- match.arg(type)
         switch(type, 
-            size = .Call("R_colSums_ngCMatrix", x@data),
+            size = .Call(R_colSums_ngCMatrix, x@data),
             itemsets = {
-                s <- .Call("R_asList_ngCMatrix", x@data, NULL)
+                s <- .Call(R_asList_ngCMatrix, x@data, NULL)
                 names(s) <- NULL
                 sapply(s, function(x) length(unique(x)))
             },
             length = {
                 # fixme: inefficient
                 s <- size(x@elements)
-                s <- .Call("R_asList_ngCMatrix", x@data, s)
+                s <- .Call(R_asList_ngCMatrix, x@data, s)
                 names(s) <- NULL
                 sapply(s, sum)
             },
             items = {
                 # fixme: inefficient
-                s <- .Call("R_asList_ngCMatrix", x@elements@items@data, NULL)
-                s <- .Call("R_asList_ngCMatrix", x@data, s)
+                s <- .Call(R_asList_ngCMatrix, x@elements@items@data, NULL)
+                s <- .Call(R_asList_ngCMatrix, x@data, s)
                 names(s) <- NULL
                 sapply(s, function(x) length(unique(unlist(x))))
             }
@@ -87,10 +87,10 @@ setMethod("ritems", signature(x = "sequences"),
         type = match.arg(type)
 
         if (itemsets)
-            s <- .Call("R_asList_ngCMatrix", x@data, NULL)
+            s <- .Call(R_asList_ngCMatrix, x@data, NULL)
         else {
-            s <- .Call("R_asList_ngCMatrix", x@elements@items@data, NULL)
-            s <- .Call("R_asList_ngCMatrix", x@data, s)
+            s <- .Call(R_asList_ngCMatrix, x@elements@items@data, NULL)
+            s <- .Call(R_asList_ngCMatrix, x@data, s)
             s <- lapply(s, unlist)
         }
         names(s) <- NULL
@@ -108,10 +108,10 @@ setMethod("itemFrequency", signature(x = "sequences"),
     function(x, itemsets = FALSE, type = c("absolute", "relative")) {
         type <- match.arg(type)
         if (itemsets) 
-            s <- .Call("R_rowSums_sgCMatrix", x@data)
+            s <- .Call(R_rowSums_sgCMatrix, x@data)
         else {
-            s <- .Call("R_asList_ngCMatrix", x@elements@items@data, NULL)
-            s <- .Call("R_asList_ngCMatrix", x@data, s)
+            s <- .Call(R_asList_ngCMatrix, x@elements@items@data, NULL)
+            s <- .Call(R_asList_ngCMatrix, x@data, s)
             s <- lapply(s, function(x) unique(unlist(x)))
             s <- factor(unlist(s), levels = 
                         seq_len(x@elements@items@data@Dim[1]))
@@ -128,10 +128,10 @@ setGeneric("itemTable",
 setMethod("itemTable", signature(x = "sequences"),
     function(x, itemsets = FALSE) {
         if (itemsets)
-            t <- .Call("R_asList_ngCMatrix", x@data, NULL)
+            t <- .Call(R_asList_ngCMatrix, x@data, NULL)
         else {
-            t <- .Call("R_asList_ngCMatrix", x@elements@items@data, NULL)
-            t <- .Call("R_asList_ngCMatrix", x@data, t)
+            t <- .Call(R_asList_ngCMatrix, x@elements@items@data, NULL)
+            t <- .Call(R_asList_ngCMatrix, x@data, t)
             t <- lapply(t, unlist, recursive = FALSE)
         }
         t <- lapply(t, table)
@@ -160,10 +160,10 @@ setMethod("[", signature(x = "sequences", i = "ANY", j = "ANY", drop = "ANY"),
             x@data <- x@data[,i]
         }
         if (reduce) {
-            i <- .Call("R_rowSums_sgCMatrix", x@data) > 0
+            i <- .Call(R_rowSums_sgCMatrix, x@data) > 0
             x@data <- x@data[i,]
             x@elements <- x@elements[i]
-            i <- .Call("R_rowSums_ngCMatrix", x@elements@items@data) > 0
+            i <- .Call(R_rowSums_ngCMatrix, x@elements@items@data) > 0
             x@elements@items <- x@elements@items[,i]
         }
         validObject(x, complete = TRUE)
@@ -192,16 +192,16 @@ setAs("list", "sequences",
                               i   = i - 1L, 
                               Dim = c(length(l), length(p)))
 
-        s <- .Call("R_pnindex", i, NULL, FALSE)
+        s <- .Call(R_pnindex, i, NULL, FALSE)
 
-        s <- .Call("R_colSubset_ngCMatrix", i, !duplicated(s))
+        s <- .Call(R_colSubset_ngCMatrix, i, !duplicated(s))
 
         e <- new("itemMatrix", data     = s,
                                itemInfo = data.frame(labels = I(l)))
 
         e <- new("itemsets", items = e)
 
-        i <- .Call("R_pnindex", s, i, FALSE)
+        i <- .Call(R_pnindex, s, i, FALSE)
         
         p <- sapply(from, length)
         names(p) <- NULL
@@ -227,8 +227,8 @@ setMethod("LIST", signature(from = "sequences"),
              else 
                  NULL
 
-        i <- .Call("R_asList_ngCMatrix", from@elements@items@data, d)
-        i <- .Call("R_asList_ngCMatrix", from@data, i)
+        i <- .Call(R_asList_ngCMatrix, from@elements@items@data, d)
+        i <- .Call(R_asList_ngCMatrix, from@data, i)
         if (decode)
             names(i) <- from@sequenceInfo$sequenceID
         i
@@ -255,7 +255,7 @@ setMethod("itemLabels", signature(object = "sequences"),
     function(object, itemsets = FALSE, ...) {
         l <- itemLabels(object@elements)
         if (itemsets) {
-            l <- .Call("R_asList_ngCMatrix", object@elements@items@data, l)
+            l <- .Call(R_asList_ngCMatrix, object@elements@items@data, l)
             l <- sapply(l, .formatElements, ...)
         }
         l
@@ -415,13 +415,14 @@ setMethod("summary", signature(object = "sequences"),
              else 
                  summary(NULL)
 
-        new("summary.sequences", length   = length(object),
-                                 items    = i,
-                                 elements = s,
-                                 sizes    = table(sizes = size(object, "size")),
-                                 lengths  = table(lengths = size(object, "length")),
-                                 quality  = q,
-                                 info     = object@info)
+        new("summary.sequences", 
+		length   = length(object),
+                items    = i,
+                elements = s,
+                sizes    = table(sizes = size(object, "size")),
+                lengths  = table(lengths = size(object, "length")),
+                quality  = q,
+                info     = object@info)
     }
 )
 
@@ -446,8 +447,7 @@ setMethod("show", signature(object = "summary.sequences"),
             
             if (length(object@info)) {
                 info <- object@info
-                if (is.language(info$data))
-                    info$data <- deparse(info$data)
+                if (is.language(info$data)) info$data <- deparse(info$data)
                 cat("\nmining info:\n")
                 print(data.frame(info, row.names = ""))
             }
@@ -463,14 +463,14 @@ setMethod("show", signature(object = "summary.sequences"),
 setMethod("is.maximal", signature(x = "sequences"),
     function(x) {
         u <- unique(x)
-        k <- order(.Call("R_colSums_ngCMatrix", u@elements@items@data),
-                   .Call("R_pnindex", u@elements@items@data, NULL, FALSE))
+        k <- order(.Call(R_colSums_ngCMatrix, u@elements@items@data),
+                   .Call(R_pnindex, u@elements@items@data, NULL, FALSE))
         if (any(k != seq_len(length(k)))) {
             u@elements <- u@elements[k]
             k[k] <- seq_len(length(k))
-            u@data <- .Call("R_recode_ngCMatrix", u@data, k)
+            u@data <- .Call(R_recode_ngCMatrix, u@data, k)
         }
-        m <- .Call("R_pnscount",
+        m <- .Call(R_pnscount,
                    u@data, u@data, u@elements@items@data, FALSE) == 1
         i <- match(x, u)
         m[i]
@@ -481,7 +481,7 @@ setMethod("is.maximal", signature(x = "sequences"),
 
 setMethod("duplicated", signature(x = "sequences"),
     function(x, incomparables = FALSE)  {
-        i <- .Call("R_pnindex", x@data, NULL, FALSE)
+        i <- .Call(R_pnindex, x@data, NULL, FALSE)
         duplicated(i, incomparables)
     }
 )
@@ -501,10 +501,10 @@ setMethod("match", signature(x = "sequences", table = "sequences"),
             table@data@Dim[1] <- table@data@Dim[1] + length(n)
         }
         if (any(k != seq_len(length(k))))
-            x@data <- .Call("R_recode_ngCMatrix", x@data, k)
+            x@data <- .Call(R_recode_ngCMatrix, x@data, k)
         if (x@data@Dim[1] <  table@data@Dim[1])
             x@data@Dim[1] <- table@data@Dim[1]
-        i <- .Call("R_pnindex", table@data, x@data, FALSE)
+        i <- .Call(R_pnindex, table@data, x@data, FALSE)
         match(i, seq(length(table)), nomatch =nomatch, 
                                      incomparables = incomparables)
     }
@@ -516,7 +516,7 @@ setMethod("match", signature(x = "sequences", table = "sequences"),
 setMethod("%in%", signature(x = "sequences", table = "character"),
     function(x, table) {
         k <- x@elements@items %in% table
-        .Call("R_colSums_ngCMatrix", x@data[k,]) > 0
+        .Call(R_colSums_ngCMatrix, x@data[k,]) > 0
     }
 )
 
@@ -525,7 +525,7 @@ setMethod("%pin%", signature(x = "sequences", table = "character"),
         if (length(table) > 1)
             stop("'table' contains more than one item label pattern")
         k <- x@elements@items %pin% table
-        .Call("R_colSums_ngCMatrix", x@data[k,]) > 0
+        .Call(R_colSums_ngCMatrix, x@data[k,]) > 0
     }
 )
 
@@ -536,7 +536,7 @@ setMethod("%ain%", signature(x = "sequences", table = "character"),
             stop("table contains an unknown item label")
         p <- size(x@elements@items[,p])
         k <- p > 0
-        p <- .Call("R_asList_ngCMatrix", x@data[k,], p[k])
+        p <- .Call(R_asList_ngCMatrix, x@data[k,], p[k])
         sapply(p, sum) >= length(table)
     }
 )
@@ -547,7 +547,7 @@ setGeneric("%ein%",
 setMethod("%ein%", signature(x = "sequences", table = "character"),
     function(x, table) {
         p <- x@elements@items %ain% table
-        p <- .Call("R_asList_ngCMatrix", x@data, p)
+        p <- .Call(R_asList_ngCMatrix, x@data, p)
         sapply(p, any)
     }
 )
@@ -597,10 +597,10 @@ setMethod("c", signature(x = "sequences"),
                 x@elements <- c(x@elements, y@elements[n])
             }
             if (any(k != seq_len(length(k))))
-                y@data <- .Call("R_recode_ngCMatrix", y@data, k)
+                y@data <- .Call(R_recode_ngCMatrix, y@data, k)
             if (y@data@Dim[1] <  x@data@Dim[1])
                 y@data@Dim[1] <- x@data@Dim[1]
-            x@data <- .Call("R_cbind_ngCMatrix", x@data, y@data)
+            x@data <- .Call(R_cbind_ngCMatrix, x@data, y@data)
         }
         validObject(x, complete = TRUE)
         x

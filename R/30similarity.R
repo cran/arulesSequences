@@ -24,7 +24,7 @@ setMethod("similarity", signature(x = "sequences"),
                     x@elements <- c(x@elements, y@elements[n])
             }
             if (any(k != seq_len(length(k))))
-                y@data <- .Call("R_recode_ngCMatrix", y@data, k)
+                y@data <- .Call(R_recode_ngCMatrix, y@data, k)
             if (y@data@Dim[1] <  x@data@Dim[1])
                 y@data@Dim[1] <- x@data@Dim[1]
 
@@ -33,7 +33,7 @@ setMethod("similarity", signature(x = "sequences"),
         }
         dimnames(x@data) <- list(NULL, x@sequenceInfo[["sequenceID"]])
 
-        .Call("R_similarity_sgCMatrix",
+        .Call(R_similarity_sgCMatrix,
               x@data, y, if (strict) NULL else x@elements@items@data, method)
     }
 )
@@ -61,6 +61,6 @@ setMethod("is.superset", signature(x = "sequences"),
 
 setAs("dsCMatrix", "dist",
     function(from)
-        .Call("R_as_dist_dsCMatrix", if (from@uplo == "L") from else t(from)))
+        .Call(R_as_dist_dsCMatrix, if (from@uplo == "L") from else t(from)))
 
 ###

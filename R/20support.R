@@ -39,17 +39,17 @@ setMethod("support", signature(x = "sequences"),
             x@elements <- c(x@elements, y@elements[n])
         }
         if (any(k != seq_len(length(k))))
-            y@data <- .Call("R_recode_ngCMatrix", y@data, k)
+            y@data <- .Call(R_recode_ngCMatrix, y@data, k)
         if (y@data@Dim[1] <  x@data@Dim[1])
             y@data@Dim[1] <- x@data@Dim[1]
         ## order
-        k <- order(.Call("R_colSums_ngCMatrix", x@elements@items@data),
-                   .Call("R_pnindex", x@elements@items@data, NULL, FALSE))
+        k <- order(.Call(R_colSums_ngCMatrix, x@elements@items@data),
+                   .Call(R_pnindex, x@elements@items@data, NULL, FALSE))
         if (any(k != seq_len(length(k)))) {
             x@elements <- x@elements[k]
             k[k] <- seq_len(length(k))
-            x@data <- .Call("R_recode_ngCMatrix", x@data, k)
-            y@data <- .Call("R_recode_ngCMatrix", y@data, k)
+            x@data <- .Call(R_recode_ngCMatrix, x@data, k)
+            y@data <- .Call(R_recode_ngCMatrix, y@data, k)
         }
 
         if (verbose) {
@@ -57,7 +57,7 @@ setMethod("support", signature(x = "sequences"),
             cat("[", t1[1]-t0[1], "s]\n", sep = "")
         }
 
-        supports <- .Call("R_pnscount", x@data, y@data,
+        supports <- .Call(R_pnscount, x@data, y@data,
             x@elements@items@data, verbose)
 
         switch(type,

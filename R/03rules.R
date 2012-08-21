@@ -299,7 +299,7 @@ setMethod("ruleInduction", signature(x = "sequences"),
         if (!is.logical(control$maximal))
             stop("'maximal' invalid range")
 
-        r <- data.frame(.Call("R_pnsindex", x@data, NULL, control$verbose))
+        r <- data.frame(.Call(R_pnsindex, x@data, NULL, control$verbose))
         names(r) <- c("i", "li", "ri")
 
         if (!all(r$li) || !all(r$ri))
@@ -331,7 +331,7 @@ setMethod("ruleInduction", signature(x = "sequences"),
 # generatingItemsets is a misnomer
 setAs("sequencerules", "sequences",
     function(from) {
-        d <- .Call("R_colAppend_sgCMatrix", from@lhs, from@rhs, FALSE)
+        d <- .Call(R_colAppend_sgCMatrix, from@lhs, from@rhs, FALSE)
         new("sequences", elements  = from@elements,
                          data      = d,
                          quality   = from@quality["support"])
@@ -340,8 +340,8 @@ setAs("sequencerules", "sequences",
 
 setMethod("duplicated", signature(x = "sequencerules"),
     function(x, incomparables = FALSE) {
-        i <- .Call("R_colAppend_sgCMatrix", x@lhs, x@rhs, TRUE)
-        i <- .Call("R_pnindex", i, NULL, FALSE)
+        i <- .Call(R_colAppend_sgCMatrix, x@lhs, x@rhs, TRUE)
+        i <- .Call(R_pnindex, i, NULL, FALSE)
         duplicated(i, incomparables)
     }
 )
@@ -359,15 +359,15 @@ setMethod("match", signature(x = "sequencerules", table = "sequencerules"),
             table@rhs@Dim[1] <- table@lhs@Dim[1] + length(n)
         }
         if (any(k != seq_len(length(k)))) {
-            x@lhs <- .Call("R_recode_ngCMatrix", x@lhs, k)
-            x@rhs <- .Call("R_recode_ngCMatrix", x@rhs, k)
+            x@lhs <- .Call(R_recode_ngCMatrix, x@lhs, k)
+            x@rhs <- .Call(R_recode_ngCMatrix, x@rhs, k)
         }
         if (x@lhs@Dim[1] <  table@lhs@Dim[1])
             x@lhs@Dim[1] <- 
             x@rhs@Dim[1] <- table@lhs@Dim[1]
-        table <- .Call("R_colAppend_sgCMatrix", table@lhs, table@rhs, TRUE)
-        x     <- .Call("R_colAppend_sgCMatrix", x@lhs, x@rhs, TRUE)
-        i <- .Call("R_pnindex", table, x, FALSE)
+        table <- .Call(R_colAppend_sgCMatrix, table@lhs, table@rhs, TRUE)
+        x     <- .Call(R_colAppend_sgCMatrix, x@lhs, x@rhs, TRUE)
+        i <- .Call(R_pnindex, table, x, FALSE)
         match(i, seq(table@Dim[2]), nomatch, incomparables)
     }
 )
@@ -398,14 +398,14 @@ setMethod("c", signature(x = "sequencerules"),
                 x@elements <- c(x@elements, y@elements[n])
             }
             if (any(k != seq_len(length(k)))) {
-                y@lhs <- .Call("R_recode_ngCMatrix", y@lhs, k)
-                y@rhs <- .Call("R_recode_ngCMatrix", y@rhs, k)
+                y@lhs <- .Call(R_recode_ngCMatrix, y@lhs, k)
+                y@rhs <- .Call(R_recode_ngCMatrix, y@rhs, k)
             }
             if (y@lhs@Dim[1] <  x@lhs@Dim[1])
                 y@lhs@Dim[1] <- y@rhs@Dim[1] <- x@lhs@Dim[1]
 
-            x@lhs <- .Call("R_cbind_ngCMatrix", x@lhs, y@lhs)
-            x@rhs <- .Call("R_cbind_ngCMatrix", x@rhs, y@rhs)
+            x@lhs <- .Call(R_cbind_ngCMatrix, x@lhs, y@lhs)
+            x@rhs <- .Call(R_cbind_ngCMatrix, x@rhs, y@rhs)
         }
         validObject(x, complete = TRUE)
         x

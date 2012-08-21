@@ -70,7 +70,7 @@ setAs("transactions", "timedsequences",
 
         e <- new("itemsets", items = unique(s))
 
-        s <- .Call("R_pnindex", e@items@data, s@data,  FALSE)
+        s <- .Call(R_pnindex, e@items@data, s@data,  FALSE)
         s <- tapply(s, from@transactionInfo$sequenceID, list)
 
         n <- data.frame(sequenceID = names(s))
@@ -138,7 +138,7 @@ setMethod("times", signature(x = "timedsequences"),
     function(x, type = c("times", "gaps", "mingap", "maxgap", "span")) {
         type <- match.arg(type)
 
-        t <- .Call("R_asList_ngCMatrix", x@time, x@timeInfo$eventID)
+        t <- .Call(R_asList_ngCMatrix, x@time, x@timeInfo$eventID)
         t <- sapply(t, .timefun(type))
         if (is.list(t)) {
             is.na(t) <- !sapply(t, length)
@@ -165,7 +165,7 @@ setMethod("timeFrequency", signature(x = "timedsequences"),
             t <- NULL
         else
             t <- x@timeInfo$eventID
-        t <- .Call("R_asList_ngCMatrix", x@time, t)
+        t <- .Call(R_asList_ngCMatrix, x@time, t)
         t <- lapply(t, .timefun(type))
         t <- table(unlist(t))
         if (type == "times")
@@ -182,16 +182,16 @@ setMethod("timeTable", signature(x = "timedsequences"),
         type <- match.arg(type)
 
         if (itemsets) 
-            i <- .Call("R_asList_ngCMatrix", x@data, NULL)
+            i <- .Call(R_asList_ngCMatrix, x@data, NULL)
         else {
-            i <- .Call("R_asList_ngCMatrix", x@elements@items@data, NULL)
-            i <- .Call("R_asList_ngCMatrix", x@data, i)
+            i <- .Call(R_asList_ngCMatrix, x@elements@items@data, NULL)
+            i <- .Call(R_asList_ngCMatrix, x@data, i)
         }
         if (type == "times")
             t <- NULL
         else
             t <- x@timeInfo$eventID
-        t <- .Call("R_asList_ngCMatrix", x@time, t)
+        t <- .Call(R_asList_ngCMatrix, x@time, t)
 
         f <- .timefun(type)
 
@@ -218,9 +218,9 @@ setMethod("LIST", signature(from = "timedsequences"),
              else
                  NULL
 
-        i <- .Call("R_asList_ngCMatrix", from@elements@items@data, d)
-        i <- .Call("R_asList_ngCMatrix", from@data, i)
-        t <- .Call("R_asList_ngCMatrix", from@time, from@timeInfo$eventID)
+        i <- .Call(R_asList_ngCMatrix, from@elements@items@data, d)
+        i <- .Call(R_asList_ngCMatrix, from@data, i)
+        t <- .Call(R_asList_ngCMatrix, from@time, from@timeInfo$eventID)
         i <- mapply(function(t, i) {
             names(i) <- t
             i
@@ -253,7 +253,7 @@ setMethod("inspect", signature(x = "timedsequences"),
             x <- x[s > 0]
         }
 
-        t <- .Call("R_asList_ngCMatrix", x@time, x@timeInfo$labels)
+        t <- .Call(R_asList_ngCMatrix, x@time, x@timeInfo$labels)
         t <- unlist(t)
 
         p <- sequenceInfo(x)
@@ -406,7 +406,7 @@ setMethod("[", signature(x = "timedsequences", i = "ANY", j = "ANY", drop = "ANY
                 k <- x@timeInfo$labels %in% x@timeInfo$labels[k]
 
             y <- x
-            x@time <- .Call("R_rowSubset_ngCMatrix", x@time, k)
+            x@time <- .Call(R_rowSubset_ngCMatrix, x@time, k)
             x@timeInfo <- x@timeInfo[k,, drop = FALSE]
 
             k <- y@time@i %in% (which(k) - 1L)
@@ -420,7 +420,7 @@ setMethod("[", signature(x = "timedsequences", i = "ANY", j = "ANY", drop = "ANY
         if (!missing(i)) 
             x <- new("timedsequences", 
                      as(x, "sequences")[i, reduce = reduce],
-                     time     = .Call("R_colSubset_ngCMatrix", x@time, i),
+                     time     = .Call(R_colSubset_ngCMatrix, x@time, i),
                      timeInfo = x@timeInfo)
         if (reduce) {
             if (missing(i))
@@ -428,8 +428,8 @@ setMethod("[", signature(x = "timedsequences", i = "ANY", j = "ANY", drop = "ANY
                          as(x, "sequences")[reduce = reduce],
                          time     = x@time,
                          timeInfo = x@timeInfo)
-            i <- .Call("R_rowSums_ngCMatrix", x@time) > 0
-            x@time <- .Call("R_rowSubset_ngCMatrix", x@time, i)
+            i <- .Call(R_rowSums_ngCMatrix, x@time) > 0
+            x@time <- .Call(R_rowSubset_ngCMatrix, x@time, i)
             x@timeInfo <- x@timeInfo[i,, drop = FALSE]
             validObject(x)
         }
@@ -462,7 +462,7 @@ setMethod("c", signature(x = "timedsequences"),
                 if (any(diff(k) < 0))
                     stop("'x' invalid time order")
                 if (any(k != seq(length(k))))
-                    x@time <- .Call("R_recode_ngCMatrix", x@time, k)
+                    x@time <- .Call(R_recode_ngCMatrix, x@time, k)
                 if (x@time@Dim[1] <  length(u))
                     x@time@Dim[1] <- length(u)
             }
@@ -471,11 +471,11 @@ setMethod("c", signature(x = "timedsequences"),
             if (any(diff(k) < 0))
                 stop("'y' invalid time order")
             if (any(k != seq(length(k)))) 
-                y@time <- .Call("R_recode_ngCMatrix", y@time, k)
+                y@time <- .Call(R_recode_ngCMatrix, y@time, k)
             if (y@time@Dim[1] <  length(u))
                 y@time@Dim[1] <- length(u)
 
-            x@time <- .Call("R_cbind_ngCMatrix", x@time, y@time)
+            x@time <- .Call(R_cbind_ngCMatrix, x@time, y@time)
             validObject(x@time)
 
             x <- new("timedsequences", c(as(x, "sequences"),
@@ -523,11 +523,11 @@ setGeneric("firstOrder",
 setMethod("firstOrder", signature(x = "timedsequences"),
     function(x, times = FALSE) {
         if (times) {
-            t <- .Call("R_firstOrder_sgCMatrix", x@time)
+            t <- .Call(R_firstOrder_sgCMatrix, x@time)
             rownames(t) <- colnames(t) <- x@timeInfo$labels
             t
         } else 
-            .Call("R_firstOrder_sgCMatrix", x@data)
+            .Call(R_firstOrder_sgCMatrix, x@data)
     }
 )
 

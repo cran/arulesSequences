@@ -21,7 +21,7 @@ setClass("sgCMatrix",
               Dimnames = list(NULL, NULL),
               factors  = list()),
 
-    validity = function(object) .Call("R_valid_sgCMatrix", object)
+    validity = function(object) .Call(R_valid_sgCMatrix, object)
 )
 
 setMethod("dim", signature(x = "sgCMatrix"),
@@ -55,11 +55,11 @@ setReplaceMethod("dimnames", signature(x="sgCMatrix"),
 setMethod("[", signature(x = "sgCMatrix", i = "ANY", j = "ANY", drop = "ANY"),
     function(x, i, j, ..., drop) {
         if (!missing(i))
-            x <- .Call("R_rowSubset_sgCMatrix", x, i)
+            x <- .Call(R_rowSubset_sgCMatrix, x, i) 
         if (missing(j))
             return(x)
         
-        .Call("R_colSubset_ngCMatrix", x, j)
+        .Call(R_colSubset_ngCMatrix, x, j) 
     }
 )
 
@@ -84,7 +84,7 @@ setAs("list", "sgCMatrix",
 
 setAs("sgCMatrix", "list",
     function(from) {
-        i <- .Call("R_asList_ngCMatrix", from, from@Dimnames[[1]])
+        i <- .Call(R_asList_ngCMatrix, from, from@Dimnames[[1]])
         names(i) <- from@Dimnames[[2]]
         i
     }

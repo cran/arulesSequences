@@ -205,14 +205,17 @@ int make_l1_pass()
       //cout << "ITEM " << i << " "<< ClassInfo::TMPE[0] << endl;
       
       if (lflg){
-         if (outputfreq) cout << i << " --";
-         for (j=0; j < NUMCLASS; j++){
+         for (j=0; j < NUMCLASS; j++)
             F1::add_sup(ClassInfo::TMPE[j], j);
-            if (outputfreq) cout << " " << ClassInfo::TMPE[j];
-         }
-         if (outputfreq) cout << " " << F1::get_sup(i) << " ";
-         if (print_tidlist) print_idlist(ival, supsz);
-         if (outputfreq) cout << endl;
+         if (outputfreq) {
+	    cout << i << " --";
+	    cout << " " << F1::get_sup(i);
+	    for (j=0; j < NUMCLASS; j++)
+		cout << " " << ClassInfo::TMPE[j];
+	    cout << " ";
+	    if (print_tidlist) print_idlist(ival, supsz);
+	    cout << endl;
+	}
       }
    }
    //cout << "MAXCID " << tt << endl;

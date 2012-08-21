@@ -1,6 +1,10 @@
 
 NEWS/ChangeLog for arulesSequences
 
+0.2-2	2012-08-21
+
+    o Fixed PACKAGE argument in .Call calls.
+
 0.2-1	2012-01-24
 
     o Fixed Makefiles for Solaris.

@@ -74,15 +74,28 @@ read_spade <- function(con = "", decode = FALSE, labels = NULL) {
     n <- as.integer(strsplit(n, " ")[[1]][5])
         
     x <- readLines(con)
+    # control not implemented (see the -t option)
+    if (FALSE) {
+	k <- grep("^PRUNE", x)
+	if (length(k))
+	    x <- x[-k]
+    }
     if (!length(x))
         return(new("sequences", info = list(nsequences = n)))
 
     x <- strsplit(x, split = " -- ")
    
-    # FIXME there are 2 counts
+    # NOTE 1) position 1 contains the support count.
+    #      2) the following K positions contain the 
+    #         support counts of a partition (see the 
+    #         -c option).
+    #      3) the following positions represent pairs
+    #         of SID FRQ identifying the containing data 
+    #         sequences and their support counts (see
+    #         the -y option).
 
-    c <- sapply(x, "[", 2)
-    c <- as.integer(sapply(strsplit(c, split = " "), "[", 1))
+    c <- strsplit(sapply(x, "[", 2), split = " ")
+    c <- as.integer(sapply(c, "[", 1))
    
     # split into a list of lists (sequences) each 
     # containing a vector of character (itemsets)
@@ -115,13 +128,13 @@ read_spade <- function(con = "", decode = FALSE, labels = NULL) {
 }
 
 ## write data in text format for later
-## processing by exec/makebin
+## processing by bin/makebin
 
 write_cspade <- function(x, con) {
     if (!inherits(x, "transactions"))
         stop("'x' not of class transactions")
 
-    r <- .Call("R_asList_ngCMatrix", x@data, NULL)
+    r <- .Call(R_asList_ngCMatrix, x@data, NULL)
     r <- sapply(r, paste, collapse = " ")
     
     sid <- .as_integer(x@transactionInfo$sequenceID)
@@ -142,7 +155,7 @@ write_cspade <- function(x, con) {
 }
 
 ## write data directly in binary format for
-## later processing by exec/exttpose
+## later processing by bin/exttpose
 
 makebin <- function(x, file) {
     if (!inherits(x, "transactions"))
@@ -157,7 +170,7 @@ makebin <- function(x, file) {
     attr(x, "sid") <- sid
     attr(x, "eid") <- eid
 
-    .Call("R_makebin", x, file)
+    .Call(R_makebin, x, file)
 }
 
 ## cSPADE wrapper
@@ -223,26 +236,25 @@ function(data, parameter = NULL, control = NULL, tmpdir = tempdir()) {
             warning("'numpart' less than recommended")
         nop <- control@numpart
     }
+    ## workaround
+    out <- paste(file, "stdout", sep = ".")
     ## deprecated
     if (FALSE) {
-	out <- paste(file, "asc", sep = ".")
-	write_cspade(data, con = out)
+	asc <- paste(file, "asc", sep = ".")
+	write_cspade(data, con = asc)
 	if (system2(file.path(exe, "makebin"), args = c(
-		out, paste(file, "data", sep = "."))) ||
+		asc, paste(file, "data", sep = "."))) ||
 	    system2(file.path(exe, "getconf"), args = c(
-		"-i", file, "-o", file), stdout = "summary.out")
+		"-i", file, "-o", file), stdout = out)
 	) stop("system invocation failed")
+	file.append("summary.out", out)
     } else
 	makebin(data, file)
-    out <- paste(file, "log", sep = ".")
     if (system2(file.path(exe, "exttpose"), args = c(
             "-i", file, "-o", file, "-p", nop, opt, "-l -x -s",
             parameter@support), stdout = out)
        ) stop("system invocation failed")
-    ## append
-    con <- file("summary.out", "a")
-    writeLines(readLines(con = out), con = con)
-    close(con)
+    file.append("summary.out", out)
     ## options
     if (length(parameter@maxsize))
         opt <- paste(opt, "-Z", parameter@maxsize, collapse = "")
