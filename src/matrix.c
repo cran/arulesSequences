@@ -2,12 +2,15 @@
 #include <R_ext/Utils.h>
 #include <Rdefines.h>
 
+// arraySubscript.c
+SEXP int_arraySubscript(int, SEXP, const char *, const char *, SEXP, Rboolean, SEXP);
+
 // some low-level utilities that speed up 
 // operations with sgCMatrix.
 //
-// version: 0.1-2
+// version: 0.1-3
 //
-// ceeboo 2007, 2008
+// ceeboo 2007, 2008, 2011
 
 SEXP R_rowSums_sgCMatrix(SEXP x) {
     if (!inherits(x, "sgCMatrix"))
@@ -59,7 +62,7 @@ SEXP R_rowSubset_sgCMatrix(SEXP x, SEXP s) {
     SEXP r, dx, px, ix, pr, ir;
 	        
     dx = getAttrib(x, install("Dimnames"));
-   
+#ifdef _COMPAT_
     r = CONS(dx, ATTRIB(x));
     SET_TAG(r, R_DimNamesSymbol);
     SET_ATTRIB(x, r);
@@ -67,6 +70,9 @@ SEXP R_rowSubset_sgCMatrix(SEXP x, SEXP s) {
     PROTECT(s = arraySubscript(0, s, getAttrib(x, install("Dim")), getAttrib, (STRING_ELT), x));
     
     SET_ATTRIB(x, CDR(r));
+#else
+    PROTECT(s = int_arraySubscript(0, s, "Dim", "Dimnames", x, TRUE, R_NilValue));
+#endif
 
     n = INTEGER(getAttrib(x, install("Dim")))[0];
 

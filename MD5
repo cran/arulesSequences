@@ -1,6 +1,6 @@
-86185878c9dd7d4d128ff6ccc996cf95 *CHANGELOG
+b9d081a0fb25f4aa137135f5ed89a408 *CHANGELOG
 ae12b459ba6fc2c9df5869f8b7b3d1fb *COPYRIGHTS
-51e77124954c8ba589d4c78e7ee68b77 *DESCRIPTION
+f2aed2139eefb906375716883fc8fe72 *DESCRIPTION
 3bf82dc09ca71b5518097d3de59ce8f7 *NAMESPACE
 8689d6e5f5f4d8ac210db83ff2ae1970 *R/01matrix.R
 4d833c391d274c47563807b40b2df961 *R/02sequences.R
@@ -12,7 +12,7 @@ ef36e366afb09f4493e2f016d7c9fdd5 *R/10timed.R
 c9a77ab0e4988dad6f04c5ae91456781 *R/30similarity.R
 c26ffc263de9001c146448c56e796bfc *R/native.R
 9b09fe4a6ad430540113bbdc3247f5f1 *WINDOWS
-d9621417e192bf88fa59982bbea1bfc6 *data/zaki.rda
+b942c03d088e3f6acef6d1f906931b36 *data/zaki.rda
 e2e39be8d8a02f68d5bf4c0d958425a6 *inst/misc/test.pat
 cca1f4a49dd7ec1be94f48e7d33f462a *inst/misc/test.txt
 fb3215d8d0d0ea1131a5530d9af8851e *inst/misc/zaki.txt
@@ -53,6 +53,7 @@ c2972f705ed529f1752976c37d157958 *src/TPOSE/makebin.cc
 b156d5b541636497ab7adf045215fb90 *src/TPOSE/mmap-win32.h
 23cc3b12dc50c31e56515412a0db2123 *src/TPOSE/strstream.h
 ad7c4a30db8d9c7a83b3a22867c6759a *src/TPOSE/win.mk
+9811937ba72592910a0804f6aaf565ad *src/arrayIndex.c
 7fd025c32539b94c20c561b197ebc5bd *src/cSPADE/Array.cc
 fd3e68a8dc0c7d786045cf245d4e82d6 *src/cSPADE/Array.h
 5898494dab81e81096e5205e61250083 *src/cSPADE/Database.cc
@@ -78,7 +79,7 @@ b17d82f6c47b6564b9bf9c347a89712b *src/cSPADE/partition.cc
 a0724dcf9f1f69ec2594119688bdfe99 *src/cSPADE/spade.h
 b2e2d9071887047e47b69c4d953b9d35 *src/cSPADE/win.mk
 edbf86b88b807df4a70346a928abb0f5 *src/makebin.c
-159e588b6f991780a35cd5ffb6819943 *src/matrix.c
+2ed42083fc5127aadfeb756bd63c4090 *src/matrix.c
 e3aa67e7eaaa6a2d62e58b1e460aaf1e *src/ptree.c
 33a670726ab07a303f0ce861556d7850 *src/similarity.c
 32935964526a4494f601ac5296b28409 *tests/Rgui.R

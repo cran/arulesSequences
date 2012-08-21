@@ -1,6 +1,10 @@
 
 NEWS/ChangeLog for arulesSequences
 
+0.2-3	2012-11-30
+
+    o Duplicated arraySubscript for code isolation.
+
 0.2-2	2012-08-21
 
     o Fixed PACKAGE argument in .Call calls.
