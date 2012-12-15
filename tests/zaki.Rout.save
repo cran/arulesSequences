@@ -1,8 +1,8 @@
 
-R version 2.14.1 Patched (2011-12-26 r58001)
-Copyright (C) 2011 The R Foundation for Statistical Computing
+R Under development (unstable) (2012-12-04 r61209) -- "Unsuffered Consequences"
+Copyright (C) 2012 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
-Platform: i486-pc-linux-gnu (32-bit)
+Platform: x86_64-unknown-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -22,18 +22,11 @@ Loading required package: arules
 Loading required package: Matrix
 Loading required package: lattice
 
-Attaching package: 'Matrix'
-
-The following object(s) are masked from 'package:base':
-
-    det
-
-
 Attaching package: 'arules'
 
-The following object(s) are masked from 'package:base':
+The following object is masked from 'package:base':
 
-    %in%
+    %in%, write
 
 > 
 > ## basic tests using the small running 
@@ -68,11 +61,11 @@ bfstype : FALSE
 verbose :  TRUE
 summary : FALSE
 
-preprocessing ... 1 partition(s), 0 MB [0.064s]
-mining transactions ... 0 MB [0.02s]
-reading sequences ... [0.058s]
+preprocessing ... 1 partition(s), 0 MB [0.021s]
+mining transactions ... 0 MB [0.017s]
+reading sequences ... [0.028s]
 
-total elapsed time: 0.142s
+total elapsed time: 0.066s
 > s1
 set of 18 sequences 
 > s2 <- cspade(zaki, parameter = list(support = 0.4, maxsize = 2, maxlen = 2))
@@ -463,3 +456,6 @@ mining info:
 > 
 > ###
 > 
+> proc.time()
+   user  system elapsed 
+  3.168   0.112   3.289 

@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <fstream>
 
-#ifndef _WIN32
+#if (!defined _WIN32 && defined _COMPAT_)
 #include <strstream>
 #endif
 
@@ -24,7 +24,7 @@ ofstream fout;
 
 void convbin(char *inBuf, int inSize)
 {
-#ifndef _WIN32
+#if (!defined _WIN32 && defined _COMPAT_)
    char inStr[wdSize];
    istrstream ist(inBuf, inSize);
    int it;

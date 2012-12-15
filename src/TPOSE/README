@@ -4,7 +4,8 @@ R's default C compiler flags and therefore mmap.o must be omitted from
 the dependencies in Makefile.
 
 For backward compatibility O_BINARY and the replacement of strstream.h 
-are restricted to WINDOWS.
+are restricted to WINDOWS. However, due to compiler warnings we now use
+the replacement on all platforms.
 
-ceeboo 2012
+ceeboo 2012 2013
 

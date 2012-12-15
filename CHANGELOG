@@ -1,6 +1,10 @@
 
 NEWS/ChangeLog for arulesSequences
 
+0.2-4	2012-12-15
+
+    o Upgraded dependencies and tests/*.Rout.save.
+
 0.2-3	2012-11-30
 
     o Duplicated arraySubscript for code isolation.
