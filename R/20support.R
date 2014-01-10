@@ -1,12 +1,12 @@
 
-## ceeboo 2008
+## ceeboo 2008, 2014
 
 setMethod("support", signature(x = "sequences"),
     function(x, transactions, type = c("relative", "absolute"), control = NULL)
     {
         ## FIXME allow sequences?
-        if (!inherits(transactions, "transactions"))
-            stop("'transactions' not of class transactions")
+        if (!inherits(transactions, c("transactions", "sequences")))
+            stop("'transactions' not of class transactions or sequences")
 
         type <- match.arg(type)
         verbose <- if (is.null(control$verbose)) FALSE else control$verbose
@@ -63,6 +63,30 @@ setMethod("support", signature(x = "sequences"),
         switch(type,
             relative = supports / y@data@Dim[2],
             absolute = supports)
+    }
+)
+
+##
+setMethod("supportingTransactions", signature(x = "sequences"), 
+    function(x, transactions, ...) {
+	if (!inherits(transactions, c("transactions", "sequences")))
+            stop("'transactions' not of class transactions or sequences")
+	y <- as(transactions, "timedsequences")
+        s <- is.subset(x, y)
+        s <- new("ngCMatrix", 
+            i = s@i, 
+            p = s@p, 
+            Dim = s@Dim 
+        )
+	## The implementation in arules is no longer
+	## exported, thus R-2.7.0 bug.
+	s <- selectMethod("t", class(s))(s)
+        new("tidLists", 
+            data = s,
+            itemInfo = data.frame(labels = I(labels(x))),
+            transactionInfo = data.frame(sequenceID = 
+		sequenceInfo(y)$sequenceID)
+        )
     }
 )
 

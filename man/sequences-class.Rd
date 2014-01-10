@@ -42,6 +42,8 @@
 %\alias{support,sequences-method}
 %\alias{unique,sequences-method}
 %\alias{subset,sequences-method}
+%\alias{tidLists,sequences-method}
+\alias{coerce,list,tidLists-method}
 \title{Class "sequences" --- Collections of Sequences}
 \description{
     Represents a collection of sequences and the associated quality measures.
@@ -66,6 +68,8 @@
 	information on a sequence.}
     \item{\code{quality}:}{a data.frame containing the quality measures
 	of a sequence.}
+    \item{\code{tidLists}:}{an object of class \code{\linkS4class{tidLists}}
+	mapping supporting sequences, or \code{NULL}.}
   }
 }
 \section{Extends}{

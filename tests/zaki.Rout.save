@@ -1,8 +1,7 @@
 
-R Under development (unstable) (2012-12-04 r61209) -- "Unsuffered Consequences"
-Copyright (C) 2012 The R Foundation for Statistical Computing
-ISBN 3-900051-07-0
-Platform: x86_64-unknown-linux-gnu (64-bit)
+R version 3.0.2 (2013-09-25) -- "Frisbee Sailing"
+Copyright (C) 2013 The R Foundation for Statistical Computing
+Platform: i686-pc-linux-gnu (32-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -20,11 +19,10 @@ Type 'q()' to quit R.
 > library("arulesSequences")
 Loading required package: arules
 Loading required package: Matrix
-Loading required package: lattice
 
 Attaching package: 'arules'
 
-The following object is masked from 'package:base':
+The following objects are masked from 'package:base':
 
     %in%, write
 
@@ -57,15 +55,16 @@ maxsize :  10
 maxlen  :  10
 
 algorithmic control:
-bfstype : FALSE
-verbose :  TRUE
-summary : FALSE
+bfstype  : FALSE
+verbose  :  TRUE
+summary  : FALSE
+tidLists : FALSE
 
-preprocessing ... 1 partition(s), 0 MB [0.021s]
-mining transactions ... 0 MB [0.017s]
-reading sequences ... [0.028s]
+preprocessing ... 1 partition(s), 0 MB [0.039s]
+mining transactions ... 0 MB [0.009s]
+reading sequences ... [0.024s]
 
-total elapsed time: 0.066s
+total elapsed time: 0.072s
 > s1
 set of 18 sequences 
 > s2 <- cspade(zaki, parameter = list(support = 0.4, maxsize = 2, maxlen = 2))
@@ -115,6 +114,8 @@ summary of quality measures:
  Mean   :0.6528  
  3rd Qu.:0.7500  
  Max.   :1.0000  
+
+includes transaction ID lists: FALSE 
 
 mining info:
  data ntransactions nsequences support
@@ -454,8 +455,62 @@ mining info:
 > ## fixme: different orders of item labels
 > #all.equal(z, c(z[1,reduce=TRUE], z[-1,reduce=TRUE]))
 > 
+> ## tidLists
+> 
+> s1 <- cspade(zaki, parameter = list(support = 0.4), 
++                    control   = list(verbose =TRUE, tidLists = TRUE))
+
+parameter specification:
+support : 0.4
+maxsize :  10
+maxlen  :  10
+
+algorithmic control:
+bfstype  : FALSE
+verbose  :  TRUE
+summary  : FALSE
+tidLists :  TRUE
+
+preprocessing ... 1 partition(s), 0 MB [0.014s]
+mining transactions ... 0 MB [0.007s]
+reading sequences ... [0.025s]
+
+total elapsed time: 0.046s
+> summary(tidLists(s1))
+tidLists in sparse format with
+ 18 items/itemsets (rows) and
+ 4 transactions (columns)
+
+most frequent transactions:
+      1       2       4       6       5 (Other) 
+      4       4       4       4       3      28 
+
+item frequency distribution:
+sizes
+ 2  3  4 
+11  3  4 
+
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  2.000   2.000   2.000   2.611   3.000   4.000 
+
+includes extended item information - examples:
+  labels
+1  <{A}>
+2  <{B}>
+3  <{D}>
+> transactionInfo(tidLists(s1))
+  sequenceID
+1          1
+2          2
+3          3
+4          4
+> 
+> z <- supportingTransactions(s1, zaki)
+> all.equal(tidLists(s1[1:4, ]), z[1:4, ])
+[1] TRUE
+> 
 > ###
 > 
 > proc.time()
    user  system elapsed 
-  3.168   0.112   3.289 
+  5.444   0.140   5.610 

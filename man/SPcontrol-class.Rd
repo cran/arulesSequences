@@ -36,6 +36,8 @@
 	runtime information should be displayed (default \code{FALSE}).}
     \item{\code{summary}:}{a logical value specifying if summary 
 	information should be preserved (default \code{FALSE}).}
+    \item{\code{tidLists}:}{a logical value specifying if transaction
+	ID lists should be included in the result (default \code{FALSE}).}
   }
 }
 \section{Methods}{

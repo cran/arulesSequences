@@ -26,7 +26,7 @@ Loading required package: lattice
 
 Attaching package: 'arules'
 
-The following object is masked from 'package:base':
+The following objects are masked from 'package:base':
 
     %in%, write
 

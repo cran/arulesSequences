@@ -6,13 +6,14 @@
 ## class "transactions". hence the class name serves as
 ## a blocker.
 ##
-## ceeboo 2007, 2008
+## ceeboo 2007, 2008, 2014
 
 setClass("sequences",
     representation(
         elements     = "itemsets",
         data         = "sgCMatrix",
-        sequenceInfo = "data.frame"
+        sequenceInfo = "data.frame",
+	tidLists     = "tidLists_or_NULL"
     ),
     contains = "associations",
 
@@ -27,6 +28,9 @@ setClass("sequences",
         if (length(object@sequenceInfo) &&
             dim(object@sequenceInfo)[1] != dim(object@data)[2])
             return("slots 'data' and 'sequenceInfo' do not conform")
+	if (length(object@tidLists) &&
+	    dim(object@tidLists)[1] != dim(object@data)[2])
+	    return("slots 'data' and 'tidLists' do not conform")
 
         TRUE
     }
@@ -157,6 +161,8 @@ setMethod("[", signature(x = "sequences", i = "ANY", j = "ANY", drop = "ANY"),
                 x@quality <- x@quality[i,, drop = FALSE]
             if (length(x@sequenceInfo))
                 x@sequenceInfo <- x@sequenceInfo[i,, drop = FALSE]
+	    if (length(x@tidLists))
+		x@tidLists <- x@tidLists[i,, drop = FALSE]
             x@data <- x@data[,i]
         }
         if (reduce) {
@@ -213,7 +219,10 @@ setAs("list", "sequences",
 
         new("sequences", elements     = e,
                          data         = s,
-                         sequenceInfo = data.frame(sequenceID = names(from)))
+                         sequenceInfo = data.frame(sequenceID =
+			    if (!is.null(names(from)))
+				I(names(from))
+			 ))
     }
 )
 
@@ -386,7 +395,8 @@ setClass("summary.sequences",
         items    = "integer",
         elements = "integer",
         sizes    = "table",
-        lengths  = "table"
+        lengths  = "table",
+	tidLists = "logical"
     ),
     contains = "summary.associations"
 )
@@ -422,7 +432,8 @@ setMethod("summary", signature(object = "sequences"),
                 sizes    = table(sizes = size(object, "size")),
                 lengths  = table(lengths = size(object, "length")),
                 quality  = q,
-                info     = object@info)
+                info     = object@info,
+		tidLists = !is.null(object@tidLists))
     }
 )
 
@@ -444,7 +455,7 @@ setMethod("show", signature(object = "summary.sequences"),
 
             cat("\nsummary of quality measures:\n")
             print(object@quality)
-            
+	    cat("\nincludes transaction ID lists:", object@tidLists, "\n")           
             if (length(object@info)) {
                 info <- object@info
                 if (is.language(info$data)) info$data <- deparse(info$data)
@@ -601,6 +612,8 @@ setMethod("c", signature(x = "sequences"),
             if (y@data@Dim[1] <  x@data@Dim[1])
                 y@data@Dim[1] <- x@data@Dim[1]
             x@data <- .Call(R_cbind_ngCMatrix, x@data, y@data)
+	    ## see arules
+	    x@tidLists <- NULL
         }
         validObject(x, complete = TRUE)
         x
@@ -618,5 +631,10 @@ setMethod("subset", signature(x = "sequences"),
         x[i]
     }
 )
+
+setMethod("tidLists", signature(x = "sequences"),
+    function(x) x@tidLists
+)
+
 
 ###

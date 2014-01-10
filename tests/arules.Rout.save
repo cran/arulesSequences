@@ -1,0 +1,68 @@
+
+R version 3.0.2 (2013-09-25) -- "Frisbee Sailing"
+Copyright (C) 2013 The R Foundation for Statistical Computing
+Platform: i686-pc-linux-gnu (32-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> 
+> ### ceeboo 2014
+> 
+> library("arulesSequences")
+Loading required package: arules
+Loading required package: Matrix
+
+Attaching package: 'arules'
+
+The following objects are masked from 'package:base':
+
+    %in%, write
+
+> 
+> ##
+> z <- list(a = c("A","B"), b = c("D"), c = c("A","H"))
+> z <- as(z, "tidLists")
+> summary(z)
+tidLists in sparse format with
+ 3 items/itemsets (rows) and
+ 4 transactions (columns)
+
+most frequent transactions:
+      1       3       2 (Other) 
+      2       2       1       0 
+
+item frequency distribution:
+sizes
+1 2 
+1 2 
+
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  1.000   1.500   2.000   1.667   2.000   2.000 
+
+includes extended item information - examples:
+  labels
+1      a
+2      b
+3      c
+> transactionInfo(z)
+  labels
+1      A
+2      B
+3      D
+4      H
+> 
+> ###
+> 
+> proc.time()
+   user  system elapsed 
+  3.684   0.060   3.744 

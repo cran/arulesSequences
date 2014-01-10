@@ -11,6 +11,7 @@ useDynLib(arulesSequences,
     R_as_dist_dsCMatrix
 )
 
+import("methods")
 import("arules")
 
 export(

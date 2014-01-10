@@ -51,7 +51,7 @@ cspade(data, parameter = NULL, control = NULL, tmpdir = tempdir())
 
     The current working directory (see \code{\link{getwd}}) must be writable.
 
-    \code{sequenceID} and \code{eventID} are coerced to factor if necessary.
+    \code{sequenceID} and \code{eventID} are coerced to factor if not integer.
 
 #ifdef windows
     If this interface does not work with \code{Rgui} use \code{Rterm} as
@@ -74,9 +74,14 @@ cspade(data, parameter = NULL, control = NULL, tmpdir = tempdir())
 data(zaki)
 ## mine frequent sequences
 s1 <- cspade(zaki, parameter = list(support = 0.4), 
-		   control   = list(verbose = TRUE))
+		   control   = list(verbose = TRUE, tidLists = TRUE))
 summary(s1)
 as(s1, "data.frame")
+
+##
+summary(tidLists(s1))
+transactionInfo(tidLists(s1))
+
 ## use timing constraint
 s2 <- cspade(zaki, parameter = list(support = 0.4, maxwin = 5))
 as(s2, "data.frame")

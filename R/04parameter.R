@@ -1,7 +1,7 @@
 
 ## this is definitely insane
 ##
-## ceeboo 2007, 2008
+## ceeboo 2007, 2008, 2014
 
 setGeneric("format")
 
@@ -116,10 +116,12 @@ setClass("SPcontrol",
         numpart = "integer",
         bfstype = "logical",
         verbose = "logical",
-        summary = "logical"
+        summary = "logical",
+       tidLists = "logical"
     ),
 
-    prototype(bfstype = FALSE, verbose = FALSE, summary = FALSE),
+    prototype(bfstype = FALSE, verbose = FALSE, summary = FALSE,
+	     tidLists = FALSE),
 
     validity = function(object) {
         if (length(object@memsize) && object@memsize < 16)

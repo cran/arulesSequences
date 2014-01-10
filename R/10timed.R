@@ -5,7 +5,7 @@
 ## class transactions but the latter can contain
 ## additional event information.
 ##
-## ceeboo 2007, 2008
+## ceeboo 2007, 2008, 2014
 
 setClass("timedsequences",
     representation(
@@ -73,7 +73,7 @@ setAs("transactions", "timedsequences",
         s <- .Call(R_pnindex, e@items@data, s@data,  FALSE)
         s <- tapply(s, from@transactionInfo$sequenceID, list)
 
-        n <- data.frame(sequenceID = names(s))
+        n <- data.frame(sequenceID = I(names(s)))
         dim(s) <- NULL
         
         p <- cumsum(sapply(s, length))
@@ -507,7 +507,7 @@ setAs("timedsequences", "transactions",
         t <- from@time@i + 1L
         t <- data.frame(sequenceID = rep(from@sequenceInfo$sequenceID,
                                          size(from)),
-                        eventID    = from@timeInfo$labels[t])
+                        eventID    = c(from@timeInfo$labels[t]))
 
         new("transactions", as(i, "itemMatrix"),
                             transactionInfo = t)

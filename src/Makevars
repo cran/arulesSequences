@@ -10,11 +10,13 @@ bin:
 	## binaries
 	( cd TPOSE;  \
 	  make	CXX="$(CXX)" CXXFLAGS="$(CXXFLAGS)"\
+		LDFLAGS="$(LDFLAGS)"\
 		BINDIR="$(BINDIR)"\
 		install-bin \
 	)
 	( cd cSPADE; \
 	  make	CXX="$(CXX)" CXXFLAGS="$(CXXFLAGS)"\
+		LDFLAGS="$(LDFLAGS)"\
 		BINDIR="$(BINDIR)"\
 		install-bin \
 	)

@@ -125,4 +125,14 @@ all.equal(z, c(z[1], z[-1]))
 ## fixme: different orders of item labels
 #all.equal(z, c(z[1,reduce=TRUE], z[-1,reduce=TRUE]))
 
+## tidLists
+
+s1 <- cspade(zaki, parameter = list(support = 0.4), 
+                   control   = list(verbose =TRUE, tidLists = TRUE))
+summary(tidLists(s1))
+transactionInfo(tidLists(s1))
+
+z <- supportingTransactions(s1, zaki)
+all.equal(tidLists(s1[1:4, ]), z[1:4, ])
+
 ###

@@ -259,11 +259,11 @@ void process_cust_invert(int cid, int curcnt, int *curit){
    for (i=0; i < curcnt; i=nv1){
       nv1 = i;
       it1 = curit[i];
-      while (it1 == curit[nv1] && nv1 < curcnt) nv1+=2;
+      while (nv1 < curcnt && it1 == curit[nv1]) nv1+=2;
       for (j=i; j < curcnt; j=nv2){
          nv2 = j;
          it2 = curit[j];
-         while (it2 == curit[nv2] && nv2 < curcnt) nv2+=2;
+         while (nv2 < curcnt && it2 == curit[nv2]) nv2+=2;
          if (seq_sup[it1] && curit[i+1]+min_gap <= curit[nv2-1]){
             for (k=i, l=j; k < nv1 && l < nv2; ){
                diff = curit[l+1] - curit[k+1];

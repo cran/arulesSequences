@@ -291,8 +291,8 @@ void get_2newf_intersect(Itemset *ljoin, Itemset *ejoin,
       else{
          nval1 = i;
          nval2 = j;
-         while(it1[i] == it1[nval1] && nval1 < sup1) nval1 += 2;
-         while(it2[j] == it2[nval2] && nval2 < sup2) nval2 += 2;
+         while(nval1 < sup1 && it1[i] == it1[nval1]) nval1 += 2;
+         while(nval2 < sup2 && it2[j] == it2[nval2]) nval2 += 2;
          if (ljoin && it1[i+1]+min_gap <= it2[nval2-1]){
             //add tid
             lflge = 0;
@@ -394,19 +394,19 @@ void get_tmpnewf_intersect(Itemset *&ljoin, Itemset *&ejoin, Itemset *&mjoin,
       jcid = it2->ival(j);
       if (icid > jcid){
          //df must be incremented only once per customer
-         while(jcid == it2->ival(j) && j < it2->ivalsize()) j += 2;
+         while(j < it2->ivalsize() && jcid == it2->ival(j)) j += 2;
          df2++;
       }
       else if (icid < jcid){
-         while(icid == it1->ival(i) && i < it1->ivalsize()) i += 2;
+         while(i < it1->ivalsize() && icid == it1->ival(i)) i += 2;
          df1++;
       }      
       else{
          nval1 = i;
          nval2 = j;
-         while(it1->ival(i) == it1->ival(nval1) && nval1 < it1->ivalsize())
+         while(nval1 < it1->ivalsize() && it1->ival(i) == it1->ival(nval1))
             nval1 += 2;
-         while(it2->ival(j) == it2->ival(nval2) && nval2 < it2->ivalsize())
+         while(nval2 < it2->ivalsize() && it2->ival(j) == it2->ival(nval2))
             nval2 += 2;
 
          if (ljoin && it1->ival(i+1)+min_gap <= it2->ival(nval2-1)){

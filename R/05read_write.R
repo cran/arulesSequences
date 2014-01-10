@@ -2,7 +2,7 @@
 ##
 ## data interfaces to cSPADE
 ##
-## ceeboo 2007, 2008, 2012
+## ceeboo 2007, 2008, 2012, 2014
 
 .as_integer <- function(x) {
     ## preserve factor
@@ -37,6 +37,10 @@ read_baskets <- function(con, sep = "[ \t]+", info = NULL, iteminfo = NULL) {
             info$eventID <- .as_integer(info$eventID)
         if (is.factor(info$eventID))
             warning("'eventID' is a factor")
+	if (TRUE) {
+	    i <- sapply(info, is.character)
+	    info[i] <- lapply(info[i], type.convert)
+	}
         transactionInfo(x) <- data.frame(info)
     }
     if (!is.null(iteminfo)) {
@@ -57,7 +61,8 @@ read_baskets <- function(con, sep = "[ \t]+", info = NULL, iteminfo = NULL) {
 
 ## currently internal only
 
-read_spade <- function(con = "", decode = FALSE, labels = NULL) {
+read_spade <- 
+function(con = "", decode = FALSE, labels = NULL, transactions = NULL) {
     if (con == "")
         con <- stdin()
     else 
@@ -95,6 +100,24 @@ read_spade <- function(con = "", decode = FALSE, labels = NULL) {
     #         the -y option).
 
     c <- strsplit(sapply(x, "[", 2), split = " ")
+    if (!is.null(transactions)) {
+	k <- lapply(c, function(x, i)
+		## see NOTE 3)
+		x <- matrix(x[i], nrow = 2L)[1L, ],
+	    -c(1L:2L)	## see NOTE 1)
+	)
+	k <- as(k, "tidLists")
+	s <- k@transactionInfo$labels
+	t <- transactionInfo(transactions)$sequenceID
+	k@transactionInfo <- data.frame(sequenceID =
+	    if (is.factor(t))
+		I( levels(t)[as.integer(s)])
+	    else
+		I(s)
+	)
+	transactions <- k
+	rm(k, s, t)
+    }
     c <- as.integer(sapply(c, "[", 1))
    
     # split into a list of lists (sequences) each 
@@ -122,6 +145,11 @@ read_spade <- function(con = "", decode = FALSE, labels = NULL) {
     if (!is.null(labels)) {
         k <- as.integer(as.character(x@elements@items@itemInfo$labels))
         itemLabels(x@elements@items) <- as.character(labels[k])
+    }
+    if (!is.null(transactions)) {
+	transactions@itemInfo <- data.frame(labels = 
+	    I(labels(x)))
+	x@tidLists <- transactions
     }
     validObject(x)
     x
@@ -269,6 +297,8 @@ function(data, parameter = NULL, control = NULL, tmpdir = tempdir()) {
 
     if (!length(control@bfstype) || !control@bfstype)
         opt <- paste(opt, "-r", collapse = "")
+    if (control@tidLists)
+	opt <- paste(opt, "-y", collapse = "")
 
     if (control@verbose) {
         t2 <- proc.time()
@@ -296,7 +326,11 @@ function(data, parameter = NULL, control = NULL, tmpdir = tempdir()) {
         cat("\nreading sequences ...")
     }
 
-    out <- read_spade(con = out, labels = itemLabels(data))
+    out <- read_spade(con = out, labels = itemLabels(data),
+	transactions = 
+	    if (control@tidLists)
+		data
+    ) 
 
     out@info <- c(
         data = match.call()$data,

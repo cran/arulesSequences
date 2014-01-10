@@ -1,16 +1,15 @@
 Package: arulesSequences
-Version: 0.2-4
-Date: 2012-12-15
+Version: 0.2-5
 Title: Mining frequent sequences
 Author: Christian Buchta and Michael Hahsler, with contributions from
         Daniel Diaz
 Maintainer: Christian Buchta <christian.buchta@wu.ac.at>
 Description: Add-on for arules to handle and mine frequent sequences.
-        Provides interfaces to the C++ implementation of cSPADE by
-        Mohammed J. Zaki.
-Depends: R (>= 2.15.2), methods, arules (>= 1.0-12)
+    Provides interfaces to the C++ implementation of cSPADE by  
+    Mohammed J. Zaki.
+Depends: R (>= 3.0.2), methods, arules (>= 1.1-0)
 License: GPL-2
-Imports: arules
-Packaged: 2013-01-06 16:44:25 UTC; hornik
+Packaged: 2014-01-10 16:46:37 UTC; buchta
+NeedsCompilation: yes
 Repository: CRAN
-Date/Publication: 2013-01-07 14:14:56
+Date/Publication: 2014-01-11 16:02:06

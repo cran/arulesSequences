@@ -42,7 +42,7 @@ read_baskets(con, sep = "[ \t]+", info = NULL, iteminfo = NULL)
 \note{
     Currently, it is not checked if column \code{eventID} defines a
     temporal order. \code{sequenceID} and \code{eventID} will be coerced
-    to factor if necessary.
+    to factor if not integer.
 
     For efficiency, the item labels are not sorted and, thus, are in the
     order they appear in the data.

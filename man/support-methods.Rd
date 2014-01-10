@@ -2,6 +2,7 @@
 \docType{methods}
 \alias{support}
 \alias{support,sequences-method}
+\alias{supportingTransactions,sequences-method}
 \title{Support Counting for Sequences}
 \description{
     Compute the relative or absolute support of an arbitrary collection
@@ -15,7 +16,8 @@
 \arguments{
   \item{x}{an object.}
   \item{transactions}{an object of class
-  \code{\link[arules:transactions-class]{transactions}}.}
+  \code{\link[arules:transactions-class]{transactions}} or
+  \code{\linkS4class{sequences}}.}
   \item{type}{a character value specifying the scale of support (relative
     or absolute).}
 % this is awkward
@@ -50,5 +52,9 @@ example(cspade)
 ## recompute support
 s <- support(s2, zaki, control = list(verbose = TRUE))
 cbind(as(s2, "data.frame"), upper = s)
+
+## the same
+s <- supportingTransactions(s2, zaki)
+itemFrequency(s)
 }
 \keyword{models}
