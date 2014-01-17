@@ -30,6 +30,9 @@ cspade(data, parameter = NULL, control = NULL, tmpdir = tempdir())
     of slot \code{transactionInfo}. Both identifiers must be in (blockwise)
     ascending order.
 
+    Class information (on sequences or customers) is taken from component
+    \code{classID}, if available. 
+
     The amount of disk space used by temporary files is reported in
     verbose mode (see class \code{\linkS4class{SPcontrol}}).
 
@@ -85,6 +88,13 @@ transactionInfo(tidLists(s1))
 ## use timing constraint
 s2 <- cspade(zaki, parameter = list(support = 0.4, maxwin = 5))
 as(s2, "data.frame")
+
+## use classification
+t <- zaki
+transactionInfo(t)$classID <-
+    transactionInfo(t)$sequenceID \%\% 2 + 1L
+s3 <- cspade(t, parameter = list(support = 0.4, maxwin = 5))
+as(s3, "data.frame")
 
 ## replace timestamps
 t <- zaki

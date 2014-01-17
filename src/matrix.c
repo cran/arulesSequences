@@ -3,7 +3,7 @@
 #include <Rdefines.h>
 
 // arraySubscript.c
-SEXP int_arraySubscript(int, SEXP, const char *, const char *, SEXP, Rboolean, SEXP);
+extern SEXP _int_array_subscript(int, SEXP, const char *, const char *, SEXP, Rboolean, SEXP);
 
 // some low-level utilities that speed up 
 // operations with sgCMatrix.
@@ -71,7 +71,7 @@ SEXP R_rowSubset_sgCMatrix(SEXP x, SEXP s) {
     
     SET_ATTRIB(x, CDR(r));
 #else
-    PROTECT(s = int_arraySubscript(0, s, "Dim", "Dimnames", x, TRUE, R_NilValue));
+    PROTECT(s = _int_array_subscript(0, s, "Dim", "Dimnames", x, TRUE, R_NilValue));
 #endif
 
     n = INTEGER(getAttrib(x, install("Dim")))[0];

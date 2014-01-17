@@ -7,7 +7,7 @@
 
 // copied from 2.14-2 src/main/subscript.c
 //
-// ceeboo 2011/11
+// ceeboo 2011/11 2014/1
 //
 #define ECALL(call, yy) if(call == R_NilValue) error(yy); else errorcall(call, yy);
 
@@ -228,8 +228,8 @@ stringSubscript(SEXP s, int ns, int nx, SEXP names,
 */
 
 SEXP
-int_arraySubscript(int dim, SEXP s, const char *dn, const char *dnn,
-		   SEXP x, Rboolean in, SEXP call)
+_int_array_subscript(int dim, SEXP s, const char *dn, const char *dnn,
+		     SEXP x, Rboolean in, SEXP call)
 {
     int nd, ns, stretch = 0;
     SEXP dnames, tmp;
@@ -272,7 +272,7 @@ int_arraySubscript(int dim, SEXP s, const char *dn, const char *dnn,
 SEXP
 R_arraySubscript(SEXP x, SEXP dim, SEXP s, SEXP dn, SEXP dnn) {
     // FIXME
-    return int_arraySubscript(INTEGER(dim)[0], s, 
+    return _int_array_subscript(INTEGER(dim)[0], s, 
 			      (const char *) CHAR(STRING_ELT(dn, 0)), 
 			      (const char *) CHAR(STRING_ELT(dnn, 0)), 
 			      x, TRUE, R_NilValue);

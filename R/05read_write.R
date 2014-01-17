@@ -62,7 +62,8 @@ read_baskets <- function(con, sep = "[ \t]+", info = NULL, iteminfo = NULL) {
 ## currently internal only
 
 read_spade <- 
-function(con = "", decode = FALSE, labels = NULL, transactions = NULL) {
+function(con = "", decode = FALSE, labels = NULL, transactions = NULL,
+		    class = NULL) {
     if (con == "")
         con <- stdin()
     else 
@@ -104,7 +105,8 @@ function(con = "", decode = FALSE, labels = NULL, transactions = NULL) {
 	k <- lapply(c, function(x, i)
 		## see NOTE 3)
 		x <- matrix(x[i], nrow = 2L)[1L, ],
-	    -c(1L:2L)	## see NOTE 1)
+		## see NOTE 1) + 2)
+		-seq_len(max(1L, length(levels(class))) + 1L)
 	)
 	k <- as(k, "tidLists")
 	s <- k@transactionInfo$labels
@@ -118,7 +120,8 @@ function(con = "", decode = FALSE, labels = NULL, transactions = NULL) {
 	transactions <- k
 	rm(k, s, t)
     }
-    c <- as.integer(sapply(c, "[", 1))
+    c <- lapply(seq_len(length(levels(class)) + 1L), function(k)
+	    as.integer(sapply(c, "[", k)))
    
     # split into a list of lists (sequences) each 
     # containing a vector of character (itemsets)
@@ -131,7 +134,9 @@ function(con = "", decode = FALSE, labels = NULL, transactions = NULL) {
         stop("the number of sequences parsed is zero")
 
     x <- as(x, "sequences")
-    x@quality <- data.frame(support = c / n)
+    names(c) <- c("support", levels(class))
+    c <- mapply("/", c, c(n, if (!is.null(class)) table(class)))
+    x@quality <- data.frame(c, check.names = FALSE)
     x@info <- list(nsequences = n)
 
     k <- which(size(x) == 1)
@@ -182,6 +187,31 @@ write_cspade <- function(x, con) {
     writeLines(r, con)
 }
 
+## Write class(ification) file (see option -c)
+##
+## NOTE the offsets must be the same as in the
+##      asc file
+write_class <- function(x, con) {
+    if (!is.factor(x))
+	stop("'x' not a factor")
+    s <- .as_integer(names(x))
+    if (!length(s))
+	s <- seq_along(x)
+    else
+	names(x) <- NULL
+    if (any(is.na(x) | is.na(s)))
+	stop("'x' invalid")
+    writeBin(con = con,
+        object = c(
+            length(levels(x)),  # number of classes
+            c(rbind(
+                s,              # SID
+                c(x) - 1L       # CLASS
+            ))
+        )
+    )
+}
+
 ## write data directly in binary format for
 ## later processing by bin/exttpose
 
@@ -229,6 +259,13 @@ function(data, parameter = NULL, control = NULL, tmpdir = tempdir()) {
         stop("'data' not of class transactions")
     if (!all(c("sequenceID", "eventID") %in% names(transactionInfo(data))))
         stop("slot transactionInfo: missing 'sequenceID' or 'eventID'")
+    ## optional
+    class <- transactionInfo(data)$classID
+    if (!is.null(class)) {
+	names(class) <- transactionInfo(data)$sequenceID
+	class <- class[!duplicated(names(class))]
+	class <- factor(class)
+    }
     if (!all(dim(data))) 
         return(new("sequences"))
     parameter <- as(parameter, "SPparameter")
@@ -283,6 +320,9 @@ function(data, parameter = NULL, control = NULL, tmpdir = tempdir()) {
             parameter@support), stdout = out)
        ) stop("system invocation failed")
     file.append("summary.out", out)
+
+    if (!is.null(class))
+	write_class(class, paste(file, "class", sep = "."))
     ## options
     if (length(parameter@maxsize))
         opt <- paste(opt, "-Z", parameter@maxsize, collapse = "")
@@ -299,6 +339,9 @@ function(data, parameter = NULL, control = NULL, tmpdir = tempdir()) {
         opt <- paste(opt, "-r", collapse = "")
     if (control@tidLists)
 	opt <- paste(opt, "-y", collapse = "")
+    if (!is.null(class))
+	opt <- paste(opt, "-c", collapse = "")
+	
 
     if (control@verbose) {
         t2 <- proc.time()
@@ -329,7 +372,8 @@ function(data, parameter = NULL, control = NULL, tmpdir = tempdir()) {
     out <- read_spade(con = out, labels = itemLabels(data),
 	transactions = 
 	    if (control@tidLists)
-		data
+		data,
+	class = class
     ) 
 
     out@info <- c(
