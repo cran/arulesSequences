@@ -1,7 +1,7 @@
-b462aed389faca87a8bfab20d0b9530e *CHANGELOG
-e65db5375301eefdf0eff590d77dc3d0 *DESCRIPTION
+ccb78953c901b1b837ef98b3f58ecccf *CHANGELOG
+3862e8e045d4f46cb9967e242969ad97 *DESCRIPTION
 9b09fe4a6ad430540113bbdc3247f5f1 *INSTALL
-8b7fc61ea477537913b0792e84067556 *NAMESPACE
+36df31c1091e9f75b9ef4a93fb18ff13 *NAMESPACE
 8689d6e5f5f4d8ac210db83ff2ae1970 *R/01matrix.R
 78d9a45459e1a77ac25e5154ce450318 *R/02sequences.R
 06bf62e3362a107aacb97bdba0ae2735 *R/03rules.R
@@ -12,7 +12,7 @@ e65db5375301eefdf0eff590d77dc3d0 *DESCRIPTION
 c9a77ab0e4988dad6f04c5ae91456781 *R/30similarity.R
 4459ad2fb0ff9d4db6eee3f3d0aae230 *R/arules.R
 c26ffc263de9001c146448c56e796bfc *R/native.R
-4024800359b97647819fe3590a4a6552 *data/zaki.rda
+418d3ca59effba138b32b22af375961d *data/zaki.rda
 ae12b459ba6fc2c9df5869f8b7b3d1fb *inst/COPYRIGHTS
 e2e39be8d8a02f68d5bf4c0d958425a6 *inst/misc/test.pat
 cca1f4a49dd7ec1be94f48e7d33f462a *inst/misc/test.txt
@@ -47,7 +47,7 @@ a0b89d682d04f0926f5fbd17cbd74f18 *src/TPOSE/README
 5833643da81ec10f6b99f7cc4bb830ad *src/TPOSE/b2a.cc
 c912e159d316cc69b5bb963f0a4fe528 *src/TPOSE/calcdb.cc
 57d19de1959cd44a97ea804d6967be14 *src/TPOSE/calcdb.h
-953fd53f5aacacab5ae8a11ed186a8cc *src/TPOSE/exttpose.cc
+65e07c56ebd9fa2a6c908b25225eb9b4 *src/TPOSE/exttpose.cc
 f1fe626bfbcef320e60c928c41defb73 *src/TPOSE/getconf.cc
 0d67dc21b759cf036ade523f9939594b *src/TPOSE/makebin.cc
 82d8560876cf734c3f6b80d944ba21d2 *src/TPOSE/mmap-win32.c
@@ -74,9 +74,9 @@ d7f02748dd68ef9b269b9a25412de934 *src/cSPADE/extl2.cc
 cf750a49bff85fb8efe9e8ba6914649c *src/cSPADE/maxgap.cc
 8caf9a04849c141d1e179920e3c11835 *src/cSPADE/maxgap.h
 b156d5b541636497ab7adf045215fb90 *src/cSPADE/mmap-win32.h
-b17d82f6c47b6564b9bf9c347a89712b *src/cSPADE/partition.cc
+dff52e72cbe6dff1215f110012e56107 *src/cSPADE/partition.cc
 30082a6537af1dbd02af97588b8edc77 *src/cSPADE/partition.h
-5847055f554847d0a9040e2c96a2e218 *src/cSPADE/sequence.cc
+82b86528635446b0bff030ae35b6180a *src/cSPADE/sequence.cc
 a0724dcf9f1f69ec2594119688bdfe99 *src/cSPADE/spade.h
 b2e2d9071887047e47b69c4d953b9d35 *src/cSPADE/win.mk
 edbf86b88b807df4a70346a928abb0f5 *src/makebin.c

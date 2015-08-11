@@ -908,7 +908,7 @@ int main(int argc, char **argv)
    seconds(ts);
    parse_args(argc, argv);
    
-   MINSUPPORT = (int) (MINSUP_PER*DBASE_NUM_TRANS+0.5);
+   MINSUPPORT = (int) ceil(MINSUP_PER*DBASE_NUM_TRANS);
    //ensure that support is at least 2
    if (!write_only_fcnt && MINSUPPORT < 1) MINSUPPORT = 1;   
    cout << "MINSUPPORT " << MINSUPPORT << " " << DBASE_NUM_TRANS << endl;

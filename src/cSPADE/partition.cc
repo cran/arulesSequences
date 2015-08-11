@@ -242,7 +242,7 @@ ClassInfo::ClassInfo(char use_class, char *classf)
    else CLASSCNT[0] = DBASE_NUM_TRANS;
    
    for (i = 0; i < NUMCLASS; i++){
-      MINSUP[i] = (int) (MINSUP_PER*CLASSCNT[i]+0.5);
+      MINSUP[i] = (int) ceil(MINSUP_PER*CLASSCNT[i]);
       if (MINSUP[i] < 1) MINSUP[i] = 1;
       //cout << "CLASS " << i << " " << CLASSCNT[i] << " " << MINSUP[i] << endl;
    }

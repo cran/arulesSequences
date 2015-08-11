@@ -80,3 +80,7 @@ exportMethods(
     "timesets",
     "unique"
 )
+
+##
+importFrom("utils", "head", "tail", "type.convert")
+

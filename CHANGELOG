@@ -1,6 +1,15 @@
 
 NEWS/ChangeLog for arulesSequences
 
+0.2-8	2015-08-08
+
+    o Added importFrom in NAMESPACE.
+
+0.2-7	2014-09-30
+
+    o Fixed sequence.cc, partition.cc and exttpose.cc to
+      use ceil() in computation of MINSUPPORT.
+
 0.2-6	2014-01-17
 
     o Fixed ambiguous int_arraySubscript name which caused 

@@ -238,7 +238,7 @@ void parse_args(int argc, char **argv)
    }
    read(c,(char *)&DBASE_NUM_TRANS,ITSZ);
    if (MINSUPPORT == -1)
-      MINSUPPORT = (int) (MINSUP_PER*DBASE_NUM_TRANS+0.5);
+      MINSUPPORT = (int) ceil(MINSUP_PER*DBASE_NUM_TRANS);
    //ensure that support is at least 2
    if (MINSUPPORT < 1) MINSUPPORT = 1;
    cout << "MINSUPPORT " << MINSUPPORT << " out of " << DBASE_NUM_TRANS << " sequences" << endl;
