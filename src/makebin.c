@@ -75,19 +75,24 @@ SEXP R_makebin(SEXP x, SEXP R_file) {
     // determine the number of sequences.
     ns = l = h = 0;
     for (i = 0; i < LENGTH(sx); i++) {
-	if ((k = INTEGER(sx)[i]) < l)
+	if ((k = INTEGER(sx)[i]) < 1)
 	    error("'sid' invalid");
 	if (k > l) {
-	    l = k;
 	    if (h == NA_INTEGER)
 		error("'eid' invalid");
 	    h = 0;
+	    l = k;
 	    ns++;
-	} else {
-	    if ((f = INTEGER(ex)[i] <= h))
+	} else
+	    if (k < l)
+		error("'sid' invalid (order)");
+	if ((f = INTEGER(ex)[i]) <= h) {
+	    if (f < 1)
 		error("'eid' invalid");
-	    h = f;
+	    else
+		error("'eid' invalid (strict order)");
 	}
+	h = f;
     }
     if (h == NA_INTEGER)
 	error("'eid' invalid");

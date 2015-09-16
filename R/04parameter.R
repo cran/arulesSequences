@@ -1,7 +1,7 @@
 
 ## this is definitely insane
 ##
-## ceeboo 2007, 2008, 2014
+## ceeboo 2007, 2008, 2014, 2015
 
 setGeneric("format")
 
@@ -43,7 +43,7 @@ setClass("SPparameter",
             return("slot maxsize : invalid range")
         if (length(object@maxlen) && object@maxlen < 1)
             return("slot maxlen : invalid range")
-        if (length(object@mingap) && object@mingap < 0)
+        if (length(object@mingap) && object@mingap < 1)
             return("slot mingap : invalid range")
         if (length(object@maxgap) && object@maxgap < 0)
             return("slot maxgap : invalid range")

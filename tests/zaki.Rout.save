@@ -1,6 +1,6 @@
 
-R version 3.0.2 (2013-09-25) -- "Frisbee Sailing"
-Copyright (C) 2013 The R Foundation for Statistical Computing
+R version 3.2.2 (2015-08-14) -- "Fire Safety"
+Copyright (C) 2015 The R Foundation for Statistical Computing
 Platform: i686-pc-linux-gnu (32-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -30,7 +30,7 @@ The following objects are masked from 'package:base':
 > ## basic tests using the small running 
 > ## example from the paper. 
 > ##
-> ## ceeboo 2007
+> ## ceeboo 2007, 2014, 2015
 > 
 > ## data set
 > 
@@ -60,11 +60,11 @@ verbose  :  TRUE
 summary  : FALSE
 tidLists : FALSE
 
-preprocessing ... 1 partition(s), 0 MB [0.039s]
-mining transactions ... 0 MB [0.009s]
-reading sequences ... [0.024s]
+preprocessing ... 1 partition(s), 0 MB [0.014s]
+mining transactions ... 0 MB [0.007s]
+reading sequences ... [0.014s]
 
-total elapsed time: 0.072s
+total elapsed time: 0.035s
 > s1
 set of 18 sequences 
 > s2 <- cspade(zaki, parameter = list(support = 0.4, maxsize = 2, maxlen = 2))
@@ -471,11 +471,11 @@ verbose  :  TRUE
 summary  : FALSE
 tidLists :  TRUE
 
-preprocessing ... 1 partition(s), 0 MB [0.014s]
-mining transactions ... 0 MB [0.007s]
-reading sequences ... [0.025s]
+preprocessing ... 1 partition(s), 0 MB [0.008s]
+mining transactions ... 0 MB [0.005s]
+reading sequences ... [0.012s]
 
-total elapsed time: 0.046s
+total elapsed time: 0.025s
 > summary(tidLists(s1))
 tidLists in sparse format with
  18 items/itemsets (rows) and
@@ -509,8 +509,18 @@ includes extended item information - examples:
 > all.equal(tidLists(s1[1:4, ]), z[1:4, ])
 [1] TRUE
 > 
+> z <- support(s1, zaki)
+> all.equal(z, quality(s1)$support)
+[1] TRUE
+> 
+> ## drop times
+> z <- as(as(zaki, "timedsequences"), "sequences")
+> z <- support(s1, z)
+> all.equal(z, quality(s1)$support)
+[1] TRUE
+> 
 > ###
 > 
 > proc.time()
    user  system elapsed 
-  5.444   0.140   5.610 
+  3.104   0.056   3.172 

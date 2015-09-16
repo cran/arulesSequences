@@ -2,7 +2,7 @@
 ##
 ## data interfaces to cSPADE
 ##
-## ceeboo 2007, 2008, 2012, 2014
+## ceeboo 2007, 2008, 2012, 2014, 2015
 
 .as_integer <- function(x) {
     ## preserve factor
@@ -17,8 +17,9 @@
     x
 }
 
-read_baskets <- function(con, sep = "[ \t]+", info = NULL, iteminfo = NULL) {
-    x <- readLines(con)
+read_baskets <- function(con, sep = "[ \t]+", info = NULL, iteminfo = NULL,
+			      encoding = "unknown") {
+    x <- readLines(con, encoding = encoding)
     x <- sub("^[ \t]+", "", x)
     x <- strsplit(x, split = sep)
     if (!is.null(info)) {
@@ -31,17 +32,29 @@ read_baskets <- function(con, sep = "[ \t]+", info = NULL, iteminfo = NULL) {
     }
     x <- as(x, "transactions")
     if (!is.null(info)) {
-        if (!is.null(info$sequenceID))
-            info$sequenceID <- .as_integer(info$sequenceID)
-        if (!is.null(info$eventID))
-            info$eventID <- .as_integer(info$eventID)
-        if (is.factor(info$eventID))
-            warning("'eventID' is a factor")
+	if (!is.null(info[['sequenceID']])) {
+	    info[['sequenceID']] <- .as_integer(info[['sequenceID']])
+	    if (is.integer(info[['sequenceID']]))
+		if (any(info[['sequenceID']] < 1L))
+		    warning("sequenceID not positive")
+	}
+	if (!is.null(info[['eventID']])) {
+            info[['eventID']] <- .as_integer(info[['eventID']])
+	    if (is.factor(info[['eventID']]))
+		warning("'eventID' is a factor")
+	    else
+		if (any(info[['eventID']] < 1L))
+		    warning("eventID not positive")
+	    if (!is.null(info[['sequenceID']]))
+		if (any(order(info[['sequenceID']], info[['eventID']]) != 
+			seq_along(info[['sequenceID']])))
+		    warning("'sequenceID' and/or 'eventID not ordered")
+	}
 	if (TRUE) {
 	    i <- sapply(info, is.character)
 	    info[i] <- lapply(info[i], type.convert)
 	}
-        transactionInfo(x) <- data.frame(info)
+        transactionInfo(x) <- data.frame(info, stringsAsFactors = FALSE)
     }
     if (!is.null(iteminfo)) {
         if (!is.data.frame(iteminfo))
@@ -51,7 +64,7 @@ read_baskets <- function(con, sep = "[ \t]+", info = NULL, iteminfo = NULL) {
             stop("the row names of 'iteminfo' do not match the item labels")
         iteminfo <- iteminfo[labels,, drop = FALSE]
         if ("labels" %in% names(iteminfo))
-            iteminfo$labels <- as.character(iteminfo$labels)
+            iteminfo[['labels']] <- as.character(iteminfo[['labels']])
         else
             iteminfo <- cbind(x@itemInfo, iteminfo)
         itemInfo(x) <- iteminfo
@@ -109,13 +122,14 @@ function(con = "", decode = FALSE, labels = NULL, transactions = NULL,
 		-seq_len(max(1L, length(levels(class))) + 1L)
 	)
 	k <- as(k, "tidLists")
-	s <- k@transactionInfo$labels
-	t <- transactionInfo(transactions)$sequenceID
+	s <- k@transactionInfo[['labels']]
+	t <- transactionInfo(transactions)[['sequenceID']]
 	k@transactionInfo <- data.frame(sequenceID =
 	    if (is.factor(t))
-		I( levels(t)[as.integer(s)])
+		   levels(t)[as.integer(s)]
 	    else
-		I(s)
+		s,
+	    stringsAsFactors = FALSE
 	)
 	transactions <- k
 	rm(k, s, t)
@@ -148,12 +162,12 @@ function(con = "", decode = FALSE, labels = NULL, transactions = NULL,
         stop("the data is incomplete")
 
     if (!is.null(labels)) {
-        k <- as.integer(as.character(x@elements@items@itemInfo$labels))
+        k <- as.integer(as.character(x@elements@items@itemInfo[['labels']]))
         itemLabels(x@elements@items) <- as.character(labels[k])
     }
     if (!is.null(transactions)) {
 	transactions@itemInfo <- data.frame(labels = 
-	    I(labels(x)))
+	    labels(x), stringsAsFactors = FALSE)
 	x@tidLists <- transactions
     }
     validObject(x)
@@ -170,14 +184,18 @@ write_cspade <- function(x, con) {
     r <- .Call(R_asList_ngCMatrix, x@data, NULL)
     r <- sapply(r, paste, collapse = " ")
     
-    sid <- .as_integer(x@transactionInfo$sequenceID)
-    if (any(sort(sid) != sid))
-        stop("sequenceID not in ascending order")
-    eid <- .as_integer(x@transactionInfo$eventID)
+    sid <- .as_integer(x@transactionInfo[['sequenceID']])
+    if (is.integer(sid))
+	if (any(sid < 1L))
+	    stop("'sequenceID' not positive")
+    eid <- .as_integer(x@transactionInfo[['eventID']])
     if (is.factor(eid))
         warning("'eventID' is a factor")
-    if (any(tapply(eid, sid, function(x) any(sort(x) != x))))
-        stop("eventID not in blockwise ascending order")
+    else
+	if (any(eid < 1L))
+	    stop("'eventID' not positive")
+    if (any(order(sid, eid) != seq_along(sid)))
+        stop("'sequenceID' and/or 'eventID' not ordered")
 
     r <- rbind(as.character(as.integer(sid)),
                as.character(as.integer(eid)),
@@ -219,8 +237,8 @@ makebin <- function(x, file) {
     if (!inherits(x, "transactions"))
         stop("'x' not of class transactions")
 
-    sid <- .as_integer(x@transactionInfo$sequenceID)
-    eid <- .as_integer(x@transactionInfo$eventID)
+    sid <- .as_integer(x@transactionInfo[['sequenceID']])
+    eid <- .as_integer(x@transactionInfo[['eventID']])
     if (is.factor(eid))
         warning("'eventID' is a factor")
 
@@ -258,11 +276,11 @@ function(data, parameter = NULL, control = NULL, tmpdir = tempdir()) {
     if (!inherits(data, "transactions"))
         stop("'data' not of class transactions")
     if (!all(c("sequenceID", "eventID") %in% names(transactionInfo(data))))
-        stop("slot transactionInfo: missing 'sequenceID' or 'eventID'")
+        stop("slot transactionInfo: missing 'sequenceID' and/or 'eventID'")
     ## optional
-    class <- transactionInfo(data)$classID
+    class <- transactionInfo(data)[['classID']]
     if (!is.null(class)) {
-	names(class) <- transactionInfo(data)$sequenceID
+	names(class) <- transactionInfo(data)[['sequenceID']]
 	class <- class[!duplicated(names(class))]
 	class <- factor(class)
     }
@@ -323,6 +341,7 @@ function(data, parameter = NULL, control = NULL, tmpdir = tempdir()) {
 
     if (!is.null(class))
 	write_class(class, paste(file, "class", sep = "."))
+
     ## options
     if (length(parameter@maxsize))
         opt <- paste(opt, "-Z", parameter@maxsize, collapse = "")
@@ -341,7 +360,6 @@ function(data, parameter = NULL, control = NULL, tmpdir = tempdir()) {
 	opt <- paste(opt, "-y", collapse = "")
     if (!is.null(class))
 	opt <- paste(opt, "-c", collapse = "")
-	
 
     if (control@verbose) {
         t2 <- proc.time()
@@ -355,10 +373,20 @@ function(data, parameter = NULL, control = NULL, tmpdir = tempdir()) {
     }
 
     out <- paste(file, "out", sep = ".")
-    if (system2(file.path(exe, "spade"), args = c(
+    ## workaround
+    if (!file.exists(paste(file, "tpose", sep = ".")))
+	local({
+	    n <- readBin(paste(file, "conf", sep = "."), "integer") 
+	    cat(file = out, 
+		sprintf("MINSUPPORT %s out of %s sequences\n", 
+			ceiling(parameter@support * n), n)
+	    )
+	})
+    else
+	if (system2(file.path(exe, "spade"), args = c(
 	    "-i", file, "-s", parameter@support, opt, "-e", nop, "-o"), 
 	    stdout = out)
-       ) stop("system invocation failed")
+	) stop("system invocation failed")
 
     if (control@verbose) {
         t3 <- proc.time()

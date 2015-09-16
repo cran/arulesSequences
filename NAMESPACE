@@ -5,10 +5,9 @@ useDynLib(arulesSequences,
     R_colAppend_sgCMatrix,
     R_valid_sgCMatrix,
     R_firstOrder_sgCMatrix,
-    R_pnscount,
-    R_pnsindex,
     R_similarity_sgCMatrix,
-    R_as_dist_dsCMatrix
+    R_as_dist_dsCMatrix,
+    R_ilscount
 )
 
 import("methods")

@@ -1,7 +1,7 @@
 ##
 ## Import native symbols.
 ##
-## ceeboo 2012
+## ceeboo 2012, 2015
 
 .onLoad <- 
 function(libname, pkgname) {
@@ -21,6 +21,7 @@ function(libname, pkgname) {
     importNativeSymbol("R_rowSubset_ngCMatrix", "arules")
     importNativeSymbol("R_colSubset_ngCMatrix", "arules")
     importNativeSymbol("R_pnindex",             "arules")
+    importNativeSymbol("R_pnrindex",            "arules")
 }
 
 ###

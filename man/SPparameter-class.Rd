@@ -36,7 +36,7 @@
 	of elements of a sequence (default 10, range > 0).}
     \item{\code{mingap}:}{an integer value specifying the minimum time 
 	difference between consecutive elements of a sequence
-	(default none, range >= 0).}
+	(default none, range >= 1).}
     \item{\code{maxgap}:}{an integer value specifying the maximum time
 	difference between consecutive elements of a sequence
 	(default none, range >= 0).}

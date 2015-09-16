@@ -1,0 +1,107 @@
+
+R version 3.2.2 (2015-08-14) -- "Fire Safety"
+Copyright (C) 2015 The R Foundation for Statistical Computing
+Platform: i686-pc-linux-gnu (32-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> 
+> ### ceeboo 2015
+> 
+> library("arulesSequences")
+Loading required package: arules
+Loading required package: Matrix
+
+Attaching package: 'arules'
+
+The following objects are masked from 'package:base':
+
+    %in%, write
+
+> 
+> .string2sequences <-
++ function(x) {
++     x <- lapply(strsplit(x, split = " "), strsplit, split = "")
++     x <- unlist(x, recursive = FALSE)
++     as(x, "sequences")
++ }
+> 
+> ## repeating
+> t <- paste(
++     1, 
++     c(10, 15, 18, 19), 
++     c("A", "A", "A", "A"),
++     collapse = "\n"
++ )
+> t <- textConnection(t)
+> t <- read_baskets(t, info = c("sequenceID", "eventID"))
+> as(t, "data.frame")
+  items sequenceID eventID
+1   {A}          1      10
+2   {A}          1      15
+3   {A}          1      18
+4   {A}          1      19
+> 
+> ## The second pattern has two matches starting at 10 and 15
+> ## extending over 8 and 4 time periods. 
+> s <- c("A AAA")
+> s <- .string2sequences(s)
+> 
+> k <- 
++ list(
++     NULL,
++     ## Test if cummulation of gaps works.
++     list(parameter = list(maxwin = 5))
++ )
+> 
+> k <- mapply(function(x)
++     support(s, t, control = x),
++     k
++ )
+> 
+> cbind(as(s, "data.frame"), support = k)
+       sequence support.1 support.2
+1         <{A}>         1         1
+2 <{A},{A},{A}>         1         1
+> 
+> ## Test if optimization works.
+> s <- c("A AB")
+> s <- .string2sequences(s)
+> k <- support(s, t, control = list(verbose = TRUE))
+using method: idlists 
+
+parameter specification:
+support : NA
+maxsize : NA
+maxlen  : NA
+
+preprocessing ... P [0.008s]
+counting ... 2 sequence(s), processed 0/1 join(s) [0.00s]
+> cbind(as(s, "data.frame"), support = k)
+   sequence support
+1     <{A}>       1
+2 <{A},{B}>       0
+> 
+> ## Test if conversion works.
+> all.equal(k, support(s, as(t, "timedsequences")))
+[1] TRUE
+> 
+> k <- support(s, s, type = "absolute")
+> all.equal(k, as.integer(rowSums(is.subset(s))))
+[1] TRUE
+> 
+> ##
+> 
+> proc.time()
+   user  system elapsed 
+  2.480   0.060   2.537 

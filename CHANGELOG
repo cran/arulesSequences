@@ -1,6 +1,28 @@
 
 NEWS/ChangeLog for arulesSequences
 
+0.2-10	2015-08-31
+
+    o Removed method ptree from support-method for class
+      sequences.
+
+0.2-9	2015-08-27
+
+    o Fixed check of eid in makebin.c.
+
+    o Fixed sequence.cc. to override optional values
+      of min_gap that are lower than intended.
+
+    o Tightened the range of mingap in SPparamter-class. 
+
+    o Added method idlists to support-method for class
+      sequences.
+
+    o Added encoding to read_baskets.
+
+    o Fixed cspade to handle .idx and .tpose are not
+      created.
+
 0.2-8	2015-08-08
 
     o Added importFrom in NAMESPACE.

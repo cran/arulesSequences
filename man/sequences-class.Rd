@@ -43,7 +43,6 @@
 %\alias{unique,sequences-method}
 %\alias{subset,sequences-method}
 %\alias{tidLists,sequences-method}
-\alias{coerce,list,tidLists-method}
 \title{Class "sequences" --- Collections of Sequences}
 \description{
     Represents a collection of sequences and the associated quality measures.

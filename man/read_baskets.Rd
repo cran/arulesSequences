@@ -7,7 +7,8 @@
     \code{\link[arules:transactions-class]{transactions}}. 
 }
 \usage{
-read_baskets(con, sep = "[ \t]+", info = NULL, iteminfo = NULL)
+read_baskets(con, sep = "[ \t]+", info = NULL, iteminfo = NULL,
+             encoding = "unknown")
 }
 \arguments{
   \item{con}{an object of class \code{connection} or file name.}
@@ -16,6 +17,9 @@ read_baskets(con, sep = "[ \t]+", info = NULL, iteminfo = NULL)
   \item{info}{a character vector specifying the header for columns with
     additional transaction information.}
   \item{iteminfo}{a data frame specifying (additional) item information.} 
+  \item{encoding}{a character string indicating the encoding which is passed
+    to \code{readlines} (see \code{\link[base]{Encoding}})}.
+
 }
 \details{
     Each line of text represents a transaction where items are
@@ -23,11 +27,11 @@ read_baskets(con, sep = "[ \t]+", info = NULL, iteminfo = NULL)
     by \code{sep}.
 
     Columns with additional information such as customer or time (event)
-    identifiers are required to come before any item identifiers and must
-    be specified by \code{info}.
+    identifiers are required to come before any item identifiers and to 
+    be separated by \code{sep}, and must be specified by \code{info}. 
 
     Sequential data are identified by the presence of the column identifiers
-    \code{sequenceID} (sequence or customer identifier) and \code{eventID}
+    "sequenceID" (sequence or customer identifier) and "eventID"
     (time or event identifier) of slot \code{transactionInfo}.
 
     The row names of \code{iteminfo} must match the item identifiers
@@ -40,12 +44,8 @@ read_baskets(con, sep = "[ \t]+", info = NULL, iteminfo = NULL)
 %\references{ ~put references to the literature/web site here ~ }
 \author{Christian Buchta}
 \note{
-    Currently, it is not checked if column \code{eventID} defines a
-    temporal order. \code{sequenceID} and \code{eventID} will be coerced
-    to factor if not integer.
-
-    For efficiency, the item labels are not sorted and, thus, are in the
-    order they appear in the data.
+    The item labels are sorted in the order they appear first in the
+    data.
 }
 \seealso{
     Class
@@ -60,5 +60,14 @@ x <- read_baskets(con  = system.file("misc", "zaki.txt", package =
                                      "arulesSequences"),
 		  info = c("sequenceID","eventID","SIZE"))
 as(x, "data.frame")
+
+\dontrun{
+## calendar dates
+transactionInfo(x)$Date <-
+    as.Date(transactionInfo(x)$eventID, origin = "2015-04-01")
+transactionInfo(x)
+all.equal(transactionInfo(x)$eventID,
+          as.integer(transactionInfo(x)$Date - as.Date("2015-04-01")))
+}
 }
 \keyword{file}

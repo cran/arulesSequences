@@ -5,7 +5,7 @@
 ## class transactions but the latter can contain
 ## additional event information.
 ##
-## ceeboo 2007, 2008, 2014
+## ceeboo 2007, 2008, 2014, 2015
 
 setClass("timedsequences",
     representation(
@@ -33,16 +33,16 @@ setAs("transactions", "timedsequences",
     function(from) {
         if (!all(c("sequenceID", "eventID") %in% names(from@transactionInfo)))
             stop("slot transactionInfo: missing sequenceID or eventID")
-        if (any(is.na(from@transactionInfo$sequenceID)))
+        if (any(is.na(from@transactionInfo[['sequenceID']])))
             stop("sequenceID: missing values")
-        if (any(is.na(from@transactionInfo$eventID)))
+        if (any(is.na(from@transactionInfo[['eventID']])))
             stop("eventID: missing values")
 
-        t <- .as_integer(from@transactionInfo$eventID)
+        t <- .as_integer(from@transactionInfo[['eventID']])
         if (is.factor(t)) {
             warning("'eventID' is a factor")
 
-            k <- order(from@transactionInfo$sequenceID)
+            k <- order(from@transactionInfo[['sequenceID']])
             if (any(k != seq_len(length(k)))) {
                 warning("transactions not ordered")
 
@@ -50,10 +50,11 @@ setAs("transactions", "timedsequences",
                 t <- t[k]
             }
 
-            i <- data.frame(labels  = I(levels(t)), 
-                            eventID = seq_len(length(levels(t))))
+            i <- data.frame(labels  = levels(t), 
+                            eventID = seq_len(length(levels(t))),
+			    stringsAsFactors = FALSE)
         } else {
-            k <- order(from@transactionInfo$sequenceID, t)
+            k <- order(from@transactionInfo[['sequenceID']], t)
             if (any(k != seq_len(length(k)))) {
                 warning("transactions not ordered")
 
@@ -62,8 +63,9 @@ setAs("transactions", "timedsequences",
             }
 
             t <- factor(t)
-            i <- data.frame(labels  = I(levels(t)),
-                            eventID = as.integer(levels(t)))
+            i <- data.frame(labels  = levels(t),
+                            eventID = as.integer(levels(t)),
+			    stringsAsFactors = FALSE)
         }
 
         s <- as(from , "itemMatrix")
@@ -71,9 +73,10 @@ setAs("transactions", "timedsequences",
         e <- new("itemsets", items = unique(s))
 
         s <- .Call(R_pnindex, e@items@data, s@data,  FALSE)
-        s <- tapply(s, from@transactionInfo$sequenceID, list)
+        s <- tapply(s, from@transactionInfo[['sequenceID']], list)
 
-        n <- data.frame(sequenceID = I(names(s)))
+        n <- data.frame(sequenceID = names(s),
+			stringsAsFactors = FALSE)
         dim(s) <- NULL
         
         p <- cumsum(sapply(s, length))
@@ -138,7 +141,7 @@ setMethod("times", signature(x = "timedsequences"),
     function(x, type = c("times", "gaps", "mingap", "maxgap", "span")) {
         type <- match.arg(type)
 
-        t <- .Call(R_asList_ngCMatrix, x@time, x@timeInfo$eventID)
+        t <- .Call(R_asList_ngCMatrix, x@time, x@timeInfo[['eventID']])
         t <- sapply(t, .timefun(type))
         if (is.list(t)) {
             is.na(t) <- !sapply(t, length)
@@ -164,12 +167,12 @@ setMethod("timeFrequency", signature(x = "timedsequences"),
         if (type == "times")
             t <- NULL
         else
-            t <- x@timeInfo$eventID
+            t <- x@timeInfo[['eventID']]
         t <- .Call(R_asList_ngCMatrix, x@time, t)
         t <- lapply(t, .timefun(type))
         t <- table(unlist(t))
         if (type == "times")
-            names(t) <- x@timeInfo$labels[as.integer(names(t))]
+            names(t) <- x@timeInfo[['labels']][as.integer(names(t))]
         t
     }
 )
@@ -190,7 +193,7 @@ setMethod("timeTable", signature(x = "timedsequences"),
         if (type == "times")
             t <- NULL
         else
-            t <- x@timeInfo$eventID
+            t <- x@timeInfo[['eventID']]
         t <- .Call(R_asList_ngCMatrix, x@time, t)
 
         f <- .timefun(type)
@@ -204,7 +207,7 @@ setMethod("timeTable", signature(x = "timedsequences"),
 
         t <- table(i, unlist(t))
         if (type == "times") 
-            colnames(t) <- x@timeInfo$labels[as.integer(colnames(t))]
+            colnames(t) <- x@timeInfo[['labels']][as.integer(colnames(t))]
         names(dimnames(t))[1] <- if (itemsets) "itemsets" else "items"
         names(dimnames(t))[2] <- type
         t
@@ -214,19 +217,19 @@ setMethod("timeTable", signature(x = "timedsequences"),
 setMethod("LIST", signature(from = "timedsequences"),
     function(from, decode = TRUE) {
         d <- if (decode)
-                 as.character(from@elements@items@itemInfo$labels)
+                 as.character(from@elements@items@itemInfo[['labels']])
              else
                  NULL
 
         i <- .Call(R_asList_ngCMatrix, from@elements@items@data, d)
         i <- .Call(R_asList_ngCMatrix, from@data, i)
-        t <- .Call(R_asList_ngCMatrix, from@time, from@timeInfo$eventID)
+        t <- .Call(R_asList_ngCMatrix, from@time, from@timeInfo[['eventID']])
         i <- mapply(function(t, i) {
             names(i) <- t
             i
         }, t, i, SIMPLIFY = FALSE)
         if (decode)
-            names(i) <- from@sequenceInfo$sequenceID
+            names(i) <- from@sequenceInfo[['sequenceID']]
         i
     }
 )
@@ -253,7 +256,7 @@ setMethod("inspect", signature(x = "timedsequences"),
             x <- x[s > 0]
         }
 
-        t <- .Call(R_asList_ngCMatrix, x@time, x@timeInfo$labels)
+        t <- .Call(R_asList_ngCMatrix, x@time, x@timeInfo[['labels']])
         t <- unlist(t)
 
         p <- sequenceInfo(x)
@@ -401,9 +404,9 @@ setMethod("[", signature(x = "timedsequences", i = "ANY", j = "ANY", drop = "ANY
     function(x, i, j, k, ..., reduce = FALSE, drop) {
         if (!missing(k)) {
             if (is.character(k))
-                k <- x@timeInfo$labels %in% k
+                k <- x@timeInfo[['labels']] %in% k
             else
-                k <- x@timeInfo$labels %in% x@timeInfo$labels[k]
+                k <- x@timeInfo[['labels']] %in% x@timeInfo[['labels']][k]
 
             y <- x
             x@time <- .Call(R_rowSubset_ngCMatrix, x@time, k)
@@ -447,18 +450,20 @@ setMethod("c", signature(x = "timedsequences"),
             if (!inherits(y, "timedsequences"))
                 stop("can only combine timedsequences")
 
-            u <- unique(c(x@timeInfo$labels, y@timeInfo$labels))
+            u <- unique(c(x@timeInfo[['labels']], y@timeInfo[['labels']]))
             u <- .as_integer(u)
 
             if (is.factor(u))
-                x@timeInfo <- data.frame(labels  = I(as.character(u)),
-                                         eventID = seq_len(length(u)))
+                x@timeInfo <- data.frame(labels  = as.character(u),
+                                         eventID = seq_len(length(u)),
+					 stringsAsFactors = FALSE)
             else {
                 u <- sort(u)
-                x@timeInfo <- data.frame(labels  = I(as.character(u)),
-                                         eventID = u)
+                x@timeInfo <- data.frame(labels  = as.character(u),
+                                         eventID = u,
+					 stringsAsFactors = FALSE)
 
-                k <- match(x@timeInfo$labels, u)
+                k <- match(x@timeInfo[['labels']], u)
                 if (any(diff(k) < 0))
                     stop("'x' invalid time order")
                 if (any(k != seq(length(k))))
@@ -467,7 +472,7 @@ setMethod("c", signature(x = "timedsequences"),
                     x@time@Dim[1] <- length(u)
             }
 
-            k <- match(y@timeInfo$labels, u)
+            k <- match(y@timeInfo[['labels']], u)
             if (any(diff(k) < 0))
                 stop("'y' invalid time order")
             if (any(k != seq(length(k)))) 
@@ -505,9 +510,10 @@ setAs("timedsequences", "transactions",
         i <- from@elements@items[i]
 
         t <- from@time@i + 1L
-        t <- data.frame(sequenceID = rep(from@sequenceInfo$sequenceID,
-                                         size(from)),
-                        eventID    = c(from@timeInfo$labels[t]))
+        t <- data.frame(
+	    sequenceID = .as_integer(rep(from@sequenceInfo[['sequenceID']],
+					 size(from))),
+            eventID    = .as_integer(from@timeInfo[['labels']][t]))
 
         new("transactions", as(i, "itemMatrix"),
                             transactionInfo = t)
@@ -524,7 +530,7 @@ setMethod("firstOrder", signature(x = "timedsequences"),
     function(x, times = FALSE) {
         if (times) {
             t <- .Call(R_firstOrder_sgCMatrix, x@time)
-            rownames(t) <- colnames(t) <- x@timeInfo$labels
+            rownames(t) <- colnames(t) <- x@timeInfo[['labels']]
             t
         } else 
             .Call(R_firstOrder_sgCMatrix, x@data)

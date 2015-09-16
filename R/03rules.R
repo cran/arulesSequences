@@ -1,7 +1,7 @@
 
 ## sequencerules 
 ##
-## ceeboo 2007, 2008
+## ceeboo 2007, 2008, 2015
 
 setClass("sequencerules",
     representation(
@@ -299,7 +299,11 @@ setMethod("ruleInduction", signature(x = "sequences"),
         if (!is.logical(control$maximal))
             stop("'maximal' invalid range")
 
-        r <- data.frame(.Call(R_pnsindex, x@data, NULL, control$verbose))
+	# backport
+	r <- .Call(R_pnrindex, x@data, control$verbose)
+	r <- lapply(r, "[", !duplicated(r[[1L]], fromLast = TRUE))
+
+        r <- data.frame(r)
         names(r) <- c("i", "li", "ri")
 
         if (!all(r$li) || !all(r$ri))

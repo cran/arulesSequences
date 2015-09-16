@@ -4,7 +4,7 @@ library("arulesSequences")
 ## basic tests using the small running 
 ## example from the paper. 
 ##
-## ceeboo 2007
+## ceeboo 2007, 2014, 2015
 
 ## data set
 
@@ -134,5 +134,13 @@ transactionInfo(tidLists(s1))
 
 z <- supportingTransactions(s1, zaki)
 all.equal(tidLists(s1[1:4, ]), z[1:4, ])
+
+z <- support(s1, zaki)
+all.equal(z, quality(s1)$support)
+
+## drop times
+z <- as(as(zaki, "timedsequences"), "sequences")
+z <- support(s1, z)
+all.equal(z, quality(s1)$support)
 
 ###

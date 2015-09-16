@@ -6,7 +6,7 @@
 ## class "transactions". hence the class name serves as
 ## a blocker.
 ##
-## ceeboo 2007, 2008, 2014
+## ceeboo 2007, 2008, 2014, 2015
 
 setClass("sequences",
     representation(
@@ -203,7 +203,8 @@ setAs("list", "sequences",
         s <- .Call(R_colSubset_ngCMatrix, i, !duplicated(s))
 
         e <- new("itemMatrix", data     = s,
-                               itemInfo = data.frame(labels = I(l)))
+                               itemInfo = data.frame(labels = l,
+						     stringsAsFactors = FALSE))
 
         e <- new("itemsets", items = e)
 
@@ -221,7 +222,8 @@ setAs("list", "sequences",
                          data         = s,
                          sequenceInfo = data.frame(sequenceID =
 			    if (!is.null(names(from)))
-				I(names(from))
+				names(from),
+			    stringsAsFactors = FALSE
 			 ))
     }
 )
@@ -232,14 +234,14 @@ setAs("sequences", "list",
 setMethod("LIST", signature(from = "sequences"),
     function(from, decode = TRUE) {
         d <- if (decode) 
-                 as.character(from@elements@items@itemInfo$labels)
+                 as.character(from@elements@items@itemInfo[['labels']])
              else 
                  NULL
 
         i <- .Call(R_asList_ngCMatrix, from@elements@items@data, d)
         i <- .Call(R_asList_ngCMatrix, from@data, i)
         if (decode)
-            names(i) <- from@sequenceInfo$sequenceID
+            names(i) <- from@sequenceInfo[['sequenceID']]
         i
     }
 )
@@ -398,13 +400,23 @@ setClass("summary.sequences",
         lengths  = "table",
 	tidLists = "logical"
     ),
-    contains = "summary.associations"
+    contains = "summary.associations",
+
+    prototype(
+	length  = 0L, 
+	sizes   = table(NULL), 
+	lengths = table(NULL), 
+	quality = table(NULL)
+    )
 )
 
 setMethod("summary", signature(object = "sequences"),
     function(object, maxsum = 6) {
         if (!length(object))
-            return(new("summary.sequences", length = 0L))
+            return(new("summary.sequences", 
+		       ## see cspade
+		       info     = object@info,
+		       tidLists = FALSE))
 
         maxsum <- max(0, maxsum-1)
 
@@ -440,28 +452,27 @@ setMethod("summary", signature(object = "sequences"),
 setMethod("show", signature(object = "summary.sequences"),
     function(object) {
         cat("set of", object@length, "sequences with\n")
-        if (object@length) {
-            cat("\nmost frequent items:\n")
-            print(object@items)
+        cat("\nmost frequent items:\n")
+        print(object@items)
 
-            cat("\nmost frequent elements:\n")
-            print(object@elements)
+        cat("\nmost frequent elements:\n")
+        print(object@elements)
 
-            cat("\nelement (sequence) size distribution:\n")
-            print(object@sizes)
+        cat("\nelement (sequence) size distribution:\n")
+        print(object@sizes)
 
-            cat("\nsequence length distribution:\n")
-            print(object@lengths)
+        cat("\nsequence length distribution:\n")
+        print(object@lengths)
 
-            cat("\nsummary of quality measures:\n")
-            print(object@quality)
-	    cat("\nincludes transaction ID lists:", object@tidLists, "\n")           
-            if (length(object@info)) {
-                info <- object@info
-                if (is.language(info$data)) info$data <- deparse(info$data)
-                cat("\nmining info:\n")
-                print(data.frame(info, row.names = ""))
-            }
+        cat("\nsummary of quality measures:\n")
+        print(object@quality)
+
+	cat("\nincludes transaction ID lists:", object@tidLists, "\n")           
+        if (length(object@info)) {
+            info <- object@info
+            if (is.language(info$data)) info$data <- deparse(info$data)
+            cat("\nmining info:\n")
+            print(data.frame(info, row.names = ""))
         }
         invisible(NULL)
     }
@@ -474,15 +485,9 @@ setMethod("show", signature(object = "summary.sequences"),
 setMethod("is.maximal", signature(x = "sequences"),
     function(x) {
         u <- unique(x)
-        k <- order(.Call(R_colSums_ngCMatrix, u@elements@items@data),
-                   .Call(R_pnindex, u@elements@items@data, NULL, FALSE))
-        if (any(k != seq_len(length(k)))) {
-            u@elements <- u@elements[k]
-            k[k] <- seq_len(length(k))
-            u@data <- .Call(R_recode_ngCMatrix, u@data, k)
-        }
-        m <- .Call(R_pnscount,
-                   u@data, u@data, u@elements@items@data, FALSE) == 1
+	m <- is.subset(u)
+	m <- selectMethod("rowSums", class(m))(m) == 1L
+	names(m) <- NULL
         i <- match(x, u)
         m[i]
     }

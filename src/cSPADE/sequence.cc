@@ -169,6 +169,8 @@ void parse_args(int argc, char **argv)
             break;
          case 'l': //min-gap between items 
             min_gap = atoi(optarg);
+	    if (min_gap < 1)
+		min_gap = 1;
             break;
          case 'm': //amount of mem available
             AVAILMEM = (long) atof(optarg)*MBYTE;
