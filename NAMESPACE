@@ -7,7 +7,9 @@ useDynLib(arulesSequences,
     R_firstOrder_sgCMatrix,
     R_similarity_sgCMatrix,
     R_as_dist_dsCMatrix,
-    R_ilscount
+    R_ilscount,
+    R_pnscount,
+    R_pnsclosed
 )
 
 import("methods")
@@ -43,6 +45,7 @@ exportMethods(
     "initialize",
     "inspect",
     "is.maximal",
+    "is.closed",
     "is.subset",
     "is.superset",
     "itemFrequency",

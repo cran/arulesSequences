@@ -24,7 +24,7 @@ Attaching package: 'arules'
 
 The following objects are masked from 'package:base':
 
-    %in%, write
+    %in%, abbreviate, write
 
 > 
 > ## basic tests using the small running 
@@ -62,9 +62,9 @@ tidLists : FALSE
 
 preprocessing ... 1 partition(s), 0 MB [0.014s]
 mining transactions ... 0 MB [0.007s]
-reading sequences ... [0.014s]
+reading sequences ... [0.02s]
 
-total elapsed time: 0.035s
+total elapsed time: 0.041s
 > s1
 set of 18 sequences 
 > s2 <- cspade(zaki, parameter = list(support = 0.4, maxsize = 2, maxlen = 2))
@@ -472,10 +472,10 @@ summary  : FALSE
 tidLists :  TRUE
 
 preprocessing ... 1 partition(s), 0 MB [0.008s]
-mining transactions ... 0 MB [0.005s]
-reading sequences ... [0.012s]
+mining transactions ... 0 MB [0.006s]
+reading sequences ... [0.016s]
 
-total elapsed time: 0.025s
+total elapsed time: 0.03s
 > summary(tidLists(s1))
 tidLists in sparse format with
  18 items/itemsets (rows) and
@@ -509,18 +509,36 @@ includes extended item information - examples:
 > all.equal(tidLists(s1[1:4, ]), z[1:4, ])
 [1] TRUE
 > 
-> z <- support(s1, zaki)
+> z <- support(s1, zaki, control = list(parameter = list()))
 > all.equal(z, quality(s1)$support)
 [1] TRUE
 > 
 > ## drop times
 > z <- as(as(zaki, "timedsequences"), "sequences")
-> z <- support(s1, z)
+> z <- support(s1, z, control = list(parameter = list()))
 > all.equal(z, quality(s1)$support)
+[1] TRUE
+> 
+> ##
+> z <- quality(s1)$support
+> z <- z > apply(is.subset(s1, proper = TRUE), 1L, function(x)
++ 	       suppressWarnings(max(z[x])))
+> all.equal(z, is.closed(s1))
+[1] TRUE
+> s <- s1
+> s@info <- list()
+> all.equal(z, is.closed(s))
+[1] TRUE
+Warning message:
+In is.closed(s) : size is missing
+> 
+> ##
+> r <- ruleInduction(s2[size(s2) > 1L], zaki, confidence = 0.5)
+> all.equal(as(r2, "data.frame"), as(r, "data.frame"))
 [1] TRUE
 > 
 > ###
 > 
 > proc.time()
    user  system elapsed 
-  3.104   0.056   3.172 
+  3.220   0.080   3.316 

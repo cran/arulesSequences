@@ -58,7 +58,7 @@
     For \code{itemTable} returns a table with the rownames corresponding
     with the reference set of distinct items or itemsets.
 
-    For \code{nitmes} a scalar value.
+    For \code{nitems} a scalar value.
 
     For \code{dim} and class \code{sequences} a vector of length three
     containing the number of sequences and the dimension of the reference

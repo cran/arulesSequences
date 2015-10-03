@@ -4,7 +4,7 @@
 \alias{times,timedsequences-method}
 \title{Compute Time Statistics of Sequences}
 \description{
-    Computes the gaps, the minimum or maximum gap, or the span of sequence.
+    Computes the gaps, the minimum or maximum gap, or the span of sequences.
 }
 \usage{
 \S4method{times}{timedsequences}(x, type = c("times", "gaps", "mingap", "maxgap", "span"))

@@ -15,6 +15,7 @@
 %\alias{sequenceInfo,sequences-method}
 %\alias{sequenceInfo<-,sequences-method}
 %\alias{inspect,sequences-method}
+\alias{is.closed,sequences-method}
 \alias{is.maximal,sequences-method}
 %\alias{is.subset,sequences-method}
 %\alias{is.superset,sequences-method}
@@ -94,6 +95,9 @@
 	\item{\code{sequenceInfo}}{\code{signature(object = "sequences")}}
 	\item{\code{sequenceInfo<-}}{\code{signature(object = "sequences")}}
 	\item{\code{inspect}}{\code{signature(x = "sequences")}}
+	\item{\code{is.closed}}{\code{signature(x = "sequences")};
+	    returns a logical vector indicating if a sequence has
+	    no proper superset in \code{x} which has the same support.}
 	\item{\code{is.maximal}}{\code{signature(x = "sequences")};
 	    returns a logical vector indicating if a sequence is not a
 	    subsequence of any other sequence in \code{x}.}

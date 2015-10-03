@@ -66,11 +66,12 @@ setMethod("lhs", signature(x = "sequencerules"),
                  data.frame(support = x@quality$confidence / 
                                       x@quality$support)
              else
-                 NULL
+                 data.frame()
 
         new("sequences", elements  = x@elements,
                          data      = x@lhs,
-                         quality   = q)
+                         quality   = q,
+			 info      = x@info)
     }
 )
 
@@ -80,11 +81,12 @@ setMethod("rhs", signature(x = "sequencerules"),
                  data.frame(support = x@quality$confidence / 
                                       x@quality$lift)
              else
-                 NULL
+                 data.frame()
         
         new("sequences", elements  = x@elements,
                          data      = x@rhs,
-                         quality   = q)
+                         quality   = q,
+			 info      = x@info)
     }
 )
 
@@ -276,53 +278,141 @@ setMethod("show", signature(object = "summary.sequencerules"),
 ## <A1, A2, ...> => <C> with Ai, and C elements and
 ## A1 < A2 < ... < C.
 ##
-## todo: (1) verbose (2) transactions.
+## NOTE that due to the backport to R_pnrindex 
+##      itemsets instead of sequences are reported
+##      in verbose mode.
 
 setMethod("ruleInduction", signature(x = "sequences"),
     function(x, transactions, confidence = 0.8, control = NULL) {
-        if (!missing(transactions))
-            stop("'transactions' not implemented")
         if (confidence < 0 || confidence > 1)
             stop("'confidence' invalid range")
 
-        if (is.null(quality(x)))
-            stop("cannot induce rules because support is missing")
-            
-        if (is.null(control$verbose))
-            control$verbose <- FALSE
+	verbose <- control[['verbose']]	
+        if (is.null(verbose))
+            verbose <- FALSE
         else 
-        if (!is.logical(control$verbose))
+        if (!is.logical(verbose))
             stop("'verbose invalid range'")
-        if (is.null(control$maximal))
-            control$maximal <- FALSE
-        else 
-        if (!is.logical(control$maximal))
-            stop("'maximal' invalid range")
 
-	# backport
-	r <- .Call(R_pnrindex, x@data, control$verbose)
-	r <- lapply(r, "[", !duplicated(r[[1L]], fromLast = TRUE))
+        if (!missing(transactions)) {
+            ## stop("'transactions' not implemented")
+   
+	    if (verbose) {
+		t1 <- proc.time()
+		cat("\ngenerating ... ")
+	    }
 
-        r <- data.frame(r)
-        names(r) <- c("i", "li", "ri")
+	    i <- .Call(R_asList_ngCMatrix, x@data, NULL)
+	    i <- unique(i)
+	    n <- length(i)
 
-        if (!all(r$li) || !all(r$ri))
-            stop("cannot induce rules because the set of sequences is incomplete")
+	    # complete LHS
+	    k <- lapply(i, function(x) x[-length(x)])
+	    k <- unique(k)
+	    k <- k[match(k, i, nomatch = 0L) == 0L]
+	    i <- c(i, k)
 
-        r$support    <- x@quality$support[r$i]
+	    # complete RHS
+	    k <- lapply(i, function(x) x[ length(x)])
+	    k <- unique(k)
+	    k <- k[match(k, i, nomatch = 0L) == 0L]
+	    i <- c(i, k)
+
+	    if (length(i) > n) {
+		k <- sapply(i, length)
+		names(k) <- NULL
+		k <- cumsum(k)
+		i <- new("sgCMatrix", 
+		    p   = c(0L, k), 
+		    i   = unlist(i) - 1L,
+		    # NOTE the number of itemsets referenced 
+		    #      must be the same.
+		    Dim = c(x@data@Dim[1L], length(k))
+		)
+	    } else
+		i <- x@data
+
+	    if (verbose) {
+		t2 <- proc.time()
+		cat(sprintf("%i sequences [%.2fs]\n", dim(i)[2L],
+			    (t2 - t1)[3L]))
+	    }
+
+	    # index
+	    r <- .Call(R_pnrindex, i, verbose)
+	    r <- lapply(r, "[", !duplicated(r[[1L]], fromLast = TRUE))
+	    r <- data.frame(r)
+	    names(r) <- c("i", "li", "ri")
+	    # filter
+	    r <- r[r$i <= n,]
+	    if (!all(r$li) || !all(r$ri))	    # FIXME
+		stop("cannot induce rules because the set of sequences is incomplete")
+
+	    k <- unique(unlist(r, use.names = FALSE))
+	    if (max(k) > n)
+		x <- new("sequences",
+		    data = i, 
+		    elements = x@elements
+		)
+	    rm(i)
+	    if (length(x) > length(k)) {	    # reduce
+		k <- sort(k)
+		x <- x[k]
+		r$i  <- match(r$i,  k)
+		r$li <- match(r$li, k)
+		r$ri <- match(r$ri, k)
+	    }
+
+	    # compute
+	    k <- support.ptree(x, transactions, type = "relative",
+			       verbose = verbose)
+	    x@quality <- data.frame(support = k)
+	    k <- min(k)
+	    n <- transactions@transactionInfo[['sequenceID']]
+	    n <- length(
+		if (is.factor(n))
+		    levels(n)
+		else
+		    unique(n)
+	    )
+	    x@info <- list(
+		data          = 
+		    match.call(call = sys.call(sys.parent(1)))$transactions,
+		ntransactions = length(transactions),
+		nsequences    = n,
+		support       = k
+	    )
+	    if (k == 0)
+		warning("sequences with zero support")
+
+	} else {
+	    if (is.null(quality(x)))
+		stop("cannot induce rules because support is missing")
+    
+	    # index
+	    r <- .Call(R_pnrindex, x@data, verbose)
+	    r <- lapply(r, "[", !duplicated(r[[1L]], fromLast = TRUE))
+
+	    r <- data.frame(r)
+	    names(r) <- c("i", "li", "ri")
+
+	    if (!all(r$li) || !all(r$ri))
+		stop("cannot induce rules because the set of sequences is incomplete")
+	}
+
+        r$support    <- x@quality[['support']][r$i]
         r$confidence <- r$support /
-                        x@quality$support[r$li]
+                        x@quality[['support']][r$li]
         # filter
-        if (control$maximal)
-            r <- r[is.maximal(x),]
         r <- r[r$confidence >= confidence,]
+
         if (dim(r)[1] == 0)
             return(new("sequencerules"))
-        r$lift       <- r$confidence / x@quality$support[r$ri]
+        r$lift       <- r$confidence / x@quality[['support']][r$ri]
 
         info <- c(x@info, confidence = confidence)
         if (is.null(info$data))
-            info <- c(x = match.call()$x, info)
+            info <- c(x = match.call(call = sys.call(sys.parent(1)))$x, info)
 
         new("sequencerules", elements   = x@elements,
                              lhs        = x@data[,r$li],
@@ -338,7 +428,8 @@ setAs("sequencerules", "sequences",
         d <- .Call(R_colAppend_sgCMatrix, from@lhs, from@rhs, FALSE)
         new("sequences", elements  = from@elements,
                          data      = d,
-                         quality   = from@quality["support"])
+                         quality   = from@quality["support"],
+			 info      = from@info)
     }
 )
 

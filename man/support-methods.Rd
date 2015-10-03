@@ -29,8 +29,9 @@
   \item{\dots}{currently not used.}
 }
 \details{
-    Provides support counting using idlists (for details see the reference
-    in \code{\link{cspade}}) and timing constraints. 
+    Provides support counting using either method ptree (default), or
+    idlists (for details see the reference in \code{\link{cspade}}) and
+    timing constraints.
 
     \code{parameter} can be an object of class
     \code{\linkS4class{SPparameter}} or a named list with corresponding
@@ -74,6 +75,10 @@ example(cspade)
 s <- support(s2, zaki, control = list(verbose = TRUE, 
                      parameter = list(maxwin = 5)))
 data.frame(as(s2, "data.frame"), support = s)
+
+## use default method
+k <- support(s2, zaki, control = list(verbose = TRUE))
+table(size(s2), sign(k - s))
 
 ## the same
 s <- supportingTransactions(s2, zaki)

@@ -28,7 +28,7 @@ s <- .string2sequences(s)
 
 k <- 
 list(
-    NULL,
+    list(parameter = list()),
     ## Test if cummulation of gaps works.
     list(parameter = list(maxwin = 5))
 )
@@ -43,13 +43,18 @@ cbind(as(s, "data.frame"), support = k)
 ## Test if optimization works.
 s <- c("A AB")
 s <- .string2sequences(s)
-k <- support(s, t, control = list(verbose = TRUE))
+k <- support(s, t, control = list(verbose = TRUE, parameter = list()))
 cbind(as(s, "data.frame"), support = k)
 
 ## Test if conversion works.
-all.equal(k, support(s, as(t, "timedsequences")))
+all.equal(k, support(s, as(t, "timedsequences"),
+		     control = list(parameter = list())))
 
-k <- support(s, s, type = "absolute")
+k <- support(s, s, type = "absolute", control = list(parameter = list()))
 all.equal(k, as.integer(rowSums(is.subset(s))))
+
+## Test internal
+k <- arulesSequences:::support.idlists(s, t, type = "tidLists")
+all.equal(k, supportingTransactions(s, t))
 
 ##

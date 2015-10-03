@@ -14,30 +14,40 @@
 }
 \arguments{
   \item{x}{an object.}
-  \item{transactions}{currently not used.}
+  \item{transactions}{an optional object of class
+    \code{\link[arules:transactions-class]{transactions}} with
+    temporal information.}
   \item{confidence}{a numeric value specifying the minimum confidence
     threshold.}
 % this is awkward
-  \item{control}{a list with logical components \code{maximal} specifying
-    if rules should be induced from maximally frequent sequences only, and
-    \code{verbose} if progress and runtime information should be displayed.}
+  \item{control}{a named list with logical component \code{verbose}
+    specifying if progress and runtime information should be displayed.}
+}
+\details{
+    If \code{transactions} is not specified, the collection of sequences
+    supplied must be closed with respect to the rules to be induced. That
+    is, the left- and the right-hand side sequence of each candidate rule
+    must be contained in the collection of sequences. However, using timing
+    constraints in the mining step the set of frequent sequences may not be
+    closed under rule induction.
+
+    Otherwise, \code{x} is completed (augmented) to be closed under rule
+    induction and the support is computed from \code{transactions}, using
+    method ptree. Note that, rules for added sequences, if any, are not
+    induced.
 }
 \value{
     Returns an object of class \code{\linkS4class{sequencerules}}.
 }
 \author{Christian Buchta}
-\note{
-    Currently, the collection of sequences supplied must be closed with
-    respect to the rules to be induced. That is, the left- and the
-    right-hand side sequence of each candidate rule must be contained in
-    the collection of sequences. However, using timing constraints in the
-    mining step the set of frequent sequences may not be closed under
-    rule induction.
-}
+%\note{
+%}
 \seealso{
     Class 
     \code{\linkS4class{sequences}},
     \code{\linkS4class{sequencerules}},
+    method
+    \code{\link{support}},
     function 
     \code{\link{cspade}}.
 }

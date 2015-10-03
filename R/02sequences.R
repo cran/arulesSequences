@@ -478,16 +478,54 @@ setMethod("show", signature(object = "summary.sequences"),
     }
 )
 
-# note that we require the index of an element
-# to be greater than the index of any of its
-# subsets.
+##
+setMethod("is.closed", signature(x = "sequences"),
+    function(x) {
+        support <- quality(x)$support
+	if (is.null(support))
+	    stop("'x' does not contain support information")
+	if (any(duplicated(x)))
+	    stop("'x' not unique")
+	size <- x@info$nsequences
+	if (!is.null(size)) 
+	    support <- as.integer(support * size)
+	else
+	if (!is.integer(support)) {
+	    warning("size is missing")
+	    size <- sort(unique(support))
+	    if (length(size) > 1L)
+		size <- min(diff(size))
+	    size <- ceiling(1 / size)
+	    size <- max(1, size)
+	    support <- as.integer(ceiling(support * size))
+	}
+	if (!is.integer(support)) {
+	    m <- is.subset(x)
+	    if (!all(m@x))
+		stop("'Matrix' quirks not implemented")
+	    m@x <- support[m@i + 1L] <=
+	           support[rep(seq_len(length(x)), diff(m@p))]
+	    m <- selectMethod("rowSums", class(m))(m) == 1L
+	    names(m) <- NULL
+	    m
+	} else
+	    .Call(R_pnsclosed, x@data, x@elements@items@data,
+		  support, FALSE)
+    }
+)
+
+##
 
 setMethod("is.maximal", signature(x = "sequences"),
     function(x) {
         u <- unique(x)
-	m <- is.subset(u)
-	m <- selectMethod("rowSums", class(m))(m) == 1L
-	names(m) <- NULL
+	if (FALSE) { 
+	    m <- is.subset(u)
+	    m <- selectMethod("rowSums", class(m))(m) == 1L
+	    names(m) <- NULL
+	} else 
+	    m <- .Call(R_pnscount, u@data, u@data, 
+		       u@elements@items@data, FALSE) == 1L
         i <- match(x, u)
         m[i]
     }

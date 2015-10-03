@@ -135,12 +135,25 @@ transactionInfo(tidLists(s1))
 z <- supportingTransactions(s1, zaki)
 all.equal(tidLists(s1[1:4, ]), z[1:4, ])
 
-z <- support(s1, zaki)
+z <- support(s1, zaki, control = list(parameter = list()))
 all.equal(z, quality(s1)$support)
 
 ## drop times
 z <- as(as(zaki, "timedsequences"), "sequences")
-z <- support(s1, z)
+z <- support(s1, z, control = list(parameter = list()))
 all.equal(z, quality(s1)$support)
+
+##
+z <- quality(s1)$support
+z <- z > apply(is.subset(s1, proper = TRUE), 1L, function(x)
+	       suppressWarnings(max(z[x])))
+all.equal(z, is.closed(s1))
+s <- s1
+s@info <- list()
+all.equal(z, is.closed(s))
+
+##
+r <- ruleInduction(s2[size(s2) > 1L], zaki, confidence = 0.5)
+all.equal(as(r2, "data.frame"), as(r, "data.frame"))
 
 ###

@@ -129,6 +129,15 @@ summary(t)
 s6 <- cspade(t, parameter = list(support = 0.0133), 
 		control   = list(verbose = TRUE))
 summary(s6)
+
+## check
+k <- support(s6, t, control = list(verbose = TRUE))
+table(size(s6), sign(quality(s6)$support -k))
+
+## use low confidence
+r6 <- ruleInduction(s6, confidence = .5,
+			control    = list(verbose = TRUE))
+summary(r6)
 }
 }
 \keyword{models}

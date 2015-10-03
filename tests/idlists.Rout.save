@@ -26,7 +26,7 @@ Attaching package: 'arules'
 
 The following objects are masked from 'package:base':
 
-    %in%, write
+    %in%, abbreviate, write
 
 > 
 > .string2sequences <-
@@ -59,7 +59,7 @@ The following objects are masked from 'package:base':
 > 
 > k <- 
 + list(
-+     NULL,
++     list(parameter = list()),
 +     ## Test if cummulation of gaps works.
 +     list(parameter = list(maxwin = 5))
 + )
@@ -77,7 +77,7 @@ The following objects are masked from 'package:base':
 > ## Test if optimization works.
 > s <- c("A AB")
 > s <- .string2sequences(s)
-> k <- support(s, t, control = list(verbose = TRUE))
+> k <- support(s, t, control = list(verbose = TRUE, parameter = list()))
 using method: idlists 
 
 parameter specification:
@@ -85,7 +85,7 @@ support : NA
 maxsize : NA
 maxlen  : NA
 
-preprocessing ... P [0.008s]
+preprocessing ... P [0.004s]
 counting ... 2 sequence(s), processed 0/1 join(s) [0.00s]
 > cbind(as(s, "data.frame"), support = k)
    sequence support
@@ -93,15 +93,21 @@ counting ... 2 sequence(s), processed 0/1 join(s) [0.00s]
 2 <{A},{B}>       0
 > 
 > ## Test if conversion works.
-> all.equal(k, support(s, as(t, "timedsequences")))
+> all.equal(k, support(s, as(t, "timedsequences"),
++ 		     control = list(parameter = list())))
 [1] TRUE
 > 
-> k <- support(s, s, type = "absolute")
+> k <- support(s, s, type = "absolute", control = list(parameter = list()))
 > all.equal(k, as.integer(rowSums(is.subset(s))))
+[1] TRUE
+> 
+> ## Test internal
+> k <- arulesSequences:::support.idlists(s, t, type = "tidLists")
+> all.equal(k, supportingTransactions(s, t))
 [1] TRUE
 > 
 > ##
 > 
 > proc.time()
    user  system elapsed 
-  2.480   0.060   2.537 
+  2.644   0.044   2.683 

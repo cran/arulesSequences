@@ -1,6 +1,18 @@
 
 NEWS/ChangeLog for arulesSequences
 
+0.2-11	2015-09-30
+
+    o Fixed and reactivated method ptree.
+
+    o Added is.closed-method for sequences class.
+
+    o Implemented method transactions in
+      ruleInduction-method for class sequences.
+
+    o Removed maximal from ruleInduction-method for 
+      class sequences.
+
 0.2-10	2015-08-31
 
     o Removed method ptree from support-method for class

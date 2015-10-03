@@ -1,6 +1,6 @@
 
-R version 3.0.2 (2013-09-25) -- "Frisbee Sailing"
-Copyright (C) 2013 The R Foundation for Statistical Computing
+R version 3.2.2 (2015-08-14) -- "Fire Safety"
+Copyright (C) 2015 The R Foundation for Statistical Computing
 Platform: i686-pc-linux-gnu (32-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -26,7 +26,7 @@ Attaching package: 'arules'
 
 The following objects are masked from 'package:base':
 
-    %in%, write
+    %in%, abbreviate, write
 
 > 
 > ##
@@ -65,4 +65,4 @@ includes extended item information - examples:
 > 
 > proc.time()
    user  system elapsed 
-  3.684   0.060   3.744 
+  2.352   0.068   2.416 
