@@ -112,7 +112,8 @@ Class \code{"\link[arules:associations-class]{associations}"}, directly.
 \examples{
 ## continue example
 example(ruleInduction, package = "arulesSequences")
-as(r2, "data.frame")
+cbind(as(r2, "data.frame"), 
+      coverage = coverage(r2))
 
 ## coerce to sequences
 as(as(r2, "sequences"), "data.frame")

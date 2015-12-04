@@ -1,13 +1,13 @@
-50f89f27b61e419ce13e17496a3a945d *CHANGELOG
-0ecd1ba5b5dfbe45dc61121ffbf592b2 *DESCRIPTION
+a50b31333f794d06b8ec5b3a9599fe46 *CHANGELOG
+be991df37fd4c3de88d5c4d7625dcf7b *DESCRIPTION
 9b09fe4a6ad430540113bbdc3247f5f1 *INSTALL
 0ffafd9b6625615edd22f60889e54258 *NAMESPACE
 8689d6e5f5f4d8ac210db83ff2ae1970 *R/01matrix.R
 4c80bf7d2479d7ce2bbaaee237f40d97 *R/02sequences.R
-a21354108cf2556faa8a17723c71bf13 *R/03rules.R
+3ce85082e763326c4b148485e8bf473e *R/03rules.R
 0060823daef9565a2b6aa8ea8f10bf28 *R/04parameter.R
-4c5ffbb685d8652b5488fb9b958929df *R/05read_write.R
-0623a3fd481000d5d0e450916dfba4d6 *R/10timed.R
+43453431069ad902f387857079f00ec6 *R/05read_write.R
+d23479bedffedb7adcd0f0d2dbb2c380 *R/10timed.R
 77e077c717a3cffc2158dc098ff47980 *R/20support.R
 c9a77ab0e4988dad6f04c5ae91456781 *R/30similarity.R
 c4274f9fb5ef794a4c80d330d563a763 *R/native.R
@@ -26,7 +26,7 @@ c9b72b9e292c0b8b792f261b73f125fe *man/cspade.Rd
 1386de2480dd68357cd3b25e1d47b2e3 *man/match-methods.Rd
 aff14ea49e51f61405421fc9f04f431e *man/read_baskets.Rd
 50499e4a6ddf695cb64e77c1a97d1211 *man/ruleInduction-methods.Rd
-7d7e71b108aedc62c01ae8bdd69e7fe2 *man/sequencerules-class.Rd
+b7bc36cb24bc0ec17c4a8f8d5ccc703a *man/sequencerules-class.Rd
 8f2131ac319f00a7f597ca90b27f48cd *man/sequences-class.Rd
 81e128c3fc8abf5b52b9e300eb6215ae *man/sgCMatrix-class.Rd
 afecc50694284e761e5996a61eab15df *man/similarity-methods.Rd

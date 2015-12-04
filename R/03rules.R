@@ -349,7 +349,7 @@ setMethod("ruleInduction", signature(x = "sequences"),
 		stop("cannot induce rules because the set of sequences is incomplete")
 
 	    k <- unique(unlist(r, use.names = FALSE))
-	    if (max(k) > n)
+	    if (suppressWarnings(max(k)) > n)
 		x <- new("sequences",
 		    data = i, 
 		    elements = x@elements
@@ -367,7 +367,7 @@ setMethod("ruleInduction", signature(x = "sequences"),
 	    k <- support.ptree(x, transactions, type = "relative",
 			       verbose = verbose)
 	    x@quality <- data.frame(support = k)
-	    k <- min(k)
+	    k <- suppressWarnings(min(k))
 	    n <- transactions@transactionInfo[['sequenceID']]
 	    n <- length(
 		if (is.factor(n))
@@ -382,9 +382,6 @@ setMethod("ruleInduction", signature(x = "sequences"),
 		nsequences    = n,
 		support       = k
 	    )
-	    if (k == 0)
-		warning("sequences with zero support")
-
 	} else {
 	    if (is.null(quality(x)))
 		stop("cannot induce rules because support is missing")
@@ -404,6 +401,8 @@ setMethod("ruleInduction", signature(x = "sequences"),
         r$confidence <- r$support /
                         x@quality[['support']][r$li]
         # filter
+	if (any(is.na(r$confidence)))
+	    stop("cannot filter rules because missing value where TRUE/FALSE needed")
         r <- r[r$confidence >= confidence,]
 
         if (dim(r)[1] == 0)
@@ -511,6 +510,8 @@ setMethod("c", signature(x = "sequencerules"),
 
 setMethod("coverage", signature(x = "sequencerules"),
     function(x, transactions = NULL) {
+	if (!is.null(transactions))
+	    stop("'transactions' not implemented")
         q <- quality(x)
         if (!all(c("support", "confidence") %in% names(q)))
             stop("support and/or confidence missing in slot 'quality'")

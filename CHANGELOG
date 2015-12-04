@@ -1,6 +1,10 @@
 
 NEWS/ChangeLog for arulesSequences
 
+0.2-12 2015-11-30
+
+    o Bug fixes.
+
 0.2-11	2015-09-30
 
     o Fixed and reactivated method ptree.

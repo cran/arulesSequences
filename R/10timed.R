@@ -31,6 +31,8 @@ setClass("timedsequences",
 ##        row indexes pass the validity test.
 setAs("transactions", "timedsequences",
     function(from) {
+	if (!length(from))
+	    return(new("timedsequences"))
         if (!all(c("sequenceID", "eventID") %in% names(from@transactionInfo)))
             stop("slot transactionInfo: missing sequenceID or eventID")
         if (any(is.na(from@transactionInfo[['sequenceID']])))

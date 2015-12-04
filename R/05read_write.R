@@ -149,7 +149,8 @@ function(con = "", decode = FALSE, labels = NULL, transactions = NULL,
 
     x <- as(x, "sequences")
     names(c) <- c("support", levels(class))
-    c <- mapply("/", c, c(n, if (!is.null(class)) table(class)))
+    c <- mapply("/", c, c(n, if (!is.null(class)) table(class)), 
+		SIMPLIFY = FALSE)
     x@quality <- data.frame(c, check.names = FALSE)
     x@info <- list(nsequences = n)
 
