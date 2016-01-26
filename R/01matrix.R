@@ -2,7 +2,7 @@
 ## sgCMatrix is designed to work with ptree but 
 ## otherwise does not deserve the qualifier Matrix.
 ##
-## ceeboo 2007, 2008
+## ceeboo 2007, 2008, 2016
 
 # fixme: special cases
 
@@ -46,7 +46,13 @@ setReplaceMethod("dimnames", signature(x="sgCMatrix"),
             if ((l <- length(value[[2]])) && l != x@Dim[2])
                 stop("length of value [2] invalid")
     
-            x@Dimnames <- lapply(value, as.character)
+            x@Dimnames <- lapply(value, 
+		function(value) 
+		    if (!is.null(value)) 
+			as.character(value)
+		    else
+			value
+	    )
         }
         x
     }

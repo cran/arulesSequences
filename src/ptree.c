@@ -7,7 +7,7 @@
 //
 // fixme: free on user interrupt is impossible.
 //
-// (C) ceeboo 2007, 2015
+// (C) ceeboo 2007, 2015, 2016
 
 typedef struct pnode {
     int index;
@@ -99,7 +99,7 @@ static int pnget(PN *p, int *x, int n) {
 //
 
 static int dpn, sn;
-static int pnc;
+static int ct, cn, cx;
 
 static void pnscount(PN *p, int *x, int n) {
     if (p == NULL || n == 0)
@@ -128,14 +128,20 @@ static void pnscount(PN *p, int *x, int n) {
 	if (p->visit < sn) {
 	    dpn++;
 	    p->visit = sn + n;
-	    if (pnc) {
-		if (abs(p->count) < pnc)
-		    p->count = pnc;
-		else
-		    if (p->count == pnc)
-			p->count = -p->count;
-	    } else
-		p->count++;
+	    switch (ct) {
+		case 0: p->count++;
+			break;
+		case 1: if (cn && 
+			    p->count < cx)
+			    p->count = cx;
+			cn--;
+			break;
+		case 2: if (cn &&
+			    cx < p->count)
+			    cx = p->count;
+			cn--;
+			break;
+	    }
 	} else {
 	    npn++;
 	    if (p->visit == sn + n)
@@ -321,7 +327,7 @@ SEXP R_pnscount(SEXP R_x, SEXP R_t, SEXP R_e, SEXP R_v) {
 #endif
 
     cpn = npn = dpn = sn = 0;
-    pnc = 0;
+     ct = 0;
 
     k = 0;
     f = 0;
@@ -443,6 +449,12 @@ SEXP R_pnsclosed(SEXP R_x, SEXP R_e, SEXP R_c, SEXP R_v) {
 	    error("buffer allocation failed");
     }
 
+    for (k = 0; k < LENGTH(R_c); k++) {
+	e = INTEGER(R_c)[k];
+	if (e == NA_INTEGER || e < 1)
+	    error("'c' invalid value");
+    }
+
     cpn = apn = npn = 0;
 
     if (nb != NULL) 
@@ -491,9 +503,8 @@ SEXP R_pnsclosed(SEXP R_x, SEXP R_e, SEXP R_c, SEXP R_v) {
 #endif
 
     cpn = npn = dpn = sn = 0;
-    pnc = 0;
+     ct = 1;
 
-    // k = 0;
     e = 0;
     f = 0;
     for (i = 1; i < LENGTH(px); i++) {
@@ -501,25 +512,19 @@ SEXP R_pnsclosed(SEXP R_x, SEXP R_e, SEXP R_c, SEXP R_v) {
 	n = l-f;
 	if (n == 0)
 	    continue;
-	// k += n;
 	n = emap(INTEGER(ix)+f, n, pe, ie);
-	if (!n) {
+	if (!n) {			    // never
 	    nbfree();
 	    ebfree();
 	    error("buffer allocation failed");
 	}
-	pnc = INTEGER(R_c)[i-1];
-	if (pnc > e)
-	    e = pnc;
-	else
-	    if (pnc < 1) {
-		nbfree();
-		ebfree();
-		error("invalid count");
-	    }
 	x = eb;
 	sn++;
 	nq = *nb;
+	cn = n - 1;
+	cx = INTEGER(R_c)[i-1];
+	if (e < cx)
+	    e = cx;
 	pnscount(nb[*x], x, n);
 	sn += n;
 	f = l;
@@ -534,18 +539,19 @@ SEXP R_pnsclosed(SEXP R_x, SEXP R_e, SEXP R_c, SEXP R_v) {
 
     cpn = npn = 0;
     
+    k = 0;
     f = 0;
     for (i = 1; i < LENGTH(px); i++) {
 	l = INTEGER(px)[i];
 	n = l-f;
 	if (n == 0) {
-	    pnc = INTEGER(R_c)[i-1];
-	    if (pnc < e) {
-		nbfree();
-		ebfree();
-		error("invalid count");
+	    if (e < INTEGER(R_c)[i-1])
+		LOGICAL(r)[i-1] = TRUE;
+	    else {
+		LOGICAL(r)[i-1] = FALSE;
+		if (e > INTEGER(R_c)[i-1])
+		    k++;
 	    }
-	    LOGICAL(r)[i-1] = (pnc > e) ? TRUE : FALSE;
 	    continue;
 	}
 	n = emap(INTEGER(ix)+f, n, pe, ie);
@@ -556,11 +562,20 @@ SEXP R_pnsclosed(SEXP R_x, SEXP R_e, SEXP R_c, SEXP R_v) {
 	}
 	x = eb;
 	n = pnget(nb[*x], x, n);
-	LOGICAL(r)[i-1] = (n > 0) ? TRUE : FALSE;
+	if (n < INTEGER(R_c)[i-1])
+	    LOGICAL(r)[i-1] = TRUE;
+	else {
+	    LOGICAL(r)[i-1] = FALSE;
+	    if (n > INTEGER(R_c)[i-1])
+		k++;
+	}
 	f = l;
 	R_CheckUserInterrupt();
     }
   
+    if (k)
+	warning("'c' not closed");
+
     nbfree();
     ebfree();
 
@@ -582,4 +597,157 @@ SEXP R_pnsclosed(SEXP R_x, SEXP R_e, SEXP R_c, SEXP R_v) {
     return r;
 }
 
+
+SEXP R_pnsredundant(SEXP R_x, SEXP R_e, SEXP R_c, SEXP R_v) {
+    if (!inherits(R_x, "sgCMatrix"))
+	error("'x' not of class sgCMatrix");
+    if (TYPEOF(R_c) != INTSXP)
+	error("'c' not of storage type integer");
+    if (LENGTH(R_c) != INTEGER(GET_SLOT(R_x, install("Dim")))[1])
+	error("'x' and 'c' not the same length");
+    if (TYPEOF(R_v) != LGLSXP)
+	error("'v' not of type logical");
+    int i, f, l, k, n, nr, e;
+    int *x = NULL;
+    SEXP px, ix;
+    SEXP r; 
+#ifdef _TIME_H
+    clock_t t4, t3, t2, t1;
+
+    t1 = clock();
+    
+    if (LOGICAL(R_v)[0] == TRUE)
+	Rprintf("checking ... ");
+#endif
+    nr = INTEGER(GET_SLOT(R_x, install("Dim")))[0];
+    
+    px = GET_SLOT(R_x, install("p"));
+    ix = GET_SLOT(R_x, install("i"));
+
+    int *pe = NULL, *ie = NULL;
+    if (!isNull(R_e)) {
+        if (nr != INTEGER(GET_SLOT(R_e, install("Dim")))[1])
+            error("the number of rows of 'x' and columns of 'e' do not conform");
+        pe = INTEGER(GET_SLOT(R_e, install("p")));
+        ie = INTEGER(GET_SLOT(R_e, install("i")));
+
+	if (!eballoc())
+	    error("buffer allocation failed");
+    }
+
+    for (k = 0; k < LENGTH(R_c); k++) {
+	e = INTEGER(R_c)[k];
+	if (e == NA_INTEGER || e < 1)
+	    error("'c' invalid value");
+    }
+
+    cpn = apn = npn = 0;
+
+    if (nb != NULL) 
+	nbfree();
+    nb = (PN **) malloc(sizeof(PN *) * (nr+1));
+    if (nb == NULL)
+	error("pointer array allocation failed");
+
+    k = nr;
+    nb[k] = NULL;
+    while (k-- > 0)
+	nb[k] = pnadd(nb[k+1], &k, 1);
+
+    if (npn) {
+	nbfree();
+	error("node allocation failed");
+    }
+
+    e = 0;
+    f = 0;
+    for (i = 1; i < LENGTH(px); i++) {
+	l = INTEGER(px)[i];
+	n = l-f;
+	if (n == 0) {
+	    e = INTEGER(R_c)[i-1];
+	    continue;
+	}
+	n = emap(INTEGER(ix)+f, n, pe, ie);
+	if (!n) {
+	    nbfree();
+	    ebfree();
+	    error("buffer allocation failed");
+	}
+	x = eb;
+	if (n > 1) {
+	    pnadd(nb[*x], x, n);
+	    if (npn) {
+		nbfree();
+		ebfree();
+		error("node allocation failed");
+	    }
+	} else
+	    nq = nb[*x];
+	nq->count = INTEGER(R_c)[i-1];
+	f = l;
+	R_CheckUserInterrupt();
+    }
+
+#ifdef _TIME_H
+    t2 = clock();
+#endif
+
+    PROTECT(r = allocVector(LGLSXP, LENGTH(px)-1));
+
+    cpn = npn = dpn = sn = 0;
+     ct = 2;
+
+    f = 0;
+    for (i = 1; i < LENGTH(px); i++) {
+	l = INTEGER(px)[i];
+	n = l-f;
+	if (n == 0) {
+	    LOGICAL(r)[i-1] = FALSE;
+	    continue;
+	}
+	if (e < INTEGER(R_c)[i-1]) {
+	    n = emap(INTEGER(ix)+f, n, pe, ie);
+	    if (!n) {			    // never
+		nbfree();
+		ebfree();
+		error("buffer allocation failed");
+	    }
+	    x = eb;
+	    sn++;
+	    nq = *nb;
+	    cn = n - 1;
+	    cx = 0;
+	    pnscount(nb[*x], x, n);
+	    if (cx < INTEGER(R_c)[i-1])
+		LOGICAL(r)[i-1] = FALSE;
+	    else
+		LOGICAL(r)[i-1] = TRUE;
+	    sn += n;
+	} else
+	    LOGICAL(r)[i-1] = TRUE;
+	f = l;
+	R_CheckUserInterrupt();
+    }
+
+    nbfree();
+    ebfree();
+
+    if (apn)
+	error("node deallocation imbalance %i", apn);
+    
+#ifdef _TIME_H
+    t3 = clock();
+
+    if (LOGICAL(R_v)[0] == TRUE) {
+	Rprintf("%i counts [%.2fs, %.2fs]\n ", LENGTH(px)-1,
+		((double) t3 - t1) / CLOCKS_PER_SEC,
+		((double) t3 - t2) / CLOCKS_PER_SEC);
+    }
+#endif
+
+    UNPROTECT(1);
+
+    return r;
+}
 

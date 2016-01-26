@@ -9,7 +9,8 @@ useDynLib(arulesSequences,
     R_as_dist_dsCMatrix,
     R_ilscount,
     R_pnscount,
-    R_pnsclosed
+    R_pnsclosed,
+    R_pnsredundant
 )
 
 import("methods")
@@ -48,6 +49,7 @@ exportMethods(
     "is.closed",
     "is.subset",
     "is.superset",
+    "is.redundant",
     "itemFrequency",
     "itemInfo",
     "itemInfo<-",

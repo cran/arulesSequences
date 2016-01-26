@@ -13,6 +13,7 @@
 %\alias{ruleInfo,sequencerules-method}
 %\alias{ruleInfo<-,sequencerules-method}
 %\alias{inspect,sequencerules-method}
+\alias{is.redundant,sequencerules-method}
 %\alias{labels,sequencerules-method}
 %\alias{length,sequencerules-method}
 %\alias{lhs,sequencerules-method}
@@ -80,6 +81,10 @@ Class \code{"\link[arules:associations-class]{associations}"}, directly.
     \item{\code{ruleInfo}}{\code{signature(object = "sequencerules")}}
     \item{\code{ruleInfo<-}}{\code{signature(object = "sequencerules")}}
     \item{\code{inspect}}{\code{signature(x = "sequencerules")}}
+    \item{\code{is.redundant}}{\code{signature(x = "sequencerules")};
+	returns a logical vector indicating if a rule has a proper subset
+	in \code{x} which has the same right-hand side and the same
+	or a higher confidence.}
     \item{\code{labels}}{\code{signature(object = "sequencerules")}}
     \item{\code{length}}{\code{signature(x = "sequencerules")}}
     \item{\code{lhs}}{\code{signature(x = "sequencerules")}}
@@ -106,6 +111,7 @@ Class \code{"\link[arules:associations-class]{associations}"}, directly.
     \code{\linkS4class{sequences}},
     method
     \code{\link{ruleInduction}},
+    \code{\link{is.redundant}},
     function
     \code{\link{cspade}}
 }
@@ -117,5 +123,8 @@ cbind(as(r2, "data.frame"),
 
 ## coerce to sequences
 as(as(r2, "sequences"), "data.frame")
+
+## find redundant rules
+is.redundant(r2, measure = "lift")
 }
 \keyword{classes}

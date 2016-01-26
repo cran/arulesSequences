@@ -1,6 +1,21 @@
 
 NEWS/ChangeLog for arulesSequences
 
+0.2-13 2016-01-26
+
+    o Fixed file.exists in cspade to handle
+      number of partitions > 1.
+
+    o Fixed dimnames-method for sgCMatrix class.
+
+    o Fixed is.subset-method for sequences class.
+
+    o Added memory management in similarity.c.
+
+    o Added is.redundant-method for class sequencerules.
+
+    o Added closed check in ptree.c. 
+
 0.2-12 2015-11-30
 
     o Bug fixes.

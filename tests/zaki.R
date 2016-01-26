@@ -148,12 +148,17 @@ z <- quality(s1)$support
 z <- z > apply(is.subset(s1, proper = TRUE), 1L, function(x)
 	       suppressWarnings(max(z[x])))
 all.equal(z, is.closed(s1))
-s <- s1
-s@info <- list()
-all.equal(z, is.closed(s))
 
 ##
 r <- ruleInduction(s2[size(s2) > 1L], zaki, confidence = 0.5)
 all.equal(as(r2, "data.frame"), as(r, "data.frame"))
+
+##
+k <- rhs(r1) %ain% "A"
+z <- quality(r1)$confidence[k]
+z <- z <= apply(is.superset(lhs(r1)[k], proper = TRUE), 1L, function(x)
+		suppressWarnings(max(z[x])))
+all.equal(z, is.redundant(r1)[k])
+
 
 ###

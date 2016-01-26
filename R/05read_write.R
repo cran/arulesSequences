@@ -2,7 +2,7 @@
 ##
 ## data interfaces to cSPADE
 ##
-## ceeboo 2007, 2008, 2012, 2014, 2015
+## ceeboo 2007, 2008, 2012, 2014, 2015, 2016
 
 .as_integer <- function(x) {
     ## preserve factor
@@ -375,7 +375,10 @@ function(data, parameter = NULL, control = NULL, tmpdir = tempdir()) {
 
     out <- paste(file, "out", sep = ".")
     ## workaround
-    if (!file.exists(paste(file, "tpose", sep = ".")))
+    tmp <- paste(file, "tpose", sep = ".")
+    if (nop > 1L)
+	tmp <- paste(tmp, "P0", sep = ".")
+    if (!file.exists(tmp))
 	local({
 	    n <- readBin(paste(file, "conf", sep = "."), "integer") 
 	    cat(file = out, 

@@ -486,31 +486,21 @@ setMethod("is.closed", signature(x = "sequences"),
 	    stop("'x' does not contain support information")
 	if (any(duplicated(x)))
 	    stop("'x' not unique")
-	size <- x@info$nsequences
-	if (!is.null(size)) 
-	    support <- as.integer(support * size)
-	else
-	if (!is.integer(support)) {
-	    warning("size is missing")
-	    size <- sort(unique(support))
-	    if (length(size) > 1L)
-		size <- min(diff(size))
-	    size <- ceiling(1 / size)
-	    size <- max(1, size)
-	    support <- as.integer(ceiling(support * size))
-	}
-	if (!is.integer(support)) {
+	if (FALSE) {
+	    if (any(is.na(support)))
+		stop("missing values not implemented")
 	    m <- is.subset(x)
 	    if (!all(m@x))
-		stop("'Matrix' quirks not implemented")
+		stop("reduce not implemented")
 	    m@x <- support[m@i + 1L] <=
-	           support[rep(seq_len(length(x)), diff(m@p))]
+	           support[rep(seq_len(length(m@p) - 1L), diff(m@p))]
 	    m <- selectMethod("rowSums", class(m))(m) == 1L
 	    names(m) <- NULL
 	    m
 	} else
 	    .Call(R_pnsclosed, x@data, x@elements@items@data,
-		  support, FALSE)
+		  rank(support, na.last = "keep", ties.method = "min"),
+		  FALSE)
     }
 )
 

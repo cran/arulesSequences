@@ -1,5 +1,5 @@
 
-R version 3.2.2 (2015-08-14) -- "Fire Safety"
+R version 3.2.3 (2015-12-10) -- "Wooden Christmas-Tree"
 Copyright (C) 2015 The R Foundation for Statistical Computing
 Platform: i686-pc-linux-gnu (32-bit)
 
@@ -62,9 +62,9 @@ tidLists : FALSE
 
 preprocessing ... 1 partition(s), 0 MB [0.014s]
 mining transactions ... 0 MB [0.007s]
-reading sequences ... [0.02s]
+reading sequences ... [0.018s]
 
-total elapsed time: 0.041s
+total elapsed time: 0.039s
 > s1
 set of 18 sequences 
 > s2 <- cspade(zaki, parameter = list(support = 0.4, maxsize = 2, maxlen = 2))
@@ -525,20 +525,23 @@ includes extended item information - examples:
 + 	       suppressWarnings(max(z[x])))
 > all.equal(z, is.closed(s1))
 [1] TRUE
-> s <- s1
-> s@info <- list()
-> all.equal(z, is.closed(s))
-[1] TRUE
-Warning message:
-In is.closed(s) : size is missing
 > 
 > ##
 > r <- ruleInduction(s2[size(s2) > 1L], zaki, confidence = 0.5)
 > all.equal(as(r2, "data.frame"), as(r, "data.frame"))
 [1] TRUE
 > 
+> ##
+> k <- rhs(r1) %ain% "A"
+> z <- quality(r1)$confidence[k]
+> z <- z <= apply(is.superset(lhs(r1)[k], proper = TRUE), 1L, function(x)
++ 		suppressWarnings(max(z[x])))
+> all.equal(z, is.redundant(r1)[k])
+[1] TRUE
+> 
+> 
 > ###
 > 
 > proc.time()
    user  system elapsed 
-  3.220   0.080   3.316 
+  3.040   0.128   3.184 

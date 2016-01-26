@@ -1,5 +1,5 @@
 
-## ceeboo 2008
+## ceeboo 2008, 2016
 
 setGeneric("similarity",
     function(x, y = NULL, ...) standardGeneric("similarity")) 
@@ -47,15 +47,39 @@ setMethod("is.subset", signature(x = "sequences"),
                 r <- similarity(y, x, method = "subset") > 0
             else 
                 r <- s
-            ## FIXME R-2.7.0 bug 
-            s <- s & !selectMethod("t", class(s))(s)
-        }
+	    if (FALSE) {
+		## FIXME R-2.7.0 bug
+		s <- s & !selectMethod("t", class(r))(r)
+	    } else {
+		j <- rep(seq(0, length.out = length(s@p) - 1L), 
+			 diff(s@p))
+		k <- match(
+		    paste(s@i, j),
+		    if (is.null(y))
+			paste(j, s@i)
+		    else
+			paste(rep(seq(0, length.out = length(r@p) - 1L),
+				  diff(r@p)), r@i),
+		    nomatch = 0L
+		) == 0L
+		s@p <- cumsum(tabulate(j[k] + 2L, nbins = length(s@p)))
+		s@i <- s@i[k]
+		s@x <- s@x[k]
+	    }
+	}
         s
     }
 )
 
 setMethod("is.superset", signature(x = "sequences"),
-    function(x, y = NULL, proper = FALSE) t(is.subset(x, y, proper)))
+    function(x, y = NULL, proper = FALSE) {
+	if (!is.null(y))
+	    s <- is.subset(y, x, proper)
+	else
+	    s <- is.subset(x, y, proper)
+	selectMethod("t", class(s))(s)
+    }
+)
 
 ##
 

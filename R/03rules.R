@@ -1,7 +1,7 @@
 
 ## sequencerules 
 ##
-## ceeboo 2007, 2008, 2015
+## ceeboo 2007, 2008, 2015, 2016
 
 setClass("sequencerules",
     representation(
@@ -528,6 +528,43 @@ setMethod("subset", signature(x = "sequencerules"),
         i <- eval(substitute(subset), 
                   envir = c(x@quality, x@ruleInfo))
         x[i]
+    }
+)
+
+##
+
+setMethod("is.redundant", signature(x = "sequencerules"),
+    function(x, measure = "confidence") {
+	q <- quality(x)
+	q <- q[[pmatch(measure, names(q))]]
+	if (is.null(q)) 
+	    stop("invalid 'measure'")
+
+	r <- logical(length(x))
+	k <- .Call(R_pnindex, rhs(x)@data, NULL, FALSE)
+	for (p in unique(k)) {
+	    p <- which(p == k)
+	    if (length(p) == 1L)
+		next
+	    s <- lhs(x)[p]
+	    if (any(duplicated(s)))
+		stop("'x' not unique")
+	    if (FALSE) {
+		if (any(is.na(q[p])))
+		    stop("missing values not implemented")
+		s <- is.subset(s)
+		if (!all(s@x))
+		    stop("reduce not implemented")
+		s@x <- q[p[s@i + 1L]] >=
+		       q[p[rep(seq_len(length(s@p) - 1L), diff(s@p))]]
+		s <- selectMethod("colSums", class(s))(s) > 1L
+	    } else
+		s <- .Call(R_pnsredundant, s@data, s@elements@items@data,
+			   rank(q[p], na.last = "keep", ties.method = "min"),
+			   FALSE)
+	    r[p[s]] <- TRUE
+	}
+	r
     }
 )
 

@@ -1,7 +1,7 @@
 
 library("arulesSequences")
 
-### ceeboo 2008
+### ceeboo 2008, 2016
 
 data(zaki)
 
@@ -24,5 +24,12 @@ similarity(z, method = "subset")
 
 is.subset(z)
 is.subset(z, proper = TRUE)
+
+is.subset(z[3], z)
+is.subset(z[3], z, proper = TRUE)
+
+is.superset(z)
+
+is.superset(z[1], z)
 
 ###

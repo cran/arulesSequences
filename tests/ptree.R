@@ -61,6 +61,13 @@ all.equal(
     is.maximal(s1)
 )
 
+
+all.equal(
+    .Call(arulesSequences:::R_pnsredundant, s1@data,
+	  s1@elements@items@data, rep(1L, length(s1)), TRUE),
+    size(s1) > 1L
+)
+
 warnings()
 ###
 

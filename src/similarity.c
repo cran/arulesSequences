@@ -101,7 +101,7 @@ static double esim_lcs(int *x, int *y, int nx, int ny, int t)
 // FIXME weighting of sequence elements and / or items
 //       is not implemented.
 //
-// ceeboo 2008
+// ceeboo 2008, 2016
 
 SEXP R_similarity_sgCMatrix(SEXP x, SEXP y, SEXP R_e, SEXP R_method) {
     if (!x || isNull(x) || !inherits(x, "sgCMatrix"))
@@ -112,7 +112,7 @@ SEXP R_similarity_sgCMatrix(SEXP x, SEXP y, SEXP R_e, SEXP R_method) {
 	error("'e' not of class ngCMatrix");
     if (!R_method || isNull(R_method) || TYPEOF(R_method) != INTSXP)
 	error("'method' not of storage type integer");
-    int i, j, fx, lx, fy, ly, n, m = 0;
+    int i, j, fx, lx, fy, ly, n, m = 0, a = 0;
     double *zx, zy, z;
     SEXP r, pr, ir, xr, px, ix, py, iy;
 
@@ -152,6 +152,11 @@ SEXP R_similarity_sgCMatrix(SEXP x, SEXP y, SEXP R_e, SEXP R_method) {
     n = (m) ? (LENGTH(px)-1) * (LENGTH(py)-1)
 	    : (LENGTH(px)-1) *  LENGTH(px) / 2;
 
+    if (n > 1024) {
+	n = LENGTH(px) + LENGTH(py);
+	a = 1;
+    }
+
     setAttrib(r, install("p"), (pr = allocVector(INTSXP, LENGTH(py))));
     setAttrib(r, install("i"), (ir = allocVector(INTSXP, n)));
     setAttrib(r, install("x"), (xr = allocVector(REALSXP, n)));
@@ -167,6 +172,25 @@ SEXP R_similarity_sgCMatrix(SEXP x, SEXP y, SEXP R_e, SEXP R_method) {
 
     fy = n = INTEGER(pr)[0] = 0;
     for (j = 1; j < LENGTH(py); j++) {
+
+	// reallocate
+	if (a &&
+	    LENGTH(ir) - n < LENGTH(px)) {
+	    SEXP t;
+
+	    PROTECT(t = ir);
+	    setAttrib(r, install("i"), (ir = allocVector(INTSXP, LENGTH(ir) * 2)));
+	    memcpy(INTEGER(ir), INTEGER(t), sizeof(int) * n);
+
+	    UNPROTECT(1);
+
+	    PROTECT(t = xr);
+	    setAttrib(r, install("x"), (xr = allocVector(REALSXP, LENGTH(ir))));
+	    memcpy(REAL(xr), REAL(t), sizeof(double) * n);
+
+	    UNPROTECT(1);
+	}
+
 	ly = INTEGER(py)[j];
 	if (m) {
 	    zy = ly - fy;
