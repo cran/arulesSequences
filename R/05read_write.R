@@ -122,7 +122,7 @@ function(con = "", decode = FALSE, labels = NULL, transactions = NULL,
 		-seq_len(max(1L, length(levels(class))) + 1L)
 	)
 	k <- as(k, "tidLists")
-	s <- k@transactionInfo[['labels']]
+	s <- transactionInfo(k)[['labels']]
 	t <- transactionInfo(transactions)[['sequenceID']]
 	k@transactionInfo <- data.frame(sequenceID =
 	    if (is.factor(t))
@@ -185,11 +185,11 @@ write_cspade <- function(x, con) {
     r <- .Call(R_asList_ngCMatrix, x@data, NULL)
     r <- sapply(r, paste, collapse = " ")
     
-    sid <- .as_integer(x@transactionInfo[['sequenceID']])
+    sid <- .as_integer(transactionInfo(x)[['sequenceID']])
     if (is.integer(sid))
 	if (any(sid < 1L))
 	    stop("'sequenceID' not positive")
-    eid <- .as_integer(x@transactionInfo[['eventID']])
+    eid <- .as_integer(transactionInfo(x)[['eventID']])
     if (is.factor(eid))
         warning("'eventID' is a factor")
     else
@@ -238,8 +238,8 @@ makebin <- function(x, file) {
     if (!inherits(x, "transactions"))
         stop("'x' not of class transactions")
 
-    sid <- .as_integer(x@transactionInfo[['sequenceID']])
-    eid <- .as_integer(x@transactionInfo[['eventID']])
+    sid <- .as_integer(transactionInfo(x)[['sequenceID']])
+    eid <- .as_integer(transactionInfo(x)[['eventID']])
     if (is.factor(eid))
         warning("'eventID' is a factor")
 
@@ -277,7 +277,7 @@ function(data, parameter = NULL, control = NULL, tmpdir = tempdir()) {
     if (!inherits(data, "transactions"))
         stop("'data' not of class transactions")
     if (!all(c("sequenceID", "eventID") %in% names(transactionInfo(data))))
-        stop("slot transactionInfo: missing 'sequenceID' and/or 'eventID'")
+        stop("transactionInfo: missing 'sequenceID' and/or 'eventID'")
     ## optional
     class <- transactionInfo(data)[['classID']]
     if (!is.null(class)) {

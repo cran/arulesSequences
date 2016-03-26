@@ -368,7 +368,7 @@ setMethod("ruleInduction", signature(x = "sequences"),
 			       verbose = verbose)
 	    x@quality <- data.frame(support = k)
 	    k <- suppressWarnings(min(k))
-	    n <- transactions@transactionInfo[['sequenceID']]
+	    n <- transactionInfo(transactions)[['sequenceID']]
 	    n <- length(
 		if (is.factor(n))
 		    levels(n)

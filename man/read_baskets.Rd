@@ -32,7 +32,7 @@ read_baskets(con, sep = "[ \t]+", info = NULL, iteminfo = NULL,
 
     Sequential data are identified by the presence of the column identifiers
     "sequenceID" (sequence or customer identifier) and "eventID"
-    (time or event identifier) of slot \code{transactionInfo}.
+    (time or event identifier) of \emph{transactionInfo}.
 
     The row names of \code{iteminfo} must match the item identifiers
     present in the data. However, \code{iteminfo} need not contain a

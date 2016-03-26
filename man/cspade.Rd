@@ -27,7 +27,7 @@ cspade(data, parameter = NULL, control = NULL, tmpdir = tempdir())
 
     The temporal information is taken from components \code{sequenceID}
     (sequence or customer identifier) and \code{eventID} (event identifier)
-    of slot \code{transactionInfo}. Note that integer identifiers must be
+    of \emph{transactionInfo}. Note that integer identifiers must be
     positive and that \code{transactions} must be ordered by
     \code{sequenceID} and \code{eventID}.
 

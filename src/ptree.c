@@ -100,6 +100,7 @@ static int pnget(PN *p, int *x, int n) {
 
 static int dpn, sn;
 static int ct, cn, cx;
+static int *cb;
 
 static void pnscount(PN *p, int *x, int n) {
     if (p == NULL || n == 0)
@@ -140,6 +141,11 @@ static void pnscount(PN *p, int *x, int n) {
 			    cx < p->count)
 			    cx = p->count;
 			cn--;
+			break;
+		case 3: if (cx && 
+			    p->count)
+			    cb[cn++] = p->count;
+			cx--;
 			break;
 	    }
 	} else {
@@ -273,13 +279,13 @@ SEXP R_pnscount(SEXP R_x, SEXP R_t, SEXP R_e, SEXP R_v) {
 	    error("buffer allocation failed");
     }
 
-    cpn = apn = npn = 0;
-
     if (nb != NULL) 
 	nbfree();
     nb = (PN **) malloc(sizeof(PN *) * (nr+1));
     if (nb == NULL)
 	error("pointer array allocation failed");
+
+    cpn = apn = npn = 0;
 
     k = nr;
     nb[k] = NULL;
@@ -455,13 +461,13 @@ SEXP R_pnsclosed(SEXP R_x, SEXP R_e, SEXP R_c, SEXP R_v) {
 	    error("'c' invalid value");
     }
 
-    cpn = apn = npn = 0;
-
     if (nb != NULL) 
 	nbfree();
     nb = (PN **) malloc(sizeof(PN *) * (nr+1));
     if (nb == NULL)
 	error("pointer array allocation failed");
+
+    cpn = apn = npn = 0;
 
     k = nr;
     nb[k] = NULL;
@@ -641,13 +647,13 @@ SEXP R_pnsredundant(SEXP R_x, SEXP R_e, SEXP R_c, SEXP R_v) {
 	    error("'c' invalid value");
     }
 
-    cpn = apn = npn = 0;
-
     if (nb != NULL) 
 	nbfree();
     nb = (PN **) malloc(sizeof(PN *) * (nr+1));
     if (nb == NULL)
 	error("pointer array allocation failed");
+
+    cpn = apn = npn = 0;
 
     k = nr;
     nb[k] = NULL;
@@ -719,17 +725,271 @@ SEXP R_pnsredundant(SEXP R_x, SEXP R_e, SEXP R_c, SEXP R_v) {
 	    cn = n - 1;
 	    cx = 0;
 	    pnscount(nb[*x], x, n);
+	    sn += n;
 	    if (cx < INTEGER(R_c)[i-1])
 		LOGICAL(r)[i-1] = FALSE;
 	    else
 		LOGICAL(r)[i-1] = TRUE;
-	    sn += n;
 	} else
 	    LOGICAL(r)[i-1] = TRUE;
 	f = l;
 	R_CheckUserInterrupt();
     }
 
+    nbfree();
+    ebfree();
+
+    if (apn)
+	error("node deallocation imbalance %i", apn);
+    
+#ifdef _TIME_H
+    t3 = clock();
+
+    if (LOGICAL(R_v)[0] == TRUE) {
+	Rprintf("%i counts [%.2fs, %.2fs]\n ", LENGTH(px)-1,
+		((double) t3 - t1) / CLOCKS_PER_SEC,
+		((double) t3 - t2) / CLOCKS_PER_SEC);
+    }
+#endif
+
+    UNPROTECT(1);
+
+    return r;
+}
+
+// duplicates
+//
+// NOTE protect variables already in use
+//
+static PN **db = NULL;
+static int nd;
+
+static void dbfree() {
+    if (db == NULL)
+	return;
+    for (int k = 0; k < nd; k++)
+	pnfree(db[k]);
+    free(db);
+    db = NULL;
+    nd = 0;
+}
+
+
+SEXP R_pnssuperset(SEXP R_x, SEXP R_y, SEXP R_e, SEXP R_p, SEXP R_v) {
+    if (!inherits(R_x, "sgCMatrix"))
+	error("'x' not of class sgCMatrix");
+    if (!isNull(R_y) && 
+	!inherits(R_y, "sgCMatrix"))
+	error("'y' not of class sgCMatrix");
+    if (TYPEOF(R_p) != LGLSXP)
+	error("'p' not of type logical");
+    if (TYPEOF(R_v) != LGLSXP)
+	error("'v' not of type logical");
+    int i, f, l, k, n, nr, e;
+    int *x = NULL;
+    SEXP px, ix, py, iy;
+    SEXP r; 
+#ifdef _TIME_H
+    clock_t t4, t3, t2, t1;
+
+    t1 = clock();
+    
+    if (LOGICAL(R_v)[0] == TRUE)
+	Rprintf("checking ... ");
+#endif
+    nr = INTEGER(GET_SLOT(R_x, install("Dim")))[0];
+    
+    px = GET_SLOT(R_x, install("p"));
+    ix = GET_SLOT(R_x, install("i"));
+
+    if (!isNull(R_y)) {
+	if (nr != INTEGER(GET_SLOT(R_y, install("Dim")))[0])
+	    error("the number of rows of 'x' and 'y' do not conform");
+	py = GET_SLOT(R_y, install("p"));
+	iy = GET_SLOT(R_y, install("i"));
+    } else {
+	py = px;
+	iy = ix;
+    }
+
+    int *pe = NULL, *ie = NULL;
+    if (!isNull(R_e)) {
+        if (nr != INTEGER(GET_SLOT(R_e, install("Dim")))[1])
+            error("the number of rows of 'x' and columns of 'e' do not conform");
+        pe = INTEGER(GET_SLOT(R_e, install("p")));
+        ie = INTEGER(GET_SLOT(R_e, install("i")));
+
+	if (!eballoc())
+	    error("buffer allocation failed");
+    }
+
+    dpn = 0;
+
+    if (db != NULL)
+	dbfree();
+    nd = LENGTH(py);
+    db = (PN **) malloc(sizeof(PN *) * nd);
+    if (db == NULL)
+	error("pointer array allocation failed");
+    for (k = 0; k < nd; k++)
+	db[k] = NULL;
+
+    if (nb != NULL) 
+	nbfree();
+    nb = (PN **) malloc(sizeof(PN *) * (nr+1));
+    if (nb == NULL) {
+	dbfree();
+	error("pointer array allocation failed");
+    }
+
+    cpn = apn = npn = 0;
+
+    k = nr;
+    nb[k] = NULL;
+    while (k-- > 0)
+	nb[k] = pnadd(nb[k+1], &k, 1);
+
+    if (npn) {
+	dbfree();
+	nbfree();
+	error("node allocation failed");
+    }
+
+    e = 0;
+    f = 0;
+    for (i = 1; i < LENGTH(py); i++) {
+	l = INTEGER(py)[i];
+	n = l-f;
+	if (n == 0) {
+	    if (e) {
+		db[e] = pnadd(db[e], &i, 1);
+		dpn++;
+		if (npn) {
+		    dbfree();
+		    nbfree();
+		    ebfree();
+		    error("node allocation failed");
+		}
+	    } else
+		e = i;
+	    continue;
+	}
+	n = emap(INTEGER(iy)+f, n, pe, ie);
+	if (!n) {
+	    dbfree();
+	    nbfree();
+	    ebfree();
+	    error("buffer allocation failed");
+	}
+	x = eb;
+	if (n > 1) {
+	    pnadd(nb[*x], x, n);
+	    if (npn) {
+		dbfree();
+		nbfree();
+		ebfree();
+		error("node allocation failed");
+	    }
+	} else
+	    nq = nb[*x];
+	k = nq->count;
+	if (k) {
+	    db[k] = pnadd(db[k], &i, 1);
+	    dpn++;
+	    if (npn) {
+		dbfree();
+		nbfree();
+		ebfree();
+		error("node allocation failed");
+	    }
+	} else
+	    nq->count = i;
+	f = l;
+	R_CheckUserInterrupt();
+    }
+
+    if (dpn)
+	warning("duplicate element(s)");
+    else
+	dbfree();
+
+#ifdef _TIME_H
+    t2 = clock();
+#endif
+
+    PROTECT(r = allocVector(VECSXP, LENGTH(px)-1));
+
+    cpn = npn = dpn = sn = 0;
+     ct = 3;
+
+    cb = INTEGER(PROTECT(allocVector(INTSXP, LENGTH(py) - 1)));
+
+    f = 0;
+    for (i = 1; i < LENGTH(px); i++) {
+	l = INTEGER(px)[i];
+	n = l-f;
+	if (n == 0) {
+	    if (LOGICAL(R_p)[0])
+		SET_VECTOR_ELT(r, i-1, allocVector(INTSXP, 0));
+	    else {
+		cb[n++] = e;
+		if (db) {
+		    PN *q = db[cb[e]];
+		    while (q) {
+			cb[n++] = q->index;
+			q = q->pr;
+		    }
+		}
+		SEXP t;
+
+		SET_VECTOR_ELT(r, i-1, (t = allocVector(INTSXP, n)));
+		memcpy(INTEGER(t), cb, sizeof(int) * n);
+	    }
+	    continue;
+	}
+	n = emap(INTEGER(ix)+f, n, pe, ie);
+	if (!n) {			    // never
+	    dbfree();
+	    nbfree();
+	    ebfree();
+	    error("buffer allocation failed");
+	}
+	x = eb;
+	sn++;
+	nq = *nb;
+	cn = 0;
+	if (e)
+	    cb[cn++] = e;
+	cx = -1;
+	if (LOGICAL(R_p)[0])
+	    cx += n;
+	pnscount(nb[*x], x, n);
+	sn += n;
+	{
+	    if (db != NULL) {
+		n = cn;
+		for (k = 0; k < cn; k++) {
+		    PN *q = db[cb[k]];
+		    while (q) {
+			cb[n++] = q->index;
+			q = q->pr;
+		    }
+		}
+		cn = n;	
+	    }
+	    SEXP t;
+
+	    SET_VECTOR_ELT(r, i-1, (t = allocVector(INTSXP, cn)));
+	    memcpy(INTEGER(t), cb, sizeof(int) * cn);
+	    R_isort(INTEGER(t), cn);
+	}
+	f = l;
+	R_CheckUserInterrupt();
+    }
+
+    UNPROTECT(1);
+
+    dbfree();
     nbfree();
     ebfree();
 

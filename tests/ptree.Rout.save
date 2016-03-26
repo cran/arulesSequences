@@ -26,7 +26,7 @@ Attaching package: 'arules'
 
 The following objects are masked from 'package:base':
 
-    %in%, abbreviate, write
+    abbreviate, write
 
 > 
 > ## use example

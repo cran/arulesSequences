@@ -533,8 +533,13 @@ setMethod("duplicated", signature(x = "sequences"),
 setMethod("unique", signature(x = "sequences"),
     function(x, incomparables = FALSE) x[!duplicated(x)])
 
-## note that %in% dispatches to match unless the
-## right hand operand is not of the same class
+## note that %in% does no longer dispatch to match unless
+## the right hand operand is not of the same class
+
+setMethod("%in%", signature(x = "sequences", table = "sequences"),
+    function(x, table)
+	match(x, table, nomatch = 0L) > 0L
+)
 
 setMethod("match", signature(x = "sequences", table = "sequences"),
     function(x, table, nomatch = NA_integer_, incomparables = NULL) {

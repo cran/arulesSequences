@@ -33,18 +33,18 @@ setAs("transactions", "timedsequences",
     function(from) {
 	if (!length(from))
 	    return(new("timedsequences"))
-        if (!all(c("sequenceID", "eventID") %in% names(from@transactionInfo)))
-            stop("slot transactionInfo: missing sequenceID or eventID")
-        if (any(is.na(from@transactionInfo[['sequenceID']])))
+        if (!all(c("sequenceID", "eventID") %in% names(transactionInfo(from))))
+            stop("transactionInfo: missing sequenceID or eventID")
+        if (any(is.na(transactionInfo(from)[['sequenceID']])))
             stop("sequenceID: missing values")
-        if (any(is.na(from@transactionInfo[['eventID']])))
+        if (any(is.na(transactionInfo(from)[['eventID']])))
             stop("eventID: missing values")
 
-        t <- .as_integer(from@transactionInfo[['eventID']])
+        t <- .as_integer(transactionInfo(from)[['eventID']])
         if (is.factor(t)) {
             warning("'eventID' is a factor")
 
-            k <- order(from@transactionInfo[['sequenceID']])
+            k <- order(transactionInfo(from)[['sequenceID']])
             if (any(k != seq_len(length(k)))) {
                 warning("transactions not ordered")
 
@@ -56,7 +56,7 @@ setAs("transactions", "timedsequences",
                             eventID = seq_len(length(levels(t))),
 			    stringsAsFactors = FALSE)
         } else {
-            k <- order(from@transactionInfo[['sequenceID']], t)
+            k <- order(transactionInfo(from)[['sequenceID']], t)
             if (any(k != seq_len(length(k)))) {
                 warning("transactions not ordered")
 
@@ -75,7 +75,7 @@ setAs("transactions", "timedsequences",
         e <- new("itemsets", items = unique(s))
 
         s <- .Call(R_pnindex, e@items@data, s@data,  FALSE)
-        s <- tapply(s, from@transactionInfo[['sequenceID']], list)
+        s <- tapply(s, transactionInfo(from)[['sequenceID']], list)
 
         n <- data.frame(sequenceID = names(s),
 			stringsAsFactors = FALSE)
@@ -517,8 +517,9 @@ setAs("timedsequences", "transactions",
 					 size(from))),
             eventID    = .as_integer(from@timeInfo[['labels']][t]))
 
-        new("transactions", as(i, "itemMatrix"),
-                            transactionInfo = t)
+        i <- new("transactions", as(i, "itemMatrix"))
+	transactionInfo(i) <- t
+	i
     }
 )
 

@@ -2,6 +2,7 @@
 \docType{methods}
 \alias{match}
 \alias{match,sequences,sequences-method}
+\alias{\%in\%,sequences,sequences-method} 
 \alias{match,sequencerules,sequencerules-method}
 \alias{\%in\%,sequences,character-method} 
 \alias{\%in\%}

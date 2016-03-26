@@ -1,6 +1,12 @@
 
 NEWS/ChangeLog for arulesSequences
 
+0.2-14 2016-03-18
+
+    o Added ptree method for is.subset.
+
+    o arules fixes.
+
 0.2-13 2016-01-26
 
     o Fixed file.exists in cspade to handle

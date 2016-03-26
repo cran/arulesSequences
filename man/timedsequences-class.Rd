@@ -79,7 +79,7 @@
 \author{Christian Buchta}
 \note{
     The temporal information is taken from components \code{sequenceID} 
-    and \code{eventID} of slot\cr\code{transactionInfo}. It may be either
+    and \code{eventID} of \emph{transactionInfo}. It may be either
     on an ordinal or metric scale. The former is always assumed if column
     \code{eventID} is a factor.
 
@@ -88,9 +88,6 @@
     
     Coercion from an object of class \code{\linkS4class{sequences}} is
     not provided as this class does not contain timing information.
-
-    FIXME currently objects of this class cannot be used directly in
-    sequence mining with \code{\link{cspade}}.
 }
 \seealso{
     Class

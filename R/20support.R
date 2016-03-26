@@ -21,8 +21,9 @@ function(from) {
     i <- from@data@i + 1L
     i <- from@elements@items[i]
 
-    new("transactions", as(i, "itemMatrix"),
-                        transactionInfo = t)
+    i <- new("transactions", as(i, "itemMatrix"))
+    transactionInfo(i) <- t
+    i
 }
 
 support.idlists <-
@@ -58,7 +59,7 @@ function(x, transactions, type = "absolute", parameter = NULL, verbose = FALSE) 
 	y <- as_sequences_transactions(y)
     else
 	if (!all(c("sequenceID", "eventID") %in% names(transactionInfo(y))))
-	    stop("slot transactionInfo: missing 'sequenceID' and/or 'eventID'")
+	    stop("transactionInfo: missing 'sequenceID' and/or 'eventID'")
 
     ## L1 order optimization
     i <- itemFrequency(y, type = "absolute")
@@ -102,8 +103,8 @@ function(x, transactions, type = "absolute", parameter = NULL, verbose = FALSE) 
 	rm(k)
     x <- LIST(x, decode = FALSE)
 
-    sid <- .as_integer(y@transactionInfo[['sequenceID']])
-    eid <- .as_integer(y@transactionInfo[['eventID']])
+    sid <- .as_integer(transactionInfo(y)[['sequenceID']])
+    eid <- .as_integer(transactionInfo(y)[['eventID']])
     if (is.factor(eid))
 	warning("'eventID' is a factor")
 	
