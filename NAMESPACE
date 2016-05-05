@@ -87,6 +87,6 @@ exportMethods(
 )
 
 ##
-importFrom("arules", "head")
-importFrom("utils",  "tail", "type.convert")
+## importFrom("utils", "head", "tail")
+importFrom("utils",  "type.convert")
 
