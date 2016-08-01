@@ -4,7 +4,7 @@ library("arulesSequences")
 ## basic tests using the small running 
 ## example from the paper. 
 ##
-## ceeboo 2007, 2014, 2015
+## ceeboo 2007, 2014, 2015, 2016
 
 ## data set
 
@@ -124,6 +124,12 @@ all.equal(z, c(z[1], z[-1]))
 
 ## fixme: different orders of item labels
 #all.equal(z, c(z[1,reduce=TRUE], z[-1,reduce=TRUE]))
+
+## disabled
+
+z <- cspade(zaki, parameter = list(support = 0.4, maxwin = 5), 
+                  control   = list(verbose =TRUE))
+identical(s1, z)
 
 ## tidLists
 

@@ -290,6 +290,12 @@ function(data, parameter = NULL, control = NULL, tmpdir = tempdir()) {
     parameter <- as(parameter, "SPparameter")
     control   <- as(control ,  "SPcontrol")
 
+    ## disable
+    if (length(parameter@maxwin)) {
+	parameter@maxwin <- integer()
+	warning("'maxwin' disabled")
+    }
+
     if (control@verbose) {
         t1 <- proc.time()
         cat("\nparameter specification:\n")

@@ -1,9 +1,13 @@
 
 NEWS/ChangeLog for arulesSequences
 
-0.2-15 2016-04-xx
+0.2-16 2016-07-30
 
-    o FIXES.
+    o Disabled option maxwin in cspade.
+
+0.2-15 2016-05-05
+
+    o import fix.
 
 0.2-14 2016-03-18
 

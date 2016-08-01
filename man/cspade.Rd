@@ -59,7 +59,8 @@ cspade(data, parameter = NULL, control = NULL, tmpdir = tempdir())
 }
 \section{Warning}{
     The implementation of the \code{maxwin} constraint in the command-line
-    tools seems to be broken.
+    tools seems to be broken. To avoid confusion it is disabled with a 
+    warning.
 }
 \seealso{
     Class 
@@ -92,14 +93,14 @@ summary(tidLists(s1))
 transactionInfo(tidLists(s1))
 
 ## use timing constraint
-s2 <- cspade(zaki, parameter = list(support = 0.4, maxwin = 5))
+s2 <- cspade(zaki, parameter = list(support = 0.4, maxgap = 5))
 as(s2, "data.frame")
 
 ## use classification
 t <- zaki
 transactionInfo(t)$classID <-
     as.integer(transactionInfo(t)$sequenceID) \%\% 2 + 1L
-s3 <- cspade(t, parameter = list(support = 0.4, maxwin = 5))
+s3 <- cspade(t, parameter = list(support = 0.4, maxgap = 5))
 as(s3, "data.frame")
 
 ## replace timestamps
@@ -113,7 +114,7 @@ s4
 identical(as(s1, "data.frame"), as(s4, "data.frame"))
 
 ## work around
-s5 <- cspade(zaki, parameter = list(support = .25, maxwin = 5))
+s5 <- cspade(zaki, parameter = list(support = .25, maxgap = 5))
 length(s5)
 k <- support(s5, zaki, control   = list(verbose = TRUE,
                        parameter = list(maxwin = 5)))
