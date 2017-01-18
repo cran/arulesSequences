@@ -1,18 +1,4 @@
-useDynLib(arulesSequences,
-    R_makebin,
-    R_rowSums_sgCMatrix,
-    R_rowSubset_sgCMatrix,
-    R_colAppend_sgCMatrix,
-    R_valid_sgCMatrix,
-    R_firstOrder_sgCMatrix,
-    R_similarity_sgCMatrix,
-    R_as_dist_dsCMatrix,
-    R_ilscount,
-    R_pnscount,
-    R_pnsclosed,
-    R_pnsredundant,
-    R_pnssuperset
-)
+useDynLib("arulesSequences", .registration = TRUE)
 
 import("methods")
 import("arules")

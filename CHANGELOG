@@ -1,6 +1,10 @@
 
 NEWS/ChangeLog for arulesSequences
 
+0.2-17 2017-01-17
+
+    o Added DLL registry.
+
 0.2-16 2016-07-30
 
     o Disabled option maxwin in cspade.
