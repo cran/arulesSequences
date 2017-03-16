@@ -1,5 +1,5 @@
-e9701a41dc51519c49bab03f33cac992 *CHANGELOG
-0639fa17492d36d907fba4965469b70c *DESCRIPTION
+efd3746387637cca6380944a3b232d74 *CHANGELOG
+a60ec1e44722ef465375e49fef16681b *DESCRIPTION
 9b09fe4a6ad430540113bbdc3247f5f1 *INSTALL
 863d5da9a4099f98e4ace9f2add4d51b *NAMESPACE
 bdac69378a64f167d37a599152e95fcd *R/01matrix.R
@@ -10,7 +10,6 @@ cff5b6ecbed3db554da5f738ff6002f6 *R/03rules.R
 45bc6d8430c34fff9e2357e1d49fcff8 *R/10timed.R
 d128f9133d05de4b07dce28bd6f2622a *R/20support.R
 5273f9a06e3a1f76abf543145853f02d *R/30similarity.R
-c4274f9fb5ef794a4c80d330d563a763 *R/native.R
 37af970b91746ec596562ad951a0883e *data/zaki.rda
 ae12b459ba6fc2c9df5869f8b7b3d1fb *inst/COPYRIGHTS
 e2e39be8d8a02f68d5bf4c0d958425a6 *inst/misc/test.pat
@@ -78,7 +77,7 @@ dff52e72cbe6dff1215f110012e56107 *src/cSPADE/partition.cc
 3d93d938a0b8d4605a14d2ca3a56ecb0 *src/cSPADE/sequence.cc
 a0724dcf9f1f69ec2594119688bdfe99 *src/cSPADE/spade.h
 b2e2d9071887047e47b69c4d953b9d35 *src/cSPADE/win.mk
-8908e61690995c53f98b9d9befdb2021 *src/dll.c
+8deba609a294a3d3d4c6ecad4e549304 *src/dll.c
 c219c7fe573c9d11e393572dcfdbb5fa *src/idlists.c
 1a504ff47cba4d8a492cc826f07c00d7 *src/makebin.c
 5345ef140eec995618351ed15344008a *src/matrix.c

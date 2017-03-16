@@ -1,6 +1,10 @@
 
 NEWS/ChangeLog for arulesSequences
 
+0.2-18 2017-01-22
+
+    o Fixed import of native symbols from arules.
+
 0.2-17 2017-01-17
 
     o Added DLL registry.
