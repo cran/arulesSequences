@@ -144,8 +144,10 @@ SEXP R_similarity_sgCMatrix(SEXP x, SEXP y, SEXP R_e, SEXP R_method) {
 
     PROTECT(r = NEW_OBJECT(MAKE_CLASS((m) ? "dgCMatrix" : "dsCMatrix")));
 
-    if (!m)
-	setAttrib(r, install("uplo"), mkString("L"));
+    if (!m) {
+	setAttrib(r, install("uplo"), PROTECT(mkString("L")));
+	UNPROTECT(1);
+    }
 
     // FIXME can we bound the initial memory allocation
     //       to less than full storage representation?
@@ -157,9 +159,10 @@ SEXP R_similarity_sgCMatrix(SEXP x, SEXP y, SEXP R_e, SEXP R_method) {
 	a = 1;
     }
 
-    setAttrib(r, install("p"), (pr = allocVector(INTSXP, LENGTH(py))));
-    setAttrib(r, install("i"), (ir = allocVector(INTSXP, n)));
-    setAttrib(r, install("x"), (xr = allocVector(REALSXP, n)));
+    setAttrib(r, install("p"), PROTECT(pr = allocVector(INTSXP, LENGTH(py))));
+    setAttrib(r, install("i"), PROTECT(ir = allocVector(INTSXP, n)));
+    setAttrib(r, install("x"), PROTECT(xr = allocVector(REALSXP, n)));
+    UNPROTECT(3);
 
     // precompute
     zx = REAL(PROTECT(allocVector(REALSXP, LENGTH(px))));
@@ -179,16 +182,16 @@ SEXP R_similarity_sgCMatrix(SEXP x, SEXP y, SEXP R_e, SEXP R_method) {
 	    SEXP t;
 
 	    PROTECT(t = ir);
-	    setAttrib(r, install("i"), (ir = allocVector(INTSXP, LENGTH(ir) * 2)));
+	    setAttrib(r, install("i"), PROTECT(ir = allocVector(INTSXP, LENGTH(ir) * 2)));
 	    memcpy(INTEGER(ir), INTEGER(t), sizeof(int) * n);
 
-	    UNPROTECT(1);
+	    UNPROTECT(2);
 
 	    PROTECT(t = xr);
-	    setAttrib(r, install("x"), (xr = allocVector(REALSXP, LENGTH(ir))));
+	    setAttrib(r, install("x"), PROTECT(xr = allocVector(REALSXP, LENGTH(ir))));
 	    memcpy(REAL(xr), REAL(t), sizeof(double) * n);
 
-	    UNPROTECT(1);
+	    UNPROTECT(2);
 	}
 
 	ly = INTEGER(py)[j];
@@ -247,16 +250,16 @@ SEXP R_similarity_sgCMatrix(SEXP x, SEXP y, SEXP R_e, SEXP R_method) {
 
     if (n < LENGTH(ir)) {
 	PROTECT(ix = ir);
-	setAttrib(r, install("i"), (ir = allocVector(INTSXP, n)));
+	setAttrib(r, install("i"), PROTECT(ir = allocVector(INTSXP, n)));
 	memcpy(INTEGER(ir), INTEGER(ix), sizeof(int) * n);
 
-	UNPROTECT(1);
+	UNPROTECT(2);
 
 	PROTECT(ix = xr);
-	setAttrib(r, install("x"), (xr = allocVector(REALSXP, n)));
+	setAttrib(r, install("x"), PROTECT(xr = allocVector(REALSXP, n)));
 	memcpy(REAL(xr), REAL(ix), sizeof(double) * n);
 
-	UNPROTECT(1);
+	UNPROTECT(2);
     }
 
     ix = getAttrib(r, install("Dim"));
@@ -316,7 +319,8 @@ SEXP R_as_dist_dsCMatrix(SEXP x) {
 	f = l;
     }
 
-    setAttrib(r, install("Size"), ScalarInteger(LENGTH(px)-1));
+    setAttrib(r, install("Size"), PROTECT(ScalarInteger(LENGTH(px)-1)));
+    UNPROTECT(1);
 
     ix = getAttrib(x, install("Dimnames")); 
     if (!isNull((ix = VECTOR_ELT(ix, 0))))

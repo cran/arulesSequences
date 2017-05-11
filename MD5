@@ -1,5 +1,5 @@
-efd3746387637cca6380944a3b232d74 *CHANGELOG
-a60ec1e44722ef465375e49fef16681b *DESCRIPTION
+5a68ae69f26fd6b19655188748a7a41a *CHANGELOG
+ea50d3ec06bab0893eff1c6eb148c79b *DESCRIPTION
 9b09fe4a6ad430540113bbdc3247f5f1 *INSTALL
 863d5da9a4099f98e4ace9f2add4d51b *NAMESPACE
 bdac69378a64f167d37a599152e95fcd *R/01matrix.R
@@ -30,7 +30,7 @@ b10be0e21cdec3b205e767716e7813b8 *man/read_baskets.Rd
 81e128c3fc8abf5b52b9e300eb6215ae *man/sgCMatrix-class.Rd
 afecc50694284e761e5996a61eab15df *man/similarity-methods.Rd
 daf2e8e4f1e5f2786f1d026de736c94c *man/size-methods.Rd
-fa53efea99d25b00760d178cf02a8a4f *man/subset-methods.Rd
+0c61cbcd0aed96a111209d0c35ad85a9 *man/subset-methods.Rd
 9d1766b63138e5bd47de4a991647dc37 *man/support-methods.Rd
 47474c59e88f4a5a9cc7b5919e0ea295 *man/timeFrequency-methods.Rd
 d3cf26563e15f6555df7fe57f4265a5b *man/timedsequences-class.Rd
@@ -80,9 +80,9 @@ b2e2d9071887047e47b69c4d953b9d35 *src/cSPADE/win.mk
 8deba609a294a3d3d4c6ecad4e549304 *src/dll.c
 c219c7fe573c9d11e393572dcfdbb5fa *src/idlists.c
 1a504ff47cba4d8a492cc826f07c00d7 *src/makebin.c
-5345ef140eec995618351ed15344008a *src/matrix.c
+d897d003ba0a37bf00d5f929f71d8502 *src/matrix.c
 72d2731482d76ae334360c95035fff12 *src/ptree.c
-b04cc800ae4f2e7c700109bde57dfcbb *src/similarity.c
+6c4543b77edc87eff3e48db38ae98ff5 *src/similarity.c
 32935964526a4494f601ac5296b28409 *tests/Rgui.R
 c791269a74df3f4881b7174266efaf64 *tests/arules.R
 4ce65fb069e57f38364ac568247fe8e9 *tests/arules.Rout.save

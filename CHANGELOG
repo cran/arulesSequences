@@ -1,6 +1,12 @@
 
 NEWS/ChangeLog for arulesSequences
 
+0.2-19 2017-04-09
+
+    o documentation fixes.
+
+    o off-chance PROTECT bug fixes.
+
 0.2-18 2017-01-22
 
     o Fixed import of native symbols from arules.

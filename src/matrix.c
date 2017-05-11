@@ -104,8 +104,9 @@ SEXP R_rowSubset_sgCMatrix(SEXP x, SEXP s) {
     px = getAttrib(x, install("p"));
 
     PROTECT(r = NEW_OBJECT(MAKE_CLASS("sgCMatrix")));
-    setAttrib(r, install("p"), (pr = allocVector(INTSXP, LENGTH(px))));
-    setAttrib(r, install("i"), (ir = allocVector(INTSXP, n)));
+    setAttrib(r, install("p"), PROTECT(pr = allocVector(INTSXP, LENGTH(px))));
+    setAttrib(r, install("i"), PROTECT(ir = allocVector(INTSXP, n)));
+    UNPROTECT(2);
 
     f = n = INTEGER(pr)[0] = 0;
     for (i = 1; i < LENGTH(px); i++) {
@@ -120,14 +121,16 @@ SEXP R_rowSubset_sgCMatrix(SEXP x, SEXP s) {
 	f = l;
     }
     
-    setAttrib(r, install("Dim"), (ir = allocVector(INTSXP, 2)));
+    setAttrib(r, install("Dim"), PROTECT(ir = allocVector(INTSXP, 2)));
+    UNPROTECT(1);
     INTEGER(ir)[0] = LENGTH(s);
     INTEGER(ir)[1] = LENGTH(px)-1;
 
     if (isNull((ix = VECTOR_ELT(dx, 0))))
 	setAttrib(r, install("Dimnames"), dx);
     else {
-	setAttrib(r, install("Dimnames"), (ir = allocVector(VECSXP, 2)));
+	setAttrib(r, install("Dimnames"), PROTECT(ir = allocVector(VECSXP, 2)));
+	UNPROTECT(1);
 	setAttrib(ir, R_NamesSymbol, getAttrib(dx, R_NamesSymbol));
 	SET_VECTOR_ELT(ir, 1, VECTOR_ELT(dx, 1));
 	if (LENGTH(s) > 0) {
@@ -178,8 +181,9 @@ SEXP R_colAppend_sgCMatrix(SEXP x, SEXP y, SEXP R_s) {
     n = (LOGICAL(R_s)[0] == FALSE) ? 0 : LENGTH(px)-1;	    // seperators
 
     PROTECT(r = NEW_OBJECT(MAKE_CLASS("sgCMatrix")));
-    setAttrib(r, install("p"), (pr = allocVector(INTSXP, LENGTH(px))));
-    setAttrib(r, install("i"), (ir = allocVector(INTSXP, LENGTH(ix)+LENGTH(iy)+n)));
+    setAttrib(r, install("p"), PROTECT(pr = allocVector(INTSXP, LENGTH(px))));
+    setAttrib(r, install("i"), PROTECT(ir = allocVector(INTSXP, LENGTH(ix)+LENGTH(iy)+n)));
+    UNPROTECT(2);
 
     fx = fy = n = INTEGER(pr)[0] = 0;
     for (i = 1; i < LENGTH(px); i++) {
@@ -195,11 +199,13 @@ SEXP R_colAppend_sgCMatrix(SEXP x, SEXP y, SEXP R_s) {
 	fx = lx;
 	fy = ly;
     }
-    setAttrib(r, install("Dim"), (ir = allocVector(INTSXP, 2)));
+    setAttrib(r, install("Dim"), PROTECT(ir = allocVector(INTSXP, 2)));
+    UNPROTECT(1);
     INTEGER(ir)[0] = (LOGICAL(R_s)[0] == FALSE) ? nr : nr + 1;
     INTEGER(ir)[1] = LENGTH(pr)-1;
 
-    setAttrib(r, install("Dimnames"), (ir = allocVector(VECSXP, 2)));
+    setAttrib(r, install("Dimnames"), PROTECT(ir = allocVector(VECSXP, 2)));
+    UNPROTECT(1);
     
     ix = getAttrib(x, install("Dimnames"));
     iy = getAttrib(y, install("Dimnames"));

@@ -3,7 +3,10 @@
 \alias{subset}
 \alias{subset,sequences-method}
 \alias{subset,sequencerules-method}
-\alias{[}
+%\alias{[}
+\alias{[,sequences-method}
+\alias{[,timedsequences-method}
+\alias{[,sequencerules-method}
 \alias{[,sequences,ANY,ANY,ANY-method}
 \alias{[,timedsequences,ANY,ANY,ANY-method}
 \alias{[,sequencerules,ANY,missing,ANY-method}
@@ -35,14 +38,12 @@
 
 \S4method{subset}{sequencerules}(x, subset)
 
-## S4 method for signature 'sequences, ANY, ANY, ANY':
-x[i, j, ..., reduce = FALSE, drop = FALSE]
 
-## S4 method for signature 'timedsequences, ANY, ANY, ANY':
-x[i, j, k, ..., reduce = FALSE, drop = FALSE]
+\S4method{[}{sequences}(x, i, j, ..., reduce = FALSE, drop = FALSE)
 
-## S4 method for signature 'sequencerules, ANY, missing, ANY':
-x[i, j, ..., drop = FALSE]
+\S4method{[}{timedsequences}(x, i, j, k, ..., reduce = FALSE, drop = FALSE)
+
+\S4method{[}{sequencerules}(x, i, j, ..., drop = FALSE)
 
 \S4method{unique}{sequences}(x, incomparables = FALSE)
 
