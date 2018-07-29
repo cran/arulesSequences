@@ -172,11 +172,12 @@ static void pnscount(PN *p, int *x, int n) {
 	if (*x > -1)
 	    pnscount(p, x+1, n-1);
 	else
-	    if (nq)
+	    if (nq) {
 		if (nq->index > -1)
 		    pnscount(nq, x+1, n-1);
 		else
 		    pnscount(nq, x, n);
+	    }
 }
 
 // map sequence
@@ -618,7 +619,7 @@ SEXP R_pnsredundant(SEXP R_x, SEXP R_e, SEXP R_c, SEXP R_v) {
     SEXP px, ix;
     SEXP r; 
 #ifdef _TIME_H
-    clock_t t4, t3, t2, t1;
+    clock_t t3, t2, t1;
 
     t1 = clock();
     
@@ -790,7 +791,7 @@ SEXP R_pnssuperset(SEXP R_x, SEXP R_y, SEXP R_e, SEXP R_p, SEXP R_v) {
     SEXP px, ix, py, iy;
     SEXP r; 
 #ifdef _TIME_H
-    clock_t t4, t3, t2, t1;
+    clock_t t3, t2, t1;
 
     t1 = clock();
     

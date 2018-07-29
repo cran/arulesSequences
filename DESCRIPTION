@@ -1,5 +1,5 @@
 Package: arulesSequences
-Version: 0.2-19
+Version: 0.2-20
 Title: Mining Frequent Sequences
 Author: Christian Buchta and Michael Hahsler, with contributions from
         Daniel Diaz
@@ -10,6 +10,6 @@ Description: Add-on for arules to handle and mine frequent sequences.
 Depends: R (>= 3.3.2), methods, arules (>= 1.5-1)
 License: GPL-2
 NeedsCompilation: yes
-Packaged: 2017-04-22 16:31:34 UTC; buchta
+Packaged: 2018-07-29 09:28:52 UTC; buchta
 Repository: CRAN
-Date/Publication: 2017-05-11 17:16:33 UTC
+Date/Publication: 2018-07-29 15:12:38 UTC

@@ -452,7 +452,7 @@ void do_invert_db(Dbase_Ctrl_Blk *DCB, int pblk, Array **extary, int numfreq,
    seconds(t1);
    int numitem = 0, tid = 0, custid = 0;	// DD
    int *buf = NULL;				// DD
-   char tmpnam[300];
+   char tmpnam[316];				// CB 2018/7 added extra bytes
    int i,j,k;
    int fd;
    int idx;
@@ -656,7 +656,7 @@ void tpose()
    
    seconds(t1);
    
-   char tmpnam[300];
+   char tmpnam[316];
    int plb, pub, pblk;
    pblk = (int) ceil (((double)(maxcustid-mincustid+1))/num_partitions);
    if (do_invert){
@@ -741,8 +741,8 @@ void tpose()
    if (do_l2){
       seconds(t1);
       int seqfd = 0, isetfd;	    // DD
-      char tmpseq[300];
-      char tmpiset[300];
+      char tmpseq[316];
+      char tmpiset[316];
       if (use_seq){
 	 sprintf(tmpseq, "%sseq", tmpfn);
          if ((seqfd = open(tmpseq, (O_RDWR|O_CREAT|O_TRUNC|O_BINARY), 0666)) < 0){

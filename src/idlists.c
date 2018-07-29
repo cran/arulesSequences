@@ -170,7 +170,7 @@ SEXP R_ilscount(SEXP x, SEXP R_tid, SEXP R_sid, SEXP R_eid, SEXP R_mingap, SEXP 
 	    continue;
 	}
 
-	int ni, nj, nk;
+	int ni = 0, nj, nk;
 
 	h = 0;
 	while (h < LENGTH(s)) {

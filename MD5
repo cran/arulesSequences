@@ -1,5 +1,5 @@
-5a68ae69f26fd6b19655188748a7a41a *CHANGELOG
-ea50d3ec06bab0893eff1c6eb148c79b *DESCRIPTION
+018ae2419cb736fcb935842e481036b5 *CHANGELOG
+f7d354ba3d5a93c32de0dc63fa3a0ba2 *DESCRIPTION
 9b09fe4a6ad430540113bbdc3247f5f1 *INSTALL
 863d5da9a4099f98e4ace9f2add4d51b *NAMESPACE
 bdac69378a64f167d37a599152e95fcd *R/01matrix.R
@@ -45,7 +45,7 @@ a0b89d682d04f0926f5fbd17cbd74f18 *src/TPOSE/README
 5833643da81ec10f6b99f7cc4bb830ad *src/TPOSE/b2a.cc
 c912e159d316cc69b5bb963f0a4fe528 *src/TPOSE/calcdb.cc
 57d19de1959cd44a97ea804d6967be14 *src/TPOSE/calcdb.h
-65e07c56ebd9fa2a6c908b25225eb9b4 *src/TPOSE/exttpose.cc
+8101767830341e0786c535fd4ecb274f *src/TPOSE/exttpose.cc
 f1fe626bfbcef320e60c928c41defb73 *src/TPOSE/getconf.cc
 0d67dc21b759cf036ade523f9939594b *src/TPOSE/makebin.cc
 82d8560876cf734c3f6b80d944ba21d2 *src/TPOSE/mmap-win32.c
@@ -78,10 +78,10 @@ dff52e72cbe6dff1215f110012e56107 *src/cSPADE/partition.cc
 a0724dcf9f1f69ec2594119688bdfe99 *src/cSPADE/spade.h
 b2e2d9071887047e47b69c4d953b9d35 *src/cSPADE/win.mk
 8deba609a294a3d3d4c6ecad4e549304 *src/dll.c
-c219c7fe573c9d11e393572dcfdbb5fa *src/idlists.c
+4baa14de17ead903d6a965d5c1dc50c3 *src/idlists.c
 1a504ff47cba4d8a492cc826f07c00d7 *src/makebin.c
 d897d003ba0a37bf00d5f929f71d8502 *src/matrix.c
-72d2731482d76ae334360c95035fff12 *src/ptree.c
+e53f66486a6c2e44b1d84d7afef81cf0 *src/ptree.c
 6c4543b77edc87eff3e48db38ae98ff5 *src/similarity.c
 32935964526a4494f601ac5296b28409 *tests/Rgui.R
 c791269a74df3f4881b7174266efaf64 *tests/arules.R
