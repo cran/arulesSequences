@@ -1,5 +1,5 @@
-018ae2419cb736fcb935842e481036b5 *CHANGELOG
-f7d354ba3d5a93c32de0dc63fa3a0ba2 *DESCRIPTION
+9a680b86e0d7088a61671c3ea7697273 *CHANGELOG
+532abe4e05c73b4c92275f7c17116775 *DESCRIPTION
 9b09fe4a6ad430540113bbdc3247f5f1 *INSTALL
 863d5da9a4099f98e4ace9f2add4d51b *NAMESPACE
 bdac69378a64f167d37a599152e95fcd *R/01matrix.R
@@ -10,7 +10,7 @@ cff5b6ecbed3db554da5f738ff6002f6 *R/03rules.R
 45bc6d8430c34fff9e2357e1d49fcff8 *R/10timed.R
 d128f9133d05de4b07dce28bd6f2622a *R/20support.R
 5273f9a06e3a1f76abf543145853f02d *R/30similarity.R
-37af970b91746ec596562ad951a0883e *data/zaki.rda
+b94a5032fb707ef1d9ec2560580eb23f *data/zaki.rda
 ae12b459ba6fc2c9df5869f8b7b3d1fb *inst/COPYRIGHTS
 e2e39be8d8a02f68d5bf4c0d958425a6 *inst/misc/test.pat
 cca1f4a49dd7ec1be94f48e7d33f462a *inst/misc/test.txt
@@ -80,9 +80,9 @@ b2e2d9071887047e47b69c4d953b9d35 *src/cSPADE/win.mk
 8deba609a294a3d3d4c6ecad4e549304 *src/dll.c
 4baa14de17ead903d6a965d5c1dc50c3 *src/idlists.c
 1a504ff47cba4d8a492cc826f07c00d7 *src/makebin.c
-d897d003ba0a37bf00d5f929f71d8502 *src/matrix.c
+87d0b5560cf132098b562be540332f73 *src/matrix.c
 e53f66486a6c2e44b1d84d7afef81cf0 *src/ptree.c
-6c4543b77edc87eff3e48db38ae98ff5 *src/similarity.c
+44c2b6cc4f87ebe1cae5c003089af6e8 *src/similarity.c
 32935964526a4494f601ac5296b28409 *tests/Rgui.R
 c791269a74df3f4881b7174266efaf64 *tests/arules.R
 4ce65fb069e57f38364ac568247fe8e9 *tests/arules.Rout.save

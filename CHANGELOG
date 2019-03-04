@@ -1,6 +1,10 @@
 
 NEWS/ChangeLog for arulesSequences
 
+0.2-21 2019-03-04
+
+    o off-chance PROTECT bug fixes.
+
 0.2-20 2018-07-29
 
     o off-chance sprintf overflow bug fixes.

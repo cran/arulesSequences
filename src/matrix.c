@@ -103,7 +103,7 @@ SEXP R_rowSubset_sgCMatrix(SEXP x, SEXP s) {
 
     px = getAttrib(x, install("p"));
 
-    PROTECT(r = NEW_OBJECT(MAKE_CLASS("sgCMatrix")));
+    PROTECT(r = NEW_OBJECT(PROTECT(MAKE_CLASS("sgCMatrix"))));
     setAttrib(r, install("p"), PROTECT(pr = allocVector(INTSXP, LENGTH(px))));
     setAttrib(r, install("i"), PROTECT(ir = allocVector(INTSXP, n)));
     UNPROTECT(2);
@@ -141,7 +141,7 @@ SEXP R_rowSubset_sgCMatrix(SEXP x, SEXP s) {
 	    SET_VECTOR_ELT(ir, 0, R_NilValue);
     }
 
-    UNPROTECT(3);
+    UNPROTECT(4);
 
     return r;
 }
@@ -180,7 +180,7 @@ SEXP R_colAppend_sgCMatrix(SEXP x, SEXP y, SEXP R_s) {
 
     n = (LOGICAL(R_s)[0] == FALSE) ? 0 : LENGTH(px)-1;	    // seperators
 
-    PROTECT(r = NEW_OBJECT(MAKE_CLASS("sgCMatrix")));
+    PROTECT(r = NEW_OBJECT(PROTECT(MAKE_CLASS("sgCMatrix"))));
     setAttrib(r, install("p"), PROTECT(pr = allocVector(INTSXP, LENGTH(px))));
     setAttrib(r, install("i"), PROTECT(ir = allocVector(INTSXP, LENGTH(ix)+LENGTH(iy)+n)));
     UNPROTECT(2);
@@ -233,7 +233,7 @@ SEXP R_colAppend_sgCMatrix(SEXP x, SEXP y, SEXP R_s) {
     else
 	setAttrib(ir, R_NamesSymbol, ix);
 
-    UNPROTECT(1);
+    UNPROTECT(2);
 
     return r;
 }
@@ -349,13 +349,14 @@ SEXP R_firstOrder_sgCMatrix(SEXP x) {
 	setAttrib(r, R_DimNamesSymbol, (px = allocVector(VECSXP, 2)));
 	SET_VECTOR_ELT(px, 0, ix);
 	SET_VECTOR_ELT(px, 1, ix);
-	if (!isNull(ix = getAttrib(ix, R_NamesSymbol))) {
+	if (!isNull(ix = PROTECT(getAttrib(ix, R_NamesSymbol)))) {
 	    SEXP t;
 	    setAttrib(px, R_NamesSymbol, (t = allocVector(STRSXP, 2)));
 	    // FIXME
 	    SET_STRING_ELT(t, 0, STRING_ELT(ix, 0));
 	    SET_STRING_ELT(t, 1, STRING_ELT(ix, 0));
 	}
+	UNPROTECT(1);
     }
 
     UNPROTECT(1);

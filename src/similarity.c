@@ -142,7 +142,7 @@ SEXP R_similarity_sgCMatrix(SEXP x, SEXP y, SEXP R_e, SEXP R_method) {
     py = getAttrib(y, install("p"));
     iy = getAttrib(y, install("i"));
 
-    PROTECT(r = NEW_OBJECT(MAKE_CLASS((m) ? "dgCMatrix" : "dsCMatrix")));
+    PROTECT(r = NEW_OBJECT(PROTECT(MAKE_CLASS((m) ? "dgCMatrix" : "dsCMatrix"))));
 
     if (!m) {
 	setAttrib(r, install("uplo"), PROTECT(mkString("L")));
@@ -162,7 +162,7 @@ SEXP R_similarity_sgCMatrix(SEXP x, SEXP y, SEXP R_e, SEXP R_method) {
     setAttrib(r, install("p"), PROTECT(pr = allocVector(INTSXP, LENGTH(py))));
     setAttrib(r, install("i"), PROTECT(ir = allocVector(INTSXP, n)));
     setAttrib(r, install("x"), PROTECT(xr = allocVector(REALSXP, n)));
-    UNPROTECT(3);
+    UNPROTECT(4);
 
     // precompute
     zx = REAL(PROTECT(allocVector(REALSXP, LENGTH(px))));
@@ -274,8 +274,8 @@ SEXP R_similarity_sgCMatrix(SEXP x, SEXP y, SEXP R_e, SEXP R_method) {
     iy = getAttrib(y, install("Dimnames"));
     SET_VECTOR_ELT(ir, 1, VECTOR_ELT(iy, 1));
 
-    ix = getAttrib(ix, R_NamesSymbol);
-    iy = getAttrib(iy, R_NamesSymbol);
+    ix = PROTECT(getAttrib(ix, R_NamesSymbol));
+    iy = PROTECT(getAttrib(iy, R_NamesSymbol));
 
     if (!isNull(iy) || !isNull(ix)) {
         setAttrib(ir, R_NamesSymbol, (pr = allocVector(STRSXP, 2)));
@@ -283,7 +283,7 @@ SEXP R_similarity_sgCMatrix(SEXP x, SEXP y, SEXP R_e, SEXP R_method) {
         SET_STRING_ELT(pr, 1, isNull(iy) ? R_BlankString : STRING_ELT(iy, 1));
     }
     
-    UNPROTECT(1);
+    UNPROTECT(3);
 
     return r;
 }
