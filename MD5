@@ -1,5 +1,5 @@
-9a680b86e0d7088a61671c3ea7697273 *CHANGELOG
-532abe4e05c73b4c92275f7c17116775 *DESCRIPTION
+756181e99e1386c485a3db926cd73bde *CHANGELOG
+e694915a58eca86edac4c0116b64255b *DESCRIPTION
 9b09fe4a6ad430540113bbdc3247f5f1 *INSTALL
 863d5da9a4099f98e4ace9f2add4d51b *NAMESPACE
 bdac69378a64f167d37a599152e95fcd *R/01matrix.R
@@ -10,7 +10,7 @@ cff5b6ecbed3db554da5f738ff6002f6 *R/03rules.R
 45bc6d8430c34fff9e2357e1d49fcff8 *R/10timed.R
 d128f9133d05de4b07dce28bd6f2622a *R/20support.R
 5273f9a06e3a1f76abf543145853f02d *R/30similarity.R
-b94a5032fb707ef1d9ec2560580eb23f *data/zaki.rda
+8a5a9e4be1531434496446f52808c28b *data/zaki.rda
 ae12b459ba6fc2c9df5869f8b7b3d1fb *inst/COPYRIGHTS
 e2e39be8d8a02f68d5bf4c0d958425a6 *inst/misc/test.pat
 cca1f4a49dd7ec1be94f48e7d33f462a *inst/misc/test.txt
@@ -82,7 +82,7 @@ b2e2d9071887047e47b69c4d953b9d35 *src/cSPADE/win.mk
 1a504ff47cba4d8a492cc826f07c00d7 *src/makebin.c
 87d0b5560cf132098b562be540332f73 *src/matrix.c
 e53f66486a6c2e44b1d84d7afef81cf0 *src/ptree.c
-44c2b6cc4f87ebe1cae5c003089af6e8 *src/similarity.c
+97f8c2a6e92b9ed7846ba74a93c1d162 *src/similarity.c
 32935964526a4494f601ac5296b28409 *tests/Rgui.R
 c791269a74df3f4881b7174266efaf64 *tests/arules.R
 4ce65fb069e57f38364ac568247fe8e9 *tests/arules.Rout.save
@@ -92,7 +92,7 @@ dee92e073f5eda13bb093a667e055f03 *tests/makebin.R
 b245cd8f39ffde210eb31f9362c26a53 *tests/makebin.Rout.save
 5c889d77fc225059f22ba445f01801ca *tests/native.R
 564623bcd0095220d4dc693626373f26 *tests/native.Rout.save
-290f067d294e85233e4de0f27662abc2 *tests/ptree.R
+cf488f4f2fef58c2c262c899f4e5ffa1 *tests/ptree.R
 533b9de1372c5363ca5d354fe9f1ae35 *tests/ptree.Rout.save
 9867246472e17e3171263e4f151f1307 *tests/similarity.R
 b9826b6f01cec5a24f2160f0b6e1c68d *tests/similarity.Rout.save

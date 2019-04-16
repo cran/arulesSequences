@@ -12,6 +12,10 @@ k <- support(s7, zaki, control = list(verbose = TRUE))
 table(size(s7), sign(quality(s7)$support - k))
 
 ## random atomic sequences
+## <FIXME>
+## Remove eventually.
+suppressWarnings(RNGversion("3.5.0"))
+## </FIXME>
 set.seed(20150921)
 
 f <- tempfile()

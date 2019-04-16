@@ -162,7 +162,7 @@ SEXP R_similarity_sgCMatrix(SEXP x, SEXP y, SEXP R_e, SEXP R_method) {
     setAttrib(r, install("p"), PROTECT(pr = allocVector(INTSXP, LENGTH(py))));
     setAttrib(r, install("i"), PROTECT(ir = allocVector(INTSXP, n)));
     setAttrib(r, install("x"), PROTECT(xr = allocVector(REALSXP, n)));
-    UNPROTECT(4);
+    UNPROTECT(3);
 
     // precompute
     zx = REAL(PROTECT(allocVector(REALSXP, LENGTH(px))));
@@ -283,7 +283,7 @@ SEXP R_similarity_sgCMatrix(SEXP x, SEXP y, SEXP R_e, SEXP R_method) {
         SET_STRING_ELT(pr, 1, isNull(iy) ? R_BlankString : STRING_ELT(iy, 1));
     }
     
-    UNPROTECT(3);
+    UNPROTECT(4);
 
     return r;
 }
