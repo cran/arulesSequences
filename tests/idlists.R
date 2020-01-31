@@ -43,7 +43,9 @@ cbind(as(s, "data.frame"), support = k)
 ## Test if optimization works.
 s <- c("A AB")
 s <- .string2sequences(s)
+## IGNORE_RDIFF_BEGIN
 k <- support(s, t, control = list(verbose = TRUE, parameter = list()))
+## IGNORE_RDIFF_END
 cbind(as(s, "data.frame"), support = k)
 
 ## Test if conversion works.

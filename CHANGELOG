@@ -1,6 +1,12 @@
 
 NEWS/ChangeLog for arulesSequences
 
+0.2-23 2020-02-02
+
+    o added IGNORE_RDIFF.
+
+    o fixed support LHS.
+
 0.2-22 2019-04-15
 
     o fixed UNPROTECT in similarity.

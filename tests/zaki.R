@@ -19,8 +19,10 @@ all.equal(zaki, zaki.txt)
 
 ## methods of class sequences
 
+## IGNORE_RDIFF_BEGIN
 s1 <- cspade(zaki, parameter = list(support = 0.4), 
                    control   = list(verbose =TRUE))
+## IGNORE_RDIFF_END
 s1
 s2 <- cspade(zaki, parameter = list(support = 0.4, maxsize = 2, maxlen = 2))
 s2
@@ -127,14 +129,19 @@ all.equal(z, c(z[1], z[-1]))
 
 ## disabled
 
+## IGNORE_RDIFF_BEGIN
 z <- cspade(zaki, parameter = list(support = 0.4, maxwin = 5), 
                   control   = list(verbose =TRUE))
+## IGNORE_RDIFF_END
+
 identical(s1, z)
 
 ## tidLists
 
+## IGNORE_RDIFF_BEGIN
 s1 <- cspade(zaki, parameter = list(support = 0.4), 
                    control   = list(verbose =TRUE, tidLists = TRUE))
+## IGNORE_RDIFF_END
 summary(tidLists(s1))
 transactionInfo(tidLists(s1))
 

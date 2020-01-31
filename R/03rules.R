@@ -1,7 +1,7 @@
 
 ## sequencerules 
 ##
-## ceeboo 2007, 2008, 2015, 2016
+## ceeboo 2007, 2008, 2015, 2016, 2020
 
 setClass("sequencerules",
     representation(
@@ -63,8 +63,8 @@ setMethod("[", signature(x = "sequencerules", i = "ANY", j = "missing", drop = "
 setMethod("lhs", signature(x = "sequencerules"),
     function(x) {
         q <- if (length(x@quality) > 0)
-                 data.frame(support = x@quality$confidence / 
-                                      x@quality$support)
+                 data.frame(support = x@quality$support / 
+                                      x@quality$confidence)
              else
                  data.frame()
 

@@ -1,6 +1,6 @@
 
-R version 3.3.1 (2016-06-21) -- "Bug in Your Hair"
-Copyright (C) 2016 The R Foundation for Statistical Computing
+R version 3.4.4 (2018-03-15) -- "Someone to Lean On"
+Copyright (C) 2018 The R Foundation for Statistical Computing
 Platform: i686-pc-linux-gnu (32-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -46,6 +46,7 @@ The following objects are masked from 'package:base':
 > 
 > ## methods of class sequences
 > 
+> ## IGNORE_RDIFF_BEGIN
 > s1 <- cspade(zaki, parameter = list(support = 0.4), 
 +                    control   = list(verbose =TRUE))
 
@@ -61,10 +62,11 @@ summary  : FALSE
 tidLists : FALSE
 
 preprocessing ... 1 partition(s), 0 MB [0.014s]
-mining transactions ... 0 MB [0.006s]
-reading sequences ... [0.036s]
+mining transactions ... 0 MB [0.007s]
+reading sequences ... [0.039s]
 
-total elapsed time: 0.056s
+total elapsed time: 0.06s
+> ## IGNORE_RDIFF_END
 > s1
 set of 18 sequences 
 > s2 <- cspade(zaki, parameter = list(support = 0.4, maxsize = 2, maxlen = 2))
@@ -457,6 +459,7 @@ mining info:
 > 
 > ## disabled
 > 
+> ## IGNORE_RDIFF_BEGIN
 > z <- cspade(zaki, parameter = list(support = 0.4, maxwin = 5), 
 +                   control   = list(verbose =TRUE))
 
@@ -472,18 +475,21 @@ summary  : FALSE
 tidLists : FALSE
 
 preprocessing ... 1 partition(s), 0 MB [0.008s]
-mining transactions ... 0 MB [0.005s]
+mining transactions ... 0 MB [0.006s]
 reading sequences ... [0.01s]
 
-total elapsed time: 0.023s
+total elapsed time: 0.024s
 Warning message:
 In cspade(zaki, parameter = list(support = 0.4, maxwin = 5), control = list(verbose = TRUE)) :
   'maxwin' disabled
+> ## IGNORE_RDIFF_END
+> 
 > identical(s1, z)
 [1] TRUE
 > 
 > ## tidLists
 > 
+> ## IGNORE_RDIFF_BEGIN
 > s1 <- cspade(zaki, parameter = list(support = 0.4), 
 +                    control   = list(verbose =TRUE, tidLists = TRUE))
 
@@ -498,11 +504,12 @@ verbose  :  TRUE
 summary  : FALSE
 tidLists :  TRUE
 
-preprocessing ... 1 partition(s), 0 MB [0.008s]
+preprocessing ... 1 partition(s), 0 MB [0.009s]
 mining transactions ... 0 MB [0.005s]
-reading sequences ... [0.016s]
+reading sequences ... [0.017s]
 
-total elapsed time: 0.029s
+total elapsed time: 0.031s
+> ## IGNORE_RDIFF_END
 > summary(tidLists(s1))
 tidLists in sparse format with
  18 items/itemsets (rows) and
@@ -571,4 +578,4 @@ includes extended item information - examples:
 > 
 > proc.time()
    user  system elapsed 
-  2.768   0.116   2.911 
+  3.640   0.108   3.776 

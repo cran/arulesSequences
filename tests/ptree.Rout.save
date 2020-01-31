@@ -1,6 +1,6 @@
 
-R version 3.2.3 (2015-12-10) -- "Wooden Christmas-Tree"
-Copyright (C) 2015 The R Foundation for Statistical Computing
+R version 3.4.4 (2018-03-15) -- "Someone to Lean On"
+Copyright (C) 2018 The R Foundation for Statistical Computing
 Platform: i686-pc-linux-gnu (32-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -31,6 +31,7 @@ The following objects are masked from 'package:base':
 > 
 > ## use example
 > data(zaki)
+> ## IGNORE_RDIFF_BEGIN
 > s7 <- cspade(zaki, parameter = list(support = .25), 
 + 	           control   = list(verbose = TRUE, tidLists = TRUE))
 
@@ -45,17 +46,20 @@ verbose  :  TRUE
 summary  : FALSE
 tidLists :  TRUE
 
-preprocessing ... 1 partition(s), 0 MB [0.014s]
-mining transactions ... 0.11 MB [0.03s]
-reading sequences ... [1s]
+preprocessing ... 1 partition(s), 0 MB [0.018s]
+mining transactions ... 0.11 MB [0.039s]
+reading sequences ... [1.8s]
 
-total elapsed time: 1.05s
+total elapsed time: 1.809s
+> ## IGNORE_RDIFF_END
 > 
+> ## IGNORE_RDIFF_BEGIN
 > k <- support(s7, zaki, control = list(verbose = TRUE))
-preprocessing ... [0.02s]
+preprocessing ... [0.028s]
 preparing ... 3917 sequences, created 4199 (0.09) nodes [0.00s]
 counting ... 10 transactions (4), processed 4908 (0.86, 0.04) nodes [0.00s]
 writing ... 3917 counts, processed 51210 (0.65) nodes [0.00s]
+> ## IGNORE_RDIFF_END
 > table(size(s7), sign(quality(s7)$support - k))
    
        0
@@ -65,6 +69,10 @@ writing ... 3917 counts, processed 51210 (0.65) nodes [0.00s]
   4 2205
 > 
 > ## random atomic sequences
+> ## <FIXME>
+> ## Remove eventually.
+> suppressWarnings(RNGversion("3.5.0"))
+> ## </FIXME>
 > set.seed(20150921)
 > 
 > f <- tempfile()
@@ -93,6 +101,7 @@ writing ... 3917 counts, processed 51210 (0.65) nodes [0.00s]
 > unlink(f)
 > 
 > ## use low support
+> ## IGNORE_RDIFF_BEGIN
 > s1 <- cspade(t, parameter = list(support = .17), 
 +                 control   = list(verbose = TRUE))
 
@@ -107,11 +116,12 @@ verbose  :  TRUE
 summary  : FALSE
 tidLists : FALSE
 
-preprocessing ... 1 partition(s), 0.35 MB [0.039s]
-mining transactions ... 0.3 MB [0.48s]
-reading sequences ... [1.8s]
+preprocessing ... 1 partition(s), 0.35 MB [0.068s]
+mining transactions ... 0.3 MB [0.64s]
+reading sequences ... [3.6s]
 
-total elapsed time: 2.354s
+total elapsed time: 4.281s
+> ## IGNORE_RDIFF_END
 > summary(s1)
 set of 8616 sequences with
 
@@ -149,11 +159,13 @@ mining info:
     t         15391       1000    0.17
 > 
 > ##
+> ## IGNORE_RDIFF_BEGIN
 > k <- support(s1, t, control = list(verbose = TRUE))
-preprocessing ... [0.032s]
+preprocessing ... [0.16s]
 preparing ... 8616 sequences, created 11328 (0.08) nodes [0.00s]
-counting ... 15391 transactions (1000), processed 37628159 (0.07, 0.29) nodes [0.34s]
+counting ... 15391 transactions (1000), processed 37628159 (0.07, 0.29) nodes [0.44s]
 writing ... 8616 counts, processed 154653 (0.55) nodes [0.00s]
+> ## IGNORE_RDIFF_END
 > table(size(s1), sign(quality(s1)$support - k))
    
        0
@@ -165,32 +177,35 @@ writing ... 8616 counts, processed 154653 (0.55) nodes [0.00s]
   6 4711
 > 
 > ## internal
-> all.equal(
+> ## IGNORE_RDIFF_BEGIN
+> stopifnot(all.equal(
 +     .Call(arulesSequences:::R_pnscount, s1@data, s1@data, 
 + 	  s1@elements@items@data, FALSE),
 +     .Call(arulesSequences:::R_pnscount, s1@data, s1@data, NULL, TRUE)
-+ )
++ ))
 preparing ... 8616 sequences, created 11328 (0.08) nodes [0.00s]
 counting ... 46821 transactions (8616), processed 1139646 (0.37, 0.11) nodes [0.01s]
 writing ... 8616 counts, processed 154653 (0.55) nodes [0.00s]
-[1] TRUE
+> ## IGNORE_RDIFF_END
 > 
-> all.equal(
+> ## IGNORE_RDIFF_BEGIN
+> stopifnot(all.equal(
 +     .Call(arulesSequences:::R_pnsclosed, s1@data,
 + 	  s1@elements@items@data, rep(1L, length(s1)), TRUE),
 +     is.maximal(s1)
-+ )
-checking ... 8616 counts [0.02s, 0.01s]
- [1] TRUE
++ ))
+checking ... 8616 counts [0.02s, 0.02s]
+ > ## IGNORE_RDIFF_END
 > 
 > 
-> all.equal(
+> ## IGNORE_RDIFF_BEGIN
+> stopifnot(all.equal(
 +     .Call(arulesSequences:::R_pnsredundant, s1@data,
 + 	  s1@elements@items@data, rep(1L, length(s1)), TRUE),
 +     size(s1) > 1L
-+ )
-checking ... 8616 counts [0.02s, 0.01s]
- [1] TRUE
++ ))
+checking ... 8616 counts [0.02s, 0.02s]
+ > ## IGNORE_RDIFF_END
 > 
 > warnings()
 NULL
@@ -199,4 +214,4 @@ NULL
 > 
 > proc.time()
    user  system elapsed 
-  7.528   0.196   7.740 
+ 11.364   0.272  11.658 

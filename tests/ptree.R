@@ -5,10 +5,14 @@ library("arulesSequences")
 
 ## use example
 data(zaki)
+## IGNORE_RDIFF_BEGIN
 s7 <- cspade(zaki, parameter = list(support = .25), 
 	           control   = list(verbose = TRUE, tidLists = TRUE))
+## IGNORE_RDIFF_END
 
+## IGNORE_RDIFF_BEGIN
 k <- support(s7, zaki, control = list(verbose = TRUE))
+## IGNORE_RDIFF_END
 table(size(s7), sign(quality(s7)$support - k))
 
 ## random atomic sequences
@@ -44,33 +48,43 @@ t <- read_baskets(con  = f,
 unlink(f)
 
 ## use low support
+## IGNORE_RDIFF_BEGIN
 s1 <- cspade(t, parameter = list(support = .17), 
                 control   = list(verbose = TRUE))
+## IGNORE_RDIFF_END
 summary(s1)
 
 ##
+## IGNORE_RDIFF_BEGIN
 k <- support(s1, t, control = list(verbose = TRUE))
+## IGNORE_RDIFF_END
 table(size(s1), sign(quality(s1)$support - k))
 
 ## internal
-all.equal(
+## IGNORE_RDIFF_BEGIN
+stopifnot(all.equal(
     .Call(arulesSequences:::R_pnscount, s1@data, s1@data, 
 	  s1@elements@items@data, FALSE),
     .Call(arulesSequences:::R_pnscount, s1@data, s1@data, NULL, TRUE)
-)
+))
+## IGNORE_RDIFF_END
 
-all.equal(
+## IGNORE_RDIFF_BEGIN
+stopifnot(all.equal(
     .Call(arulesSequences:::R_pnsclosed, s1@data,
 	  s1@elements@items@data, rep(1L, length(s1)), TRUE),
     is.maximal(s1)
-)
+))
+## IGNORE_RDIFF_END
 
 
-all.equal(
+## IGNORE_RDIFF_BEGIN
+stopifnot(all.equal(
     .Call(arulesSequences:::R_pnsredundant, s1@data,
 	  s1@elements@items@data, rep(1L, length(s1)), TRUE),
     size(s1) > 1L
-)
+))
+## IGNORE_RDIFF_END
 
 warnings()
 ###
