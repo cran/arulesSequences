@@ -18,13 +18,13 @@
 using namespace std;	// MH
 
 const int lineSize=8192;
-const int wdSize=256;
 ifstream fin;
 ofstream fout;
 
 void convbin(char *inBuf, int inSize)
 {
 #if (!defined _WIN32 && defined _COMPAT_)
+   const int wdSize=256;
    char inStr[wdSize];
    istrstream ist(inBuf, inSize);
    int it;

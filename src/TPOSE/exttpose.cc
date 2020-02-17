@@ -126,17 +126,43 @@ void parse_args(int argc, char **argv)
       exit(errno);
    }
    if (use_seq){
-      read(c,(char *)&DBASE_NUM_TRANS,ITSZ);
-      read(c,(char *)&DBASE_MAXITEM,ITSZ);
-      read(c,(char *)&DBASE_AVG_CUST_SZ,sizeof(float));
-      read(c,(char *)&DBASE_AVG_TRANS_SZ,sizeof(float));
-      read(c,(char *)&DBASE_TOT_TRANS,ITSZ);
+      size_t FTSZ = sizeof(float);
+      if (read(c,(char *)&DBASE_NUM_TRANS,ITSZ) < ITSZ){
+	  perror("reading (1)");
+	  exit(errno);
+      }
+      if (read(c,(char *)&DBASE_MAXITEM,ITSZ) < ITSZ){
+	  perror("reading (2)");
+	  exit(errno);
+      }
+      if (read(c,(char *)&DBASE_AVG_CUST_SZ,FTSZ) < FTSZ){
+	  perror("reading (3)");
+	  exit(errno);
+      }
+      if (read(c,(char *)&DBASE_AVG_TRANS_SZ,FTSZ) < FTSZ){
+	  perror("reading (4)");
+	  exit(errno);
+      }
+      if (read(c,(char *)&DBASE_TOT_TRANS,ITSZ) < ITSZ){
+	  perror("reading (5)");
+	  exit(errno);
+      }
       write_only_fcnt = 0;
    }
    else{
-      read(c,(char *)&DBASE_NUM_TRANS,ITSZ);
-      read(c,(char *)&DBASE_MAXITEM,ITSZ);
-      read(c,(char *)&DBASE_AVG_TRANS_SZ,sizeof(float));
+      size_t FTSZ = sizeof(float);
+      if (read(c,(char *)&DBASE_NUM_TRANS,ITSZ) < ITSZ){
+	  perror("reading (6)");
+	  exit(errno);
+      }
+      if (read(c,(char *)&DBASE_MAXITEM,ITSZ) < ITSZ){
+	  perror("reading (7)");
+	  exit(errno);
+      }
+      if (read(c,(char *)&DBASE_AVG_TRANS_SZ,FTSZ) < FTSZ){
+	  perror("reading (8)");
+	  exit(errno);
+      }
    }
    cout<< "CONF "<< DBASE_NUM_TRANS << " " << DBASE_MAXITEM << " " <<
       DBASE_AVG_TRANS_SZ << " " << DBASE_AVG_CUST_SZ << endl;
@@ -405,8 +431,14 @@ void process_cust(int *fidx, int fcnt, int numfreq, int *backidx,
             lit = extary[fidx[j]]->size()-1;
             if ((*extary[fidx[k]])[0] < (*extary[fidx[j]])[lit]){
                if ( (++seq2[fidx[k]*numfreq+fidx[j]]) == 0){
-                  write(seqfd, (char *)&backidx[fidx[k]], ITSZ);
-                  write(seqfd, (char *)&backidx[fidx[j]], ITSZ);
+                  if (write(seqfd, (char *)&backidx[fidx[k]], ITSZ) < ITSZ){
+		      perror("writing (1)");
+		      exit(errno);
+		  }
+                  if (write(seqfd, (char *)&backidx[fidx[j]], ITSZ) < ITSZ){
+		      perror("writing (2)");
+		      exit(errno);
+		  }
                }
             }
          }
@@ -422,8 +454,10 @@ void process_cust(int *fidx, int fcnt, int numfreq, int *backidx,
             lit = offsets[ii1]-ii1-1;
             if (ocust[lit+ii2] == 1){
                if ((++itcnt2[lit+ii2]) == 0){
-                  write(isetfd, (char *)&backidx[ii1], ITSZ);
-                  write(isetfd, (char *)&backidx[ii2], ITSZ);
+                  if (write(isetfd, (char *)&backidx[ii1], ITSZ) < ITSZ)
+		      exit(1);
+                  if (write(isetfd, (char *)&backidx[ii2], ITSZ) < ITSZ)
+		      exit(1);
                   //itcnt2[lit+ii2] = 0;
                }
                ocust[lit+ii2] = 0;
@@ -433,8 +467,10 @@ void process_cust(int *fidx, int fcnt, int numfreq, int *backidx,
                lit = extary[fidx[k]]->size()-1;
                if ((*extary[fidx[j]])[0] < (*extary[fidx[k]])[lit]){
                   if ( (++seq2[fidx[j]*numfreq+fidx[k]]) == 0){
-                     write(seqfd, (char *)&backidx[fidx[j]], ITSZ);
-                     write(seqfd, (char *)&backidx[fidx[k]], ITSZ);
+                     if (write(seqfd, (char *)&backidx[fidx[j]], ITSZ) < ITSZ)
+			exit(1);
+                     if (write(seqfd, (char *)&backidx[fidx[k]], ITSZ) < ITSZ)
+			exit(1);
                   }
                }
             }
@@ -825,8 +861,14 @@ void tpose()
                      for (l=j+1; l < numitem; l++){
                         if (freqidx[buf[l]] != -1){
                            if ((++itcnt2[lit+freqidx[buf[l]]]) == 0){
-                              write(isetfd, (char *)&buf[j], ITSZ);
-                              write(isetfd, (char *)&buf[l], ITSZ);
+                              if (write(isetfd, (char *)&buf[j], ITSZ) < ITSZ){
+				 perror("writing (3)");
+				 exit(errno);
+			      }
+                              if (write(isetfd, (char *)&buf[l], ITSZ) < ITSZ){
+				 perror("writing (4)");
+				 exit(errno);
+			      }
                            }
                         }
                      }                  

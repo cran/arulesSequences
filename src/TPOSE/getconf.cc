@@ -114,20 +114,58 @@ int main (int argc, char **argv)
       exit (errno);      
    }
    if (use_seq){
-      write(conffd,(char *)&DBASE_NUM_CUST,ITSZ);
-      write(conffd,(char *)&DBASE_MAXITEM,ITSZ);
-      write(conffd,(char *)&DBASE_AVG_CUST_SZ, sizeof(float));
-      write(conffd,(char *)&DBASE_AVG_TRANS_SZ, sizeof(float));
-      write(conffd,(char *)&DBASE_NUM_TRANS,ITSZ);
-      write(conffd,(char *)&DBASE_MINTRANS,ITSZ);
-      write(conffd,(char *)&DBASE_MAXTRANS,ITSZ);
+      size_t FTSZ = sizeof(float);
+      if (write(conffd,(char *)&DBASE_NUM_CUST,ITSZ) < ITSZ){
+	 perror("writing (1)");
+	 exit(errno);
+      }
+      if (write(conffd,(char *)&DBASE_MAXITEM,ITSZ) < ITSZ){
+	 perror("writing (2)");
+	 exit(errno);
+      }
+      if (write(conffd,(char *)&DBASE_AVG_CUST_SZ,FTSZ) < FTSZ){
+	 perror("writing (3)");
+	 exit(errno);
+      }
+      if (write(conffd,(char *)&DBASE_AVG_TRANS_SZ,FTSZ) < FTSZ){
+	 perror("writing (4)");
+	 exit(errno);
+      }
+      if (write(conffd,(char *)&DBASE_NUM_TRANS,ITSZ) < ITSZ){
+	 perror("writing (5)");
+	 exit(errno);
+      }
+      if (write(conffd,(char *)&DBASE_MINTRANS,ITSZ) < ITSZ){
+	 perror("writing (6)");
+	 exit(errno);
+      }
+      if (write(conffd,(char *)&DBASE_MAXTRANS,ITSZ) < ITSZ){
+	 perror("writing (7)");
+	 exit(errno);
+      }
    }
    else{
-      write(conffd,(char *)&DBASE_NUM_TRANS,ITSZ);
-      write(conffd,(char *)&DBASE_MAXITEM,ITSZ);
-      write(conffd,(char *)&DBASE_AVG_TRANS_SZ, sizeof(float));
-      write(conffd,(char *)&DBASE_MINTRANS,ITSZ);
-      write(conffd,(char *)&DBASE_MAXTRANS,ITSZ);
+      size_t FTSZ = sizeof(float);
+      if (write(conffd,(char *)&DBASE_NUM_TRANS,ITSZ) < ITSZ){
+	 perror("writing (8)");
+	 exit(errno);
+      }
+      if (write(conffd,(char *)&DBASE_MAXITEM,ITSZ) < ITSZ){
+	 perror("writing (9)");
+	 exit(errno);
+      }
+      if (write(conffd,(char *)&DBASE_AVG_TRANS_SZ,FTSZ) < FTSZ){
+	 perror("writing (10)");
+	 exit(errno);
+      }
+      if (write(conffd,(char *)&DBASE_MINTRANS,ITSZ) < ITSZ){
+	 perror("writing (11)");
+	 exit(errno);
+      }
+      if (write(conffd,(char *)&DBASE_MAXTRANS,ITSZ) < ITSZ){
+	 perror("writing (12)");
+	 exit(errno);
+      }
    }
    
    close(conffd);

@@ -238,16 +238,32 @@ void parse_args(int argc, char **argv)
       perror("ERROR: invalid conf file\n");
       exit(errno);
    }
-   read(c,(char *)&DBASE_NUM_TRANS,ITSZ);
+   if (read(c,(char *)&DBASE_NUM_TRANS,ITSZ) < ITSZ){
+      perror("reading (1)");
+      exit(errno);
+   }
    if (MINSUPPORT == -1)
       MINSUPPORT = (int) ceil(MINSUP_PER*DBASE_NUM_TRANS);
    //ensure that support is at least 2
    if (MINSUPPORT < 1) MINSUPPORT = 1;
    cout << "MINSUPPORT " << MINSUPPORT << " out of " << DBASE_NUM_TRANS << " sequences" << endl;
-   read(c,(char *)&DBASE_MAXITEM,ITSZ);
-   read(c,(char *)&DBASE_AVG_CUST_SZ,sizeof(float));
-   read(c,(char *)&DBASE_AVG_TRANS_SZ,sizeof(float));
-   read(c,(char *)&DBASE_TOT_TRANS,ITSZ);
+   size_t FTSZ = sizeof(float);
+   if (read(c,(char *)&DBASE_MAXITEM,ITSZ) < ITSZ){
+      perror("reading (2)");
+      exit(errno);
+   }
+   if (read(c,(char *)&DBASE_AVG_CUST_SZ,FTSZ) < FTSZ){
+      perror("reading (3)");
+      exit(errno);
+   }
+   if (read(c,(char *)&DBASE_AVG_TRANS_SZ,FTSZ) < FTSZ){
+      perror("reading (4)");
+      exit(errno);
+   }
+   if (read(c,(char *)&DBASE_TOT_TRANS,ITSZ) < ITSZ){
+      perror("reading (5)");
+      exit(errno);
+   }
    //cout << "CONF " << DBASE_NUM_TRANS << " " << DBASE_MAXITEM << " "
    //     << DBASE_AVG_CUST_SZ << " " << DBASE_AVG_TRANS_SZ << " "
    //     << DBASE_TOT_TRANS << endl;

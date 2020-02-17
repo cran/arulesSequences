@@ -166,11 +166,18 @@ void partition_get_minmaxcustid(int *backidx, int numit, int pnum,
       it = backidx[i];
       supsz = ITEMIDX[pnum][it+1]-ITEMIDX[pnum][it];
       if (supsz > 0){
+	 size_t ITSZ = sizeof(int);
          lseek(DATAFD[pnum], ITEMIDX[pnum][it]*sizeof(int), SEEK_SET);
-         read(DATAFD[pnum], (char *)&custid, sizeof(int));
+         if (read(DATAFD[pnum], (char *)&custid, ITSZ) < ITSZ){
+	    perror("reading (1)");
+	    exit(errno);
+	 }
          if (minv > custid) minv = custid;
          lseek(DATAFD[pnum], (supsz-3)*sizeof(int), SEEK_CUR);
-         read(DATAFD[pnum], (char *)&custid, sizeof(int));
+         if (read(DATAFD[pnum], (char *)&custid, ITSZ) < ITSZ){
+	    perror("reading (2)");
+	    exit(errno);
+	 }
          if (maxv < custid) maxv = custid;
       }
    }
