@@ -5,7 +5,7 @@
 ## class transactions but the latter can contain
 ## additional event information.
 ##
-## ceeboo 2007, 2008, 2014, 2015
+## ceeboo 2007, 2008, 2014, 2015, 2020
 
 setClass("timedsequences",
     representation(
@@ -93,7 +93,7 @@ setAs("transactions", "timedsequences",
                               sequenceInfo = n)
 
         t <- new("ngCMatrix", p   = s@data@p,
-                              i   = c(t) - 1L,
+                              i   = as.integer(t) - 1L,
                               Dim = c(length(levels(t)), length(s)))
 
         new("timedsequences", s,

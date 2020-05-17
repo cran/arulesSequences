@@ -1,6 +1,10 @@
 
 NEWS/ChangeLog for arulesSequences
 
+0.2-25 2020-05-15
+
+    o fixed integer codes from factor.
+
 0.2-24 2020-02-16
 
     o off-chance R/W fail fixes.

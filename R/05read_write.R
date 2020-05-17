@@ -2,7 +2,7 @@
 ##
 ## data interfaces to cSPADE
 ##
-## ceeboo 2007, 2008, 2012, 2014, 2015, 2016
+## ceeboo 2007, 2008, 2012, 2014, 2015, 2016, 2020
 
 .as_integer <- function(x) {
     ## preserve factor
@@ -12,7 +12,7 @@
         l <- suppressWarnings(as.integer(levels(x)))
         ## implicit coercion
         if (!any(is.na(l)) && all(l == levels(x)))
-            x <- l[c(x)]
+            x <- l[as.integer(x)]
     }
     x
 }
@@ -225,7 +225,7 @@ write_class <- function(x, con) {
             length(levels(x)),  # number of classes
             c(rbind(
                 s,              # SID
-                c(x) - 1L       # CLASS
+                as.integer(x) - 1L       # CLASS
             ))
         )
     )

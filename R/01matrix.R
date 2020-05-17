@@ -2,7 +2,7 @@
 ## sgCMatrix is designed to work with ptree but 
 ## otherwise does not deserve the qualifier Matrix.
 ##
-## ceeboo 2007, 2008, 2016
+## ceeboo 2007, 2008, 2016, 2020
 
 # fixme: special cases
 
@@ -82,7 +82,7 @@ setAs("list", "sgCMatrix",
         p <- cumsum(p)
         i <- factor(unlist(from, use.names = FALSE))
         new("sgCMatrix", p        = c(0L, p),
-                         i        = c(i) - 1L,
+                         i        = as.integer(i) - 1L,
                          Dim      = c(length(levels(i)), length(p)),
                          Dimnames = list(levels(i), names(from)))
     }
