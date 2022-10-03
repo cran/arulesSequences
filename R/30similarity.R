@@ -109,7 +109,7 @@ setMethod("is.subset", signature(x = "sequences"),
 			y@sequenceInfo[["sequenceID"]]
 		)
 	    )
-	    as(s, "lgCMatrix")
+	    as(s, "lMatrix")
 	}
     }
 )

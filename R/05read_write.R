@@ -52,7 +52,7 @@ read_baskets <- function(con, sep = "[ \t]+", info = NULL, iteminfo = NULL,
 	}
 	if (TRUE) {
 	    i <- sapply(info, is.character)
-	    info[i] <- lapply(info[i], type.convert)
+	    info[i] <- lapply(info[i], type.convert, as.is = FALSE)
 	}
         transactionInfo(x) <- data.frame(info, stringsAsFactors = FALSE)
     }
@@ -117,7 +117,7 @@ function(con = "", decode = FALSE, labels = NULL, transactions = NULL,
     if (!is.null(transactions)) {
 	k <- lapply(c, function(x, i)
 		## see NOTE 3)
-		x <- matrix(x[i], nrow = 2L)[1L, ],
+		as.integer(matrix(x[i], nrow = 2L)[1L, ]),
 		## see NOTE 1) + 2)
 		-seq_len(max(1L, length(levels(class))) + 1L)
 	)

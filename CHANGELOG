@@ -1,6 +1,14 @@
 
 NEWS/ChangeLog for arulesSequences
 
+0.2-26 2022-10-02
+
+    o fixed deprecated as(., "lgCMatrix").
+
+    o fixed tidLists in cspade.
+
+    o fixed missing default in type.convert.
+
 0.2-25 2020-05-15
 
     o fixed integer codes from factor.
