@@ -1,5 +1,8 @@
 
 NEWS/ChangeLog for arulesSequences
+0.2-27 2022-12-07
+
+    o avoid sprintf and void argument lists.
 
 0.2-26 2022-10-02
 

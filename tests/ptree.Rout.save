@@ -1,7 +1,7 @@
 
-R version 3.4.4 (2018-03-15) -- "Someone to Lean On"
-Copyright (C) 2018 The R Foundation for Statistical Computing
-Platform: i686-pc-linux-gnu (32-bit)
+R version 4.2.2 Patched (2022-11-10 r83330) -- "Innocent and Trusting"
+Copyright (C) 2022 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -28,6 +28,13 @@ The following objects are masked from 'package:base':
 
     abbreviate, write
 
+
+Attaching package: 'arulesSequences'
+
+The following object is masked from 'package:arules':
+
+    itemsets
+
 > 
 > ## use example
 > data(zaki)
@@ -46,16 +53,16 @@ verbose  :  TRUE
 summary  : FALSE
 tidLists :  TRUE
 
-preprocessing ... 1 partition(s), 0 MB [0.018s]
-mining transactions ... 0.11 MB [0.039s]
-reading sequences ... [1.8s]
+preprocessing ... 1 partition(s), 0 MB [0.006s]
+mining transactions ... 0.11 MB [0.011s]
+reading sequences ... [0.56s]
 
-total elapsed time: 1.809s
+total elapsed time: 0.574s
 > ## IGNORE_RDIFF_END
 > 
 > ## IGNORE_RDIFF_BEGIN
 > k <- support(s7, zaki, control = list(verbose = TRUE))
-preprocessing ... [0.028s]
+preprocessing ... [0.009s]
 preparing ... 3917 sequences, created 4199 (0.09) nodes [0.00s]
 counting ... 10 transactions (4), processed 4908 (0.86, 0.04) nodes [0.00s]
 writing ... 3917 counts, processed 51210 (0.65) nodes [0.00s]
@@ -116,11 +123,11 @@ verbose  :  TRUE
 summary  : FALSE
 tidLists : FALSE
 
-preprocessing ... 1 partition(s), 0.35 MB [0.068s]
-mining transactions ... 0.3 MB [0.64s]
-reading sequences ... [3.6s]
+preprocessing ... 1 partition(s), 0.35 MB [0.013s]
+mining transactions ... 0.3 MB [0.16s]
+reading sequences ... [0.73s]
 
-total elapsed time: 4.281s
+total elapsed time: 0.894s
 > ## IGNORE_RDIFF_END
 > summary(s1)
 set of 8616 sequences with
@@ -161,9 +168,9 @@ mining info:
 > ##
 > ## IGNORE_RDIFF_BEGIN
 > k <- support(s1, t, control = list(verbose = TRUE))
-preprocessing ... [0.16s]
+preprocessing ... [0.009s]
 preparing ... 8616 sequences, created 11328 (0.08) nodes [0.00s]
-counting ... 15391 transactions (1000), processed 37628159 (0.07, 0.29) nodes [0.44s]
+counting ... 15391 transactions (1000), processed 37628159 (0.07, 0.29) nodes [0.12s]
 writing ... 8616 counts, processed 154653 (0.55) nodes [0.00s]
 > ## IGNORE_RDIFF_END
 > table(size(s1), sign(quality(s1)$support - k))
@@ -184,7 +191,7 @@ writing ... 8616 counts, processed 154653 (0.55) nodes [0.00s]
 +     .Call(arulesSequences:::R_pnscount, s1@data, s1@data, NULL, TRUE)
 + ))
 preparing ... 8616 sequences, created 11328 (0.08) nodes [0.00s]
-counting ... 46821 transactions (8616), processed 1139646 (0.37, 0.11) nodes [0.01s]
+counting ... 46821 transactions (8616), processed 1139646 (0.37, 0.11) nodes [0.00s]
 writing ... 8616 counts, processed 154653 (0.55) nodes [0.00s]
 > ## IGNORE_RDIFF_END
 > 
@@ -194,7 +201,7 @@ writing ... 8616 counts, processed 154653 (0.55) nodes [0.00s]
 + 	  s1@elements@items@data, rep(1L, length(s1)), TRUE),
 +     is.maximal(s1)
 + ))
-checking ... 8616 counts [0.02s, 0.02s]
+checking ... 8616 counts [0.01s, 0.00s]
  > ## IGNORE_RDIFF_END
 > 
 > 
@@ -204,14 +211,13 @@ checking ... 8616 counts [0.02s, 0.02s]
 + 	  s1@elements@items@data, rep(1L, length(s1)), TRUE),
 +     size(s1) > 1L
 + ))
-checking ... 8616 counts [0.02s, 0.02s]
+checking ... 8616 counts [0.01s, 0.00s]
  > ## IGNORE_RDIFF_END
 > 
 > warnings()
-NULL
 > ###
 > 
 > 
 > proc.time()
    user  system elapsed 
- 11.364   0.272  11.658 
+  2.866   0.095   2.954 

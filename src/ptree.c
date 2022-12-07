@@ -29,7 +29,7 @@ static void pnfree(PN *p) {
     apn--;
 }
 
-static void nbfree() {
+static void nbfree(void) {
     pnfree(*nb);
       free( nb);
     nb = NULL;
@@ -189,7 +189,7 @@ static void pnscount(PN *p, int *x, int n) {
 static int *eb = NULL;			    // buffer pointer
 static int  ne;				    // buffer size
 
-static void ebfree() {
+static void ebfree(void) {
     if (eb == NULL)
 	return;
     free(eb);
@@ -197,7 +197,7 @@ static void ebfree() {
     ne = 0;
 }
 
-static int eballoc() {
+static int eballoc(void) {
     int *q = eb;
     if (!q)
 	ne = 1024;			    // initial size
@@ -765,7 +765,7 @@ SEXP R_pnsredundant(SEXP R_x, SEXP R_e, SEXP R_c, SEXP R_v) {
 static PN **db = NULL;
 static int nd;
 
-static void dbfree() {
+static void dbfree(void) {
     if (db == NULL)
 	return;
     for (int k = 0; k < nd; k++)

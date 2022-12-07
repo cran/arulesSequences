@@ -107,13 +107,14 @@ SEXP R_makebin(SEXP x, SEXP R_file) {
     if (!LENGTH(R_file) || R_file == NA_STRING)
 	error("'file' invalid");
 
-    file = (char *) RAW(PROTECT(allocVector(RAWSXP, LENGTH(R_file)+6)));
+    int sn = LENGTH(R_file)+6;
+    file = (char *) RAW(PROTECT(allocVector(RAWSXP, sn)));
 
     // NOTE
     //
     // mmap might be more efficient but this is
     // not supported by MinGW.
-    sprintf(file, "%s.data", CHAR(R_file));
+    snprintf(file, sn, "%s.data", CHAR(R_file));
     fd = open(file, (O_WRONLY|O_CREAT|O_TRUNC|O_BINARY), 0666);
     if (fd < 0)
 	error("EOPEN %s", file);
@@ -144,7 +145,7 @@ SEXP R_makebin(SEXP x, SEXP R_file) {
     close(fd);
 
     // write the configuration file
-    sprintf(file, "%s.conf", CHAR(R_file));
+    snprintf(file, sn, "%s.conf", CHAR(R_file));
     fd = open(file, (O_WRONLY|O_CREAT|O_TRUNC|O_BINARY),0666);
     if (fd < 0)
 	error("EOPEN %s", file);

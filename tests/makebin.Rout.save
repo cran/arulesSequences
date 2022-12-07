@@ -1,7 +1,7 @@
 
-R version 3.2.2 (2015-08-14) -- "Fire Safety"
-Copyright (C) 2015 The R Foundation for Statistical Computing
-Platform: i686-pc-linux-gnu (32-bit)
+R version 4.2.2 Patched (2022-11-10 r83330) -- "Innocent and Trusting"
+Copyright (C) 2022 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -28,6 +28,13 @@ The following objects are masked from 'package:base':
 
     abbreviate, write
 
+
+Attaching package: 'arulesSequences'
+
+The following object is masked from 'package:arules':
+
+    itemsets
+
 > 
 > data(zaki)
 > 
@@ -52,4 +59,4 @@ CONF 4 9 2.500000 2.700000 10 1 4 0.781025 4
 > 
 > proc.time()
    user  system elapsed 
-  2.352   0.080   2.438 
+  0.873   0.049   0.914 

@@ -1,7 +1,7 @@
 
-R version 3.4.4 (2018-03-15) -- "Someone to Lean On"
-Copyright (C) 2018 The R Foundation for Statistical Computing
-Platform: i686-pc-linux-gnu (32-bit)
+R version 4.2.2 Patched (2022-11-10 r83330) -- "Innocent and Trusting"
+Copyright (C) 2022 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -25,6 +25,13 @@ Attaching package: 'arules'
 The following objects are masked from 'package:base':
 
     abbreviate, write
+
+
+Attaching package: 'arulesSequences'
+
+The following object is masked from 'package:arules':
+
+    itemsets
 
 > 
 > ## basic tests using the small running 
@@ -61,11 +68,11 @@ verbose  :  TRUE
 summary  : FALSE
 tidLists : FALSE
 
-preprocessing ... 1 partition(s), 0 MB [0.014s]
-mining transactions ... 0 MB [0.007s]
-reading sequences ... [0.039s]
+preprocessing ... 1 partition(s), 0 MB [0.006s]
+mining transactions ... 0 MB [0.002s]
+reading sequences ... [0.007s]
 
-total elapsed time: 0.06s
+total elapsed time: 0.015s
 > ## IGNORE_RDIFF_END
 > s1
 set of 18 sequences 
@@ -346,6 +353,10 @@ itemsets 1
 > 
 > all.equal(quality(s1)$support, support(s1, zaki))
 [1] TRUE
+Warning messages:
+1: In match(x@items, table@items, nomatch = nomatch, incomparables = incomparables) :
+  Item coding not compatible, recoding item matrices first.
+2: In .local(x, ...) : Item coding not compatible, recoding item matrices.
 > 
 > ## rules
 > 
@@ -474,11 +485,11 @@ verbose  :  TRUE
 summary  : FALSE
 tidLists : FALSE
 
-preprocessing ... 1 partition(s), 0 MB [0.008s]
-mining transactions ... 0 MB [0.006s]
-reading sequences ... [0.01s]
+preprocessing ... 1 partition(s), 0 MB [0.003s]
+mining transactions ... 0 MB [0.002s]
+reading sequences ... [0.005s]
 
-total elapsed time: 0.024s
+total elapsed time: 0.01s
 Warning message:
 In cspade(zaki, parameter = list(support = 0.4, maxwin = 5), control = list(verbose = TRUE)) :
   'maxwin' disabled
@@ -504,11 +515,11 @@ verbose  :  TRUE
 summary  : FALSE
 tidLists :  TRUE
 
-preprocessing ... 1 partition(s), 0 MB [0.009s]
-mining transactions ... 0 MB [0.005s]
-reading sequences ... [0.017s]
+preprocessing ... 1 partition(s), 0 MB [0.003s]
+mining transactions ... 0 MB [0.001s]
+reading sequences ... [0.007s]
 
-total elapsed time: 0.031s
+total elapsed time: 0.011s
 > ## IGNORE_RDIFF_END
 > summary(tidLists(s1))
 tidLists in sparse format with
@@ -540,6 +551,10 @@ includes extended item information - examples:
 4          4
 > 
 > z <- supportingTransactions(s1, zaki)
+Warning messages:
+1: In match(x@items, table@items, nomatch = nomatch, incomparables = incomparables) :
+  Item coding not compatible, recoding item matrices first.
+2: In .local(x, ...) : Item coding not compatible, recoding item matrices.
 > all.equal(tidLists(s1[1:4, ]), z[1:4, ])
 [1] TRUE
 > 
@@ -562,6 +577,10 @@ includes extended item information - examples:
 > 
 > ##
 > r <- ruleInduction(s2[size(s2) > 1L], zaki, confidence = 0.5)
+Warning messages:
+1: In match(x@items, table@items, nomatch = nomatch, incomparables = incomparables) :
+  Item coding not compatible, recoding item matrices first.
+2: In .local(x, ...) : Item coding not compatible, recoding item matrices.
 > all.equal(as(r2, "data.frame"), as(r, "data.frame"))
 [1] TRUE
 > 
@@ -578,4 +597,4 @@ includes extended item information - examples:
 > 
 > proc.time()
    user  system elapsed 
-  3.640   0.108   3.776 
+  1.419   0.065   1.478 
