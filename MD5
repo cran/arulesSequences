@@ -1,5 +1,5 @@
-b6bf478aee943bdce76b17c0b9cc3e73 *CHANGELOG
-57428757c3927b7fcaf53be46f4d58e2 *DESCRIPTION
+6d9ec08c4d29b7b871298b7d748068c0 *CHANGELOG
+ec922ab1d77a2c2622058660d3bf3cc1 *DESCRIPTION
 9b09fe4a6ad430540113bbdc3247f5f1 *INSTALL
 863d5da9a4099f98e4ace9f2add4d51b *NAMESPACE
 c2752f2b126ff9acba8a0b7c23cf9652 *R/01matrix.R
@@ -45,8 +45,8 @@ a0b89d682d04f0926f5fbd17cbd74f18 *src/TPOSE/README
 5833643da81ec10f6b99f7cc4bb830ad *src/TPOSE/b2a.cc
 c912e159d316cc69b5bb963f0a4fe528 *src/TPOSE/calcdb.cc
 57d19de1959cd44a97ea804d6967be14 *src/TPOSE/calcdb.h
-78b401bee74966a507a52a8ead73c69b *src/TPOSE/exttpose.cc
-ceb51f054ec9a4290134c2fb428a2644 *src/TPOSE/getconf.cc
+78767c1f922ba3aacbcc455d1200da0c *src/TPOSE/exttpose.cc
+88114c40da587d9de9254725b83bdfe9 *src/TPOSE/getconf.cc
 c27cadb9767e27629ee9b055b9f49d85 *src/TPOSE/makebin.cc
 82d8560876cf734c3f6b80d944ba21d2 *src/TPOSE/mmap-win32.c
 b156d5b541636497ab7adf045215fb90 *src/TPOSE/mmap-win32.h
@@ -72,9 +72,9 @@ d7f02748dd68ef9b269b9a25412de934 *src/cSPADE/extl2.cc
 cf750a49bff85fb8efe9e8ba6914649c *src/cSPADE/maxgap.cc
 8caf9a04849c141d1e179920e3c11835 *src/cSPADE/maxgap.h
 b156d5b541636497ab7adf045215fb90 *src/cSPADE/mmap-win32.h
-661507eb2f0339a488526bd744f8d574 *src/cSPADE/partition.cc
+ad884cdc1fd3eae29fe39496dee2ee09 *src/cSPADE/partition.cc
 30082a6537af1dbd02af97588b8edc77 *src/cSPADE/partition.h
-7207e384ad58346feb7e13beaede956c *src/cSPADE/sequence.cc
+5bfe59d3163ddd397aa58e814c491034 *src/cSPADE/sequence.cc
 a0724dcf9f1f69ec2594119688bdfe99 *src/cSPADE/spade.h
 b2e2d9071887047e47b69c4d953b9d35 *src/cSPADE/win.mk
 8deba609a294a3d3d4c6ecad4e549304 *src/dll.c

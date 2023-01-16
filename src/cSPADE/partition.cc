@@ -32,16 +32,16 @@ void partition_alloc(char *dataf, char *idxf)
    ITEMIDX = new int*[num_partitions];
    char tmpnam[300];
    for (int i=0; i < num_partitions; i++){
-      if (num_partitions > 1) sprintf(tmpnam, "%s.P%d", dataf, i);
-      else sprintf(tmpnam, "%s", dataf);
+      if (num_partitions > 1) snprintf(tmpnam, sizeof(tmpnam), "%s.P%d", dataf, i);
+      else snprintf(tmpnam, sizeof(tmpnam), "%s", dataf);
       DATAFD[i] = open(tmpnam, O_RDONLY|O_BINARY);
       if (DATAFD[i] < 0){
          perror("can't open data file");
          exit(errno);
       }
       
-      if (num_partitions > 1) sprintf(tmpnam, "%s.P%d", idxf, i);
-      else sprintf(tmpnam, "%s", idxf);
+      if (num_partitions > 1) snprintf(tmpnam, sizeof(tmpnam), "%s.P%d", idxf, i);
+      else snprintf(tmpnam, sizeof(tmpnam), "%s", idxf);
       IDXFD[i] = open(tmpnam, O_RDONLY|O_BINARY);
       if (IDXFD[i] < 0){
          perror("can't open idx file");

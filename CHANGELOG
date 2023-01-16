@@ -1,5 +1,9 @@
 
 NEWS/ChangeLog for arulesSequences
+0.2-28 2022-01-14
+
+    o avoid sprintf also in C++ code.
+
 0.2-27 2022-12-07
 
     o avoid sprintf and void argument lists.

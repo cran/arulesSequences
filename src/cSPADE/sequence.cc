@@ -160,12 +160,12 @@ void parse_args(int argc, char **argv)
             use_hash = 1;
             break;
          case 'i': //input file
-            sprintf(dataf,"%s.tpose", optarg);
-            sprintf(idxf,"%s.idx", optarg);
-            sprintf(conf,"%s.conf", optarg);
-            sprintf(it2f,"%s.2it", optarg);
-            sprintf(seqf,"%s.2seq", optarg);
-            sprintf(classf,"%s.class", optarg);
+            snprintf(dataf, sizeof(dataf), "%s.tpose", optarg);
+            snprintf(idxf, sizeof(idxf), "%s.idx", optarg);
+            snprintf(conf, sizeof(conf), "%s.conf", optarg);
+            snprintf(it2f, sizeof(it2f), "%s.2it", optarg);
+            snprintf(seqf, sizeof(seqf), "%s.2seq", optarg);
+            snprintf(classf, sizeof(classf), "%s.class", optarg);
             break;
          case 'l': //min-gap between items 
             min_gap = atoi(optarg);

@@ -78,15 +78,15 @@ void parse_args(int argc, char **argv)
       while ((c=getopt(argc,argv,"i:o:p:s:a:dvlfm:x"))!=-1){
          switch(c){
          case 'i': //input files
-            sprintf(input,"%s.data",optarg);
-            sprintf(inconfn, "%s.conf",optarg);
+            snprintf(input, sizeof(input), "%s.data",optarg);
+            snprintf(inconfn, sizeof(inconfn), "%s.conf",optarg);
             break;
          case 'o': //output file names
-            sprintf(output, "%s.tpose", optarg);
-            sprintf(idxfn, "%s.idx", optarg);
-            sprintf(it2fn, "%s.2it", optarg);
-            sprintf(seqfn, "%s.2seq", optarg);
-	    sprintf(tmpfn, "%s.tmp", optarg);
+            snprintf(output, sizeof(output), "%s.tpose", optarg);
+            snprintf(idxfn, sizeof(idxfn), "%s.idx", optarg);
+            snprintf(it2fn, sizeof(it2fn), "%s.2it", optarg);
+            snprintf(seqfn, sizeof(seqfn), "%s.2seq", optarg);
+	    snprintf(tmpfn, sizeof(tmpfn), "%s.tmp", optarg);
             break;
          case 'p': //number of partitions for inverted dbase
             num_partitions = atoi(optarg);
@@ -497,8 +497,8 @@ void do_invert_db(Dbase_Ctrl_Blk *DCB, int pblk, Array **extary, int numfreq,
    DCB->get_next_trans(buf, numitem, tid, custid);
    int ocid;// = -1;
    for (int p=0; p < num_partitions; p++){
-      if (num_partitions > 1) sprintf(tmpnam, "%s.P%d", output, p);
-      else sprintf(tmpnam, "%s", output);
+      if (num_partitions > 1) snprintf(tmpnam, sizeof(tmpnam), "%s.P%d", output, p);
+      else snprintf(tmpnam, sizeof(tmpnam), "%s", output);
       if ((fd = open(tmpnam, (O_WRONLY|O_CREAT|O_TRUNC|O_BINARY), 0666)) < 0){
          perror("Can't open out file");
          exit (errno);      
@@ -703,7 +703,7 @@ void tpose()
       for (j=0; j < num_partitions; j++){
          //construct offsets for 1-itemsets
          if (num_partitions > 1){
-            sprintf(tmpnam, "%s.P%d", idxfn, j);
+            snprintf(tmpnam, sizeof(tmpnam), "%s.P%d", idxfn, j);
             plb = j*pblk + mincustid;
             pub = plb+pblk;
             if (pub > maxcustid) pub = maxcustid+1;
@@ -722,7 +722,7 @@ void tpose()
                DCB->get_next_trans(buf, numitem, tid, custid);
             }
          }
-         else sprintf(tmpnam, "%s", idxfn);
+         else snprintf(tmpnam, sizeof(tmpnam), "%s", idxfn);
          //cout << "100 VAL " << itcnt[100] << endl;
          cout << "OPENED " << tmpnam << endl;
          ofd.open(tmpnam, ios::binary);		// DD
@@ -780,13 +780,13 @@ void tpose()
       char tmpseq[316];
       char tmpiset[316];
       if (use_seq){
-	 sprintf(tmpseq, "%sseq", tmpfn);
+	 snprintf(tmpseq, sizeof(tmpseq), "%sseq", tmpfn);
          if ((seqfd = open(tmpseq, (O_RDWR|O_CREAT|O_TRUNC|O_BINARY), 0666)) < 0){
             perror("Can't open out file");
             exit (errno);      
          }
       }
-      sprintf(tmpiset, "%siset", tmpfn);
+      snprintf(tmpiset, sizeof(tmpiset), "%siset", tmpfn);
       if ((isetfd = open("tmpiset", (O_RDWR|O_CREAT|O_TRUNC|O_BINARY), 0666)) < 0){
          perror("Can't open out file");
          exit (errno);      

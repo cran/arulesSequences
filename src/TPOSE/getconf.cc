@@ -39,10 +39,10 @@ void parse_args(int argc, char **argv)
 	    printf("USE SEQ = 0\n");
             break;            
          case 'i':
-            sprintf(input,"%s.data",optarg);
+            snprintf(input, sizeof(input), "%s.data",optarg);
             break;
          case 'o':
-            sprintf(confn, "%s.conf", optarg);
+            snprintf(confn, sizeof(confn), "%s.conf", optarg);
             break;
          }
       }
