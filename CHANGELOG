@@ -1,5 +1,9 @@
 
 NEWS/ChangeLog for arulesSequences
+0.2-29 2023-05-16
+
+    o help detect broken binaries.
+
 0.2-28 2022-01-14
 
     o avoid sprintf also in C++ code.

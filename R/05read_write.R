@@ -336,14 +336,14 @@ function(data, parameter = NULL, control = NULL, tmpdir = tempdir()) {
 		asc, paste(file, "data", sep = "."))) ||
 	    system2(file.path(exe, "getconf"), args = c(
 		"-i", file, "-o", file), stdout = out)
-	) stop("system invocation failed")
+	) stop("system2 invocation failed")
 	file.append("summary.out", out)
     } else
 	makebin(data, file)
     if (system2(file.path(exe, "exttpose"), args = c(
             "-i", file, "-o", file, "-p", nop, opt, "-l -x -s",
             parameter@support), stdout = out)
-       ) stop("system invocation failed")
+       ) stop("system2 invocation failed (exttpose)")
     file.append("summary.out", out)
 
     if (!is.null(class))
@@ -396,7 +396,7 @@ function(data, parameter = NULL, control = NULL, tmpdir = tempdir()) {
 	if (system2(file.path(exe, "spade"), args = c(
 	    "-i", file, "-s", parameter@support, opt, "-e", nop, "-o"), 
 	    stdout = out)
-	) stop("system invocation failed")
+	) stop("system2 invocation failed (spade)")
 
     if (control@verbose) {
         t3 <- proc.time()

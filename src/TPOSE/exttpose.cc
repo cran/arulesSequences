@@ -75,6 +75,10 @@ void parse_args(int argc, char **argv)
       exit(EXIT_FAILURE);
    }
    else{
+      if (!strncmp(argv[1], "--version", 10)) {
+         cout << "Zaki TPOSE 2001 (2023)\n";
+         exit(0);
+      }
       while ((c=getopt(argc,argv,"i:o:p:s:a:dvlfm:x"))!=-1){
          switch(c){
          case 'i': //input files

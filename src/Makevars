@@ -1,4 +1,4 @@
-## ceeboo 2012
+## ceeboo 2012 2023
 BINDIR	= inst/bin$(R_ARCH)
 
 .PHONY: all bin
@@ -20,6 +20,9 @@ bin:
 		BINDIR="$(BINDIR)"\
 		install-bin \
 	)
+	# Note that these are now the only ones in use.
+	../$(BINDIR)/exttpose --version
+	../$(BINDIR)/spade --version
 
 clean:
 	( cd TPOSE;  make clean )

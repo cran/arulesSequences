@@ -14,7 +14,7 @@
 #include <strings.h>
 //#include <sys/mman.h>
 //#include <malloc.h>
-#include <strings.h>
+#include <cstring>
 #include "Eqclass.h"
 #include "Itemset.h"
 #include "Lists.h"
@@ -133,12 +133,16 @@ void parse_args(int argc, char **argv)
 //   char *options, *value;
 //   extern int optind;
    int c;
-   
+
    if (argc < 2) {
       cout << "usage: spade [OPTION]... -i<infile> -o<outfile> -s<support>\n";
       exit(EXIT_FAILURE);
    }
    else{
+      if (!strncmp(argv[1], "--version", 10)) {
+         cout << "Zaki cSPADE 2001 (2023)\n";
+         exit(0);
+      }
       while ((c=getopt(argc,argv,"a:bce:fhi:l:m:Mors:t:u:v:w:x:yz:Z:"))!=-1){
          switch(c){
          case 'a':
