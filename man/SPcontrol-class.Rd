@@ -30,6 +30,8 @@
 	of memory to use (default none [32 MB], range >= 16).}
     \item{\code{numpart}:}{an integer value specifying the number of
 	database partitions to use (default auto, range >= 1).}
+    \item{\code{timeout}:}{an integer value specifying the maximum runtime
+	in seconds (default none, range >= 1).}
     \item{\code{bfstype}:}{a logical value specifying if a breadth-first
 	type of search should be performed (default \code{FALSE} [DFS]).}
     \item{\code{verbose}:}{a logical value specifying if progress and

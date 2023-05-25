@@ -32,6 +32,10 @@ void parse_args(int argc, char **argv)
       cout << "usage: getconf [-a] -i<infile> -o<outfile>\n";
       exit(EXIT_FAILURE);
    }else{
+      if (!strncmp(argv[1], "--version", 10)) {
+         cout << "Zaki TPOSE 2001 (2023)\n";
+         exit(0);
+      }
       while ((c=getopt(argc,argv,"ai:o:"))!=-1){
          switch(c){
          case 'a': //work on assoc

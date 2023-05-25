@@ -593,7 +593,7 @@ SEXP R_pnsclosed(SEXP R_x, SEXP R_e, SEXP R_c, SEXP R_v) {
     t4 = clock();
 
     if (LOGICAL(R_v)[0] == TRUE) {
-	Rprintf("%i counts [%.2fs, %.2fs]\n ", LENGTH(px)-1,
+	Rprintf("%i counts [%.2fs, %.2fs]\n", LENGTH(px)-1,
 		((double) t4 - t1) / CLOCKS_PER_SEC,
 		((double) t3 - t2) / CLOCKS_PER_SEC);
     }
@@ -747,7 +747,7 @@ SEXP R_pnsredundant(SEXP R_x, SEXP R_e, SEXP R_c, SEXP R_v) {
     t3 = clock();
 
     if (LOGICAL(R_v)[0] == TRUE) {
-	Rprintf("%i counts [%.2fs, %.2fs]\n ", LENGTH(px)-1,
+	Rprintf("%i counts [%.2fs, %.2fs]\n", LENGTH(px)-1,
 		((double) t3 - t1) / CLOCKS_PER_SEC,
 		((double) t3 - t2) / CLOCKS_PER_SEC);
     }
@@ -1001,7 +1001,7 @@ SEXP R_pnssuperset(SEXP R_x, SEXP R_y, SEXP R_e, SEXP R_p, SEXP R_v) {
     t3 = clock();
 
     if (LOGICAL(R_v)[0] == TRUE) {
-	Rprintf("%i counts [%.2fs, %.2fs]\n ", LENGTH(px)-1,
+	Rprintf("%i counts [%.2fs, %.2fs]\n", LENGTH(px)-1,
 		((double) t3 - t1) / CLOCKS_PER_SEC,
 		((double) t3 - t2) / CLOCKS_PER_SEC);
     }

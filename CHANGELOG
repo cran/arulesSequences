@@ -1,5 +1,11 @@
 
 NEWS/ChangeLog for arulesSequences
+0.2-30 2023-05-22
+
+    o added support for timeouts in cspade.
+
+    o removed trailing whitespace in Rprintf.
+
 0.2-29 2023-05-16
 
     o help detect broken binaries.

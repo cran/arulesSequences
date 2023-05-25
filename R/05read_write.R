@@ -311,7 +311,10 @@ function(data, parameter = NULL, control = NULL, tmpdir = tempdir()) {
     exe <- system.file(exe, package = "arulesSequences")
 
     file <- tempfile(pattern = "cspade", tmpdir)
-    on.exit(unlink(paste(file, "*", sep = ".")))
+    if (FALSE)
+	warning("cleanup disabled: ", file)
+    else
+	on.exit(unlink(paste(file, "*", sep = ".")))
 
     ## preprocess
     opt <- ""
@@ -340,10 +343,13 @@ function(data, parameter = NULL, control = NULL, tmpdir = tempdir()) {
 	file.append("summary.out", out)
     } else
 	makebin(data, file)
-    if (system2(file.path(exe, "exttpose"), args = c(
+    tmt <- formals(system2)$timeout
+    if (length(control@timeout))
+	tmt <- control@timeout
+    if (s <- system2(file.path(exe, "exttpose"), args = c(
             "-i", file, "-o", file, "-p", nop, opt, "-l -x -s",
-            parameter@support), stdout = out)
-       ) stop("system2 invocation failed (exttpose)")
+            parameter@support), stdout = out, timeout = tmt)
+       ) stop("system2 invocation of 'exttpose' failed: ", s)
     file.append("summary.out", out)
 
     if (!is.null(class))
@@ -393,10 +399,10 @@ function(data, parameter = NULL, control = NULL, tmpdir = tempdir()) {
 	    )
 	})
     else
-	if (system2(file.path(exe, "spade"), args = c(
+	if (s <- system2(file.path(exe, "spade"), args = c(
 	    "-i", file, "-s", parameter@support, opt, "-e", nop, "-o"), 
-	    stdout = out)
-	) stop("system2 invocation failed (spade)")
+	    stdout = out, timeout = tmt)
+	) stop("system2 invocation of 'spade' failed: ", s)
 
     if (control@verbose) {
         t3 <- proc.time()

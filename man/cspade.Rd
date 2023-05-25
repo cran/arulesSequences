@@ -36,6 +36,9 @@ cspade(data, parameter = NULL, control = NULL, tmpdir = tempdir())
 
     The amount of disk space used by temporary files is reported in
     verbose mode (see class \code{\linkS4class{SPcontrol}}).
+
+    If specified \code{timeout} is passed to \code{\link{system2}} (see
+    details there and class \code{\linkS4class{SPcontrol}}).
 }
 \value{
     Returns an object of class \code{\linkS4class{sequences}}.
@@ -48,7 +51,7 @@ cspade(data, parameter = NULL, control = NULL, tmpdir = tempdir())
 \author{Christian Buchta, Michael Hahsler}
 \note{
     Temporary files may not be deleted until the end of the R session if
-    the call is interrupted.
+    the call is interrupted. Use timeouts to avoid this problem.
 
     The current working directory (see \code{\link{getwd}}) must be writable.
 
@@ -128,7 +131,7 @@ t <- read_baskets(con  = system.file("misc", "test.txt", package =
 summary(t)
 ## use low support
 s6 <- cspade(t, parameter = list(support = 0.0133), 
-		control   = list(verbose = TRUE))
+		control   = list(verbose = TRUE, timeout = 15))
 summary(s6)
 
 ## check

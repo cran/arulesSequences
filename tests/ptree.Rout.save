@@ -202,7 +202,7 @@ writing ... 8616 counts, processed 154653 (0.55) nodes [0.00s]
 +     is.maximal(s1)
 + ))
 checking ... 8616 counts [0.01s, 0.00s]
- > ## IGNORE_RDIFF_END
+> ## IGNORE_RDIFF_END
 > 
 > 
 > ## IGNORE_RDIFF_BEGIN
@@ -212,7 +212,7 @@ checking ... 8616 counts [0.01s, 0.00s]
 +     size(s1) > 1L
 + ))
 checking ... 8616 counts [0.01s, 0.00s]
- > ## IGNORE_RDIFF_END
+> ## IGNORE_RDIFF_END
 > 
 > warnings()
 > ###

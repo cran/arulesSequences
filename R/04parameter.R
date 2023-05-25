@@ -114,6 +114,7 @@ setClass("SPcontrol",
     representation(
         memsize = "integer",
         numpart = "integer",
+        timeout = "integer",
         bfstype = "logical",
         verbose = "logical",
         summary = "logical",
@@ -128,6 +129,8 @@ setClass("SPcontrol",
             return("slot memsize : invalid range")
         if (length(object@numpart) && object@numpart < 1)
             return("slot numpart : invalid range")
+        if (length(object@timeout) && object@timeout < 1)
+            return("slot timeout : invalid range")
 
         TRUE
     }

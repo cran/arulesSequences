@@ -1,0 +1,102 @@
+
+R version 4.3.0 (2023-04-21 ucrt) -- "Already Tomorrow"
+Copyright (C) 2023 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> 
+> library("arulesSequences")
+Loading required package: arules
+Loading required package: Matrix
+
+Attaching package: 'arules'
+
+The following objects are masked from 'package:base':
+
+    abbreviate, write
+
+
+Attaching package: 'arulesSequences'
+
+The following object is masked from 'package:arules':
+
+    itemsets
+
+> 
+> ## CB 2023
+> 
+> t <- read_baskets(con  = system.file("misc", "test.txt", package =
++                                       "arulesSequences"),
++                   info = c("sequenceID", "eventID", "SIZE"))
+> summary(t)
+transactions as itemMatrix in sparse format with
+ 90748 rows (elements/itemsets/transactions) and
+ 77 columns (items) and a density of 0.03452103 
+
+most frequent items:
+  47206   78903   15475   67280   88925 (Other) 
+  15338   11648   11127   10989   10079  182038 
+
+element (itemset/transaction) length distribution:
+sizes
+    1     2     3     4     5     6     7     8     9    10    11    12    14 
+23398 25330 19397 11820  6118  2805  1130   504   162    61    18     4     1 
+
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  1.000   1.000   2.000   2.658   3.000  14.000 
+
+includes extended item information - examples:
+  labels
+1  12897
+2  13084
+3  14562
+
+includes extended transaction information - examples:
+  sequenceID eventID SIZE
+1          1       1    3
+2          1       2    2
+3          1       3    1
+> ## use low support
+> ## IGNORE_RDIFF_BEGIN
+> s <- try(cspade(t, parameter = list(support = 0), 
++                    control   = list(verbose = TRUE, timeout = 1)))
+
+parameter specification:
+support :  0
+maxsize : 10
+maxlen  : 10
+
+algorithmic control:
+bfstype  : FALSE
+verbose  :  TRUE
+summary  : FALSE
+tidLists : FALSE
+timeout  :     1
+
+preprocessing ... 1 partition(s), 3.8 MB [0.38s]
+mining transactions ...Error in cspade(t, parameter = list(support = 0), control = list(verbose = TRUE,  : 
+  system2 invocation of 'spade' failed: 124
+In addition: Warning message:
+In system2(file.path(exe, "spade"), args = c("-i", file, "-s", parameter@support,  :
+  command '"C:/Users/USERWzkHYTOXde/R/arulesSequences/bin/x64/spade" -i C:\Users\USERWZ~1\AppData\Local\Temp\RtmpSIXHre\cspade2674356c6497 -s 0  -Z 10 -z 10 -r -e 1 -o' timed out after 1s
+> ## IGNORE_RDIFF_END
+> if (!inherits(s, "try-error")) {
++     stop("assert 'timeout' failed")
++ }
+> dir(tempdir())
+character(0)
+> 
+> proc.time()
+   user  system elapsed 
+   9.18    0.68   11.28 
