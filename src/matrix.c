@@ -134,7 +134,8 @@ SEXP R_rowSubset_sgCMatrix(SEXP x, SEXP s) {
 	setAttrib(ir, R_NamesSymbol, getAttrib(dx, R_NamesSymbol));
 	SET_VECTOR_ELT(ir, 1, VECTOR_ELT(dx, 1));
 	if (LENGTH(s) > 0) {
-	    SET_VECTOR_ELT(ir, 0, (pr = allocVector(STRSXP, LENGTH(s))));
+	    SET_VECTOR_ELT(ir, 0, PROTECT(pr = allocVector(STRSXP, LENGTH(s))));
+	    UNPROTECT(1);
 	    for (i = 0; i < LENGTH(s); i++)
 		SET_STRING_ELT(pr, i, STRING_ELT(ix, INTEGER(s)[i]-1));
 	} else
@@ -217,7 +218,8 @@ SEXP R_colAppend_sgCMatrix(SEXP x, SEXP y, SEXP R_s) {
     else {
 	SEXP s;
 
-	SET_VECTOR_ELT(ir, 0, (s = allocVector(STRSXP, nr+1)));
+	SET_VECTOR_ELT(ir, 0, PROTECT(s = allocVector(STRSXP, nr+1)));
+	UNPROTECT(1);
 	for (k = 0; k < nr; k++)
 	    SET_STRING_ELT(s, k, VECTOR_ELT(px, k));
 	SET_STRING_ELT(s, k, R_BlankString);
@@ -346,12 +348,14 @@ SEXP R_firstOrder_sgCMatrix(SEXP x) {
 
     ix = VECTOR_ELT(getAttrib(x, install("Dimnames")), 0);
     if (!isNull(ix)) {
-	setAttrib(r, R_DimNamesSymbol, (px = allocVector(VECSXP, 2)));
+	setAttrib(r, R_DimNamesSymbol, PROTECT(px = allocVector(VECSXP, 2)));
+	UNPROTECT(1);
 	SET_VECTOR_ELT(px, 0, ix);
 	SET_VECTOR_ELT(px, 1, ix);
 	if (!isNull(ix = PROTECT(getAttrib(ix, R_NamesSymbol)))) {
 	    SEXP t;
-	    setAttrib(px, R_NamesSymbol, (t = allocVector(STRSXP, 2)));
+	    setAttrib(px, R_NamesSymbol, PROTECT(t = allocVector(STRSXP, 2)));
+	    UNPROTECT(1);
 	    // FIXME
 	    SET_STRING_ELT(t, 0, STRING_ELT(ix, 0));
 	    SET_STRING_ELT(t, 1, STRING_ELT(ix, 0));
@@ -364,4 +368,3 @@ SEXP R_firstOrder_sgCMatrix(SEXP x) {
     return r;
 }
 
-//

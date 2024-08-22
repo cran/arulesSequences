@@ -19,6 +19,18 @@ extern SEXP R_pnsclosed(SEXP R_x, SEXP R_e, SEXP R_c, SEXP R_v);
 extern SEXP R_pnsredundant(SEXP R_x, SEXP R_e, SEXP R_c, SEXP R_v);
 extern SEXP R_pnssuperset(SEXP R_x, SEXP R_y, SEXP R_e, SEXP R_p, SEXP R_v);
 
+extern SEXP R_transpose_ngCMatrix(SEXP x);
+extern SEXP R_crosstab_ngCMatrix(SEXP x, SEXP y, SEXP t);
+extern SEXP R_rowSums_ngCMatrix(SEXP x);
+extern SEXP R_colSums_ngCMatrix(SEXP x);
+extern SEXP R_colSubset_ngCMatrix(SEXP x, SEXP s);
+extern SEXP R_rowSubset_ngCMatrix(SEXP x, SEXP s);
+extern SEXP R_asList_ngCMatrix(SEXP x, SEXP d);
+extern SEXP R_cbind_ngCMatrix(SEXP x, SEXP y);
+extern SEXP R_recode_ngCMatrix(SEXP x, SEXP s);
+extern SEXP R_or_ngCMatrix(SEXP x, SEXP y);
+extern SEXP R_valid_ngCMatrix(SEXP x);
+
 void R_init_arulesSequences(DllInfo *dll) {
 
     const R_CallMethodDef CallEntries[] = {
@@ -36,20 +48,18 @@ void R_init_arulesSequences(DllInfo *dll) {
 	{"R_pnsredundant",	    (DL_FUNC) R_pnsredundant,		4},
 	{"R_pnssuperset",	    (DL_FUNC) R_pnssuperset,		5},
 
-	{"R_rowSums_ngCMatrix",
-	    (DL_FUNC) R_GetCCallable("arules", "R_rowSums_ngCMatrix"),	1},
-	{"R_colSums_ngCMatrix",
-	    (DL_FUNC) R_GetCCallable("arules", "R_colSums_ngCMatrix"),	1},
-	{"R_colSubset_ngCMatrix",
-	    (DL_FUNC) R_GetCCallable("arules", "R_colSubset_ngCMatrix"),2},
-	{"R_rowSubset_ngCMatrix",
-	    (DL_FUNC) R_GetCCallable("arules", "R_rowSubset_ngCMatrix"),2},
-	{"R_asList_ngCMatrix",
-	    (DL_FUNC) R_GetCCallable("arules", "R_asList_ngCMatrix"),	2},
-	{"R_cbind_ngCMatrix",
-	    (DL_FUNC) R_GetCCallable("arules", "R_cbind_ngCMatrix"),	2},
-	{"R_recode_ngCMatrix",	    
-	    (DL_FUNC) R_GetCCallable("arules", "R_recode_ngCMatrix"),	2},
+	{"R_transpose_ngCMatrix",   (DL_FUNC) R_transpose_ngCMatrix,	1},
+        {"R_crosstab_ngCMatrix",    (DL_FUNC) R_crosstab_ngCMatrix,	3},
+	{"R_rowSums_ngCMatrix",	    (DL_FUNC) R_rowSums_ngCMatrix,	1},
+	{"R_colSums_ngCMatrix",	    (DL_FUNC) R_colSums_ngCMatrix,	1},
+	{"R_colSubset_ngCMatrix",   (DL_FUNC) R_colSubset_ngCMatrix,	2},
+	{"R_rowSubset_ngCMatrix",   (DL_FUNC) R_rowSubset_ngCMatrix,	2},
+	{"R_asList_ngCMatrix",	    (DL_FUNC) R_asList_ngCMatrix,	2},
+	{"R_cbind_ngCMatrix",	    (DL_FUNC) R_cbind_ngCMatrix,	2},
+	{"R_recode_ngCMatrix",	    (DL_FUNC) R_recode_ngCMatrix,	2},
+        {"R_or_ngCMatrix",	    (DL_FUNC) R_or_ngCMatrix,		2},
+        {"R_valid_ngCMatrix",	    (DL_FUNC) R_valid_ngCMatrix,	1},
+
 	{"R_pnindex",
 	    (DL_FUNC) R_GetCCallable("arules", "R_pnindex"),		3},
 	{"R_pnrindex",

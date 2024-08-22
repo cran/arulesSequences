@@ -68,7 +68,7 @@
 	information on a sequence.}
     \item{\code{quality}:}{a data.frame containing the quality measures
 	of a sequence.}
-    \item{\code{tidLists}:}{an object of class \code{\linkS4class{tidLists}}
+    \item{\code{tidLists}:}{an object of class \code{\link[arules:tidLists-class]{tidLists}}
 	mapping supporting sequences, or \code{NULL}.}
   }
 }

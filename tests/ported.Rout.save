@@ -1,0 +1,117 @@
+
+R version 4.4.1 (2024-06-14) -- "Race for Your Life"
+Copyright (C) 2024 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> 
+> ### ported from arules 1.7-7
+> 
+> library("arulesSequences")
+Loading required package: arules
+Loading required package: Matrix
+
+Attaching package: 'arules'
+
+The following objects are masked from 'package:base':
+
+    abbreviate, write
+
+
+Attaching package: 'arulesSequences'
+
+The following object is masked from 'package:arules':
+
+    itemsets
+
+> 
+> e <- new("ngCMatrix")
+> x <- new("ngCMatrix", p   = as.integer(c(0,3,5,7,7,10)),
++                       i   = as.integer(c(1,2,4,1,2,0,4,0,2,5)),
++                       Dim = as.integer(c(6,5)))
+> rownames(x) <- paste("I", 1:6, sep = "")
+> colnames(x) <- paste("T", 1:5, sep = "")
+> #x
+> 
+> ##
+> #unclass(x)
+> 
+> ## validity
+> stopifnot(getValidity(getClassDef("CsparseMatrix"))(x))
+> .Call(arulesSequences:::R_valid_ngCMatrix, x)
+[1] TRUE
+> .Call(arulesSequences:::R_valid_ngCMatrix, e)
+[1] TRUE
+> 
+> ## t
+> identical(.Call(arulesSequences:::R_transpose_ngCMatrix, x), t(x))
+[1] TRUE
+> identical(.Call(arulesSequences:::R_transpose_ngCMatrix, e), t(e))
+[1] TRUE
+> 
+> ## column/row subset (index can only be integer now)
+> s <- as.integer(c(1,1,3,4))
+> stopifnot(all.equal(x[,s], .Call(arulesSequences:::R_colSubset_ngCMatrix, x, s)))
+> 
+> #
+> stopifnot(identical(.Call(arulesSequences:::R_colSubset_ngCMatrix, e, integer()), e))
+> stopifnot(all.equal(x[s,], .Call(arulesSequences:::R_rowSubset_ngCMatrix, x, s)))
+> 
+> #
+> stopifnot(identical(.Call(arulesSequences:::R_rowSubset_ngCMatrix, e, integer()), e))
+> 
+> ## reorder
+> stopifnot(all.equal(.Call(arulesSequences:::R_recode_ngCMatrix, x, 6:1), x[6:1,]))
+> stopifnot(all.equal(.Call(arulesSequences:::R_recode_ngCMatrix, e, integer()), e))
+> 
+> ## recode (add columns)
+> stopifnot(identical(.Call(arulesSequences:::R_recode_ngCMatrix, x, c(1L,3:7)),
++   as(rbind(x[1,,drop=FALSE], 
++     Matrix(0, ncol = 5, sparse = TRUE), 
++     x[2:6,, drop = FALSE]), "nsparseMatrix")))
+> 
+> ## cbind
+> stopifnot(identical(.Call(arulesSequences:::R_cbind_ngCMatrix, e, e), cbind(e,e)))
+> stopifnot(identical(.Call(arulesSequences:::R_cbind_ngCMatrix, x, x), cbind(x, x)))
+> 
+> ## logical OR
+> identical(.Call(arulesSequences:::R_or_ngCMatrix, x, x), 
++   as(x | x, "nsparseMatrix"))
+[1] TRUE
+> identical(.Call(arulesSequences:::R_or_ngCMatrix, e, e), 
++   as(e | e, "nsparseMatrix"))
+[1] TRUE
+> 
+> ## row sums
+> stopifnot(all.equal(.Call(arulesSequences:::R_rowSums_ngCMatrix, x), rowSums(x)))
+> stopifnot(all.equal(.Call(arulesSequences:::R_rowSums_ngCMatrix, e), rowSums(e)))
+> 
+> ## column sums
+> stopifnot(all.equal(colSums(x), .Call(arulesSequences:::R_colSums_ngCMatrix, x)))
+> stopifnot(all.equal(.Call(arulesSequences:::R_colSums_ngCMatrix, e), colSums(e)))
+> 
+> ## crossprod and tcrossprod
+> all.equal(.Call(arulesSequences:::R_crosstab_ngCMatrix, x, NULL, TRUE),
++   as(tcrossprod(as(as(x, "ngCMatrix"), "dsparseMatrix")), "matrix"))
+[1] TRUE
+> all.equal(.Call(arulesSequences:::R_crosstab_ngCMatrix, x, NULL, FALSE),
++   as(crossprod(as(as(x, "ngCMatrix"), "dsparseMatrix")), "matrix"))
+[1] TRUE
+> 
+> ###
+> 
+> 
+> proc.time()
+   user  system elapsed 
+  0.862   0.079   0.927 

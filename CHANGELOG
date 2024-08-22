@@ -1,5 +1,15 @@
 
 NEWS/ChangeLog for arulesSequences
+0.2-31 2024-08-21
+
+    o emulate NonNullStringMatch in arrayIndex.c.
+
+    o ported ngCMatrix code from arules.
+
+    o off-chance PROTECT bug fixes.
+
+    o added missing package anchors in Rd files.
+
 0.2-30 2023-05-22
 
     o added support for timeouts in cspade.

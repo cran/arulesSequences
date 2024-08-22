@@ -111,7 +111,7 @@ Class \code{"\link[arules:associations-class]{associations}"}, directly.
     \code{\linkS4class{sequences}},
     method
     \code{\link{ruleInduction}},
-    \code{\link{is.redundant}},
+    \code{\link[arules]{is.redundant}},
     function
     \code{\link{cspade}}
 }

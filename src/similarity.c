@@ -326,9 +326,9 @@ SEXP R_as_dist_dsCMatrix(SEXP x) {
     if (!isNull((ix = VECTOR_ELT(ix, 0))))
 	setAttrib(r, install("Labels"), ix);
 
-    setAttrib(r, R_ClassSymbol, mkString("dist"));
+    setAttrib(r, R_ClassSymbol, PROTECT(mkString("dist")));
 
-    UNPROTECT(1);
+    UNPROTECT(2);
 
     return r;
 }

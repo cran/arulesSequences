@@ -308,7 +308,8 @@ SEXP R_ilscount(SEXP x, SEXP R_tid, SEXP R_sid, SEXP R_eid, SEXP R_mingap, SEXP 
 	}
 	if (supporting) {
 	    SEXP s;
-	    SET_VECTOR_ELT(r, n, s = allocVector(INTSXP, nk));
+	    SET_VECTOR_ELT(r, n, PROTECT(s = allocVector(INTSXP, nk)));
+	    UNPROTECT(1);
 	    nk = 0;
 	    l  = 0;
 	    for (i = 0; i < ni; i++) {

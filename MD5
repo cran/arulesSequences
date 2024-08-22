@@ -1,5 +1,5 @@
-89aa74d137a640242a0e417c0992d018 *CHANGELOG
-c924b1bd311433b6cab0b30650cc30d3 *DESCRIPTION
+1a4631811a381314d4da785f8796741c *CHANGELOG
+871ce5c6c41f63b3b6270d72c0e7c4b9 *DESCRIPTION
 9b09fe4a6ad430540113bbdc3247f5f1 *INSTALL
 863d5da9a4099f98e4ace9f2add4d51b *NAMESPACE
 c2752f2b126ff9acba8a0b7c23cf9652 *R/01matrix.R
@@ -10,6 +10,7 @@ d0b47f182eae1b9b78cf9ef5bbab3115 *R/05read_write.R
 5aaaded303a1b318134b394e9fcbf29b *R/10timed.R
 d128f9133d05de4b07dce28bd6f2622a *R/20support.R
 fda1928c9861bcd93b35b5b2d7aab093 *R/30similarity.R
+fb1b40525019e961f26447931965bea2 *R/ported.R
 37af970b91746ec596562ad951a0883e *data/zaki.rda
 ae12b459ba6fc2c9df5869f8b7b3d1fb *inst/COPYRIGHTS
 e2e39be8d8a02f68d5bf4c0d958425a6 *inst/misc/test.pat
@@ -25,8 +26,8 @@ d07721dc6f4a84e2ece644c4fcb72ea1 *man/SPcontrol-class.Rd
 c1a68134673ed8366d50346f5c9bf4a1 *man/match-methods.Rd
 b10be0e21cdec3b205e767716e7813b8 *man/read_baskets.Rd
 50499e4a6ddf695cb64e77c1a97d1211 *man/ruleInduction-methods.Rd
-18154ec4f1be32055f28e425edb5ea58 *man/sequencerules-class.Rd
-8f2131ac319f00a7f597ca90b27f48cd *man/sequences-class.Rd
+c8b3dd279fb614b02ba971f72bc59462 *man/sequencerules-class.Rd
+b2ea504c7c8299bd7ae9baf6f0865d2c *man/sequences-class.Rd
 81e128c3fc8abf5b52b9e300eb6215ae *man/sgCMatrix-class.Rd
 afecc50694284e761e5996a61eab15df *man/similarity-methods.Rd
 daf2e8e4f1e5f2786f1d026de736c94c *man/size-methods.Rd
@@ -52,7 +53,7 @@ c27cadb9767e27629ee9b055b9f49d85 *src/TPOSE/makebin.cc
 b156d5b541636497ab7adf045215fb90 *src/TPOSE/mmap-win32.h
 23cc3b12dc50c31e56515412a0db2123 *src/TPOSE/strstream.h
 ad7c4a30db8d9c7a83b3a22867c6759a *src/TPOSE/win.mk
-b4a706d255fa2aeb729a733b122586af *src/arrayIndex.c
+b89a43d9d13c8810e0f5967bad52338f *src/arrayIndex.c
 7fd025c32539b94c20c561b197ebc5bd *src/cSPADE/Array.cc
 fd3e68a8dc0c7d786045cf245d4e82d6 *src/cSPADE/Array.h
 5898494dab81e81096e5205e61250083 *src/cSPADE/Database.cc
@@ -77,12 +78,13 @@ ad884cdc1fd3eae29fe39496dee2ee09 *src/cSPADE/partition.cc
 78c74d10c3cfa44a7cedacee3a4fcfda *src/cSPADE/sequence.cc
 a0724dcf9f1f69ec2594119688bdfe99 *src/cSPADE/spade.h
 b2e2d9071887047e47b69c4d953b9d35 *src/cSPADE/win.mk
-8deba609a294a3d3d4c6ecad4e549304 *src/dll.c
-4baa14de17ead903d6a965d5c1dc50c3 *src/idlists.c
+b895ee8f924efca583b0e66fc32c2100 *src/dll.c
+22c697b4396bfb277a5ff57a2061c329 *src/idlists.c
 a1463016703018e71671b99e5c747c53 *src/makebin.c
-87d0b5560cf132098b562be540332f73 *src/matrix.c
-c841aac5c385cb9d7475c4c36304f9a8 *src/ptree.c
-97f8c2a6e92b9ed7846ba74a93c1d162 *src/similarity.c
+6232c1751471fc0ba621cce3f8e5beaa *src/matrix.c
+e178d15c388d37bc00fe99c3460b5da9 *src/ported.c
+5b6cb08d17fa0bc2ae5bdd830c029668 *src/ptree.c
+03c6b2e4ffbda7f11e26b33432496cb8 *src/similarity.c
 32935964526a4494f601ac5296b28409 *tests/Rgui.R
 c791269a74df3f4881b7174266efaf64 *tests/arules.R
 7ef8032b6df8ce5f3446ae6865722ecd *tests/arules.Rout.save
@@ -92,6 +94,8 @@ dee92e073f5eda13bb093a667e055f03 *tests/makebin.R
 cccbfdaeb282facaad1e755b175dba01 *tests/makebin.Rout.save
 5c889d77fc225059f22ba445f01801ca *tests/native.R
 49c77055c7a7022aba2fe1ab405391e4 *tests/native.Rout.save
+dd12aabe38ed4c60631af6e7b40408c3 *tests/ported.R
+a3c4679909110be956fa1376a130f950 *tests/ported.Rout.save
 e41ff8a919b8aff780ea9b93ba2d9850 *tests/ptree.R
 2476e437b52a3d4602b96518f2e6a004 *tests/ptree.Rout.save
 9867246472e17e3171263e4f151f1307 *tests/similarity.R
